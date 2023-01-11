@@ -66,7 +66,7 @@ function load_solomon_data(class_ins::String; num_node=100)
     return Problem(
         uppercase(class_ins),
         num_node,
-        data["distance_matrix"],
+        floor.(data["distance_matrix"], digits=1),
         data["demand"],
         data["lower"],
         data["upper"],
