@@ -1,0 +1,12 @@
+{
+   "max_completion_time": "Inf",
+                  "name": "RC108-25",
+            "solve_time": 600.0054421424866,
+          "relative_gap": 1.0e100,
+                 "route": null,
+          "obj_function": "Inf",
+             "total_com": "Inf",
+           "num_vehicle": 3,
+           "solver_name": "Gurobi",
+                   "tex": "no solution"
+}

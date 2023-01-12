@@ -143,7 +143,7 @@ end
 
 
 function load_solution(ins_name::String)
-    js = JSON.parsefile("data\\opt_solomon\\balancing_completion_time\\C101-25.json")
+    js = JSON.parsefile(dir("data", "opt_solomon", "balancing_completion_time", "$ins_name.json"))
     route = dict_to_solution(js["route"])
     (ins_name, num_node) = split(js["name"], "-")
     problem = load_solomon_data(String(ins_name), num_node=parse(Int64, num_node))

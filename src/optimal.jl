@@ -1,6 +1,6 @@
-using CPLEX
+# using CPLEX
 
-function opt_balancing(ins_name::String, num_vehicle::Integer)
+function opt_balancing(ins_name::String, num_vehicle::Integer, solver)
 
     # data = load(joinpath(@__DIR__, "..", "data", "solomon_jld2", "c101-25.jld2"))
     data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
@@ -15,7 +15,8 @@ function opt_balancing(ins_name::String, num_vehicle::Integer)
     # number of node
     n = length(d) - 1
 
-    m = Model(CPLEX.Optimizer)
+    m = Model(solver.Optimizer)
+    set_time_limit_sec(m, 600)
     # set_optimizer_attribute(m, "logLevel", 1)
 
     # num_vehicle = 3
@@ -135,17 +136,30 @@ function opt_balancing(ins_name::String, num_vehicle::Integer)
 end
 
 
-function find_opt()
+function find_opt(solver)
     NameNumVehicle = CSV.File(dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv"))
     Ins_name = [String("$(NameNumVehicle[i][1])-$(NameNumVehicle[i][2])") for i in 1:(length(NameNumVehicle))]
     Num_vehicle = [NameNumVehicle[i][3] for i in 1:(length(NameNumVehicle))]
 
     for (ins_name, num_vehicle) in zip(Ins_name, Num_vehicle)
-        if !isfile(dir("data", "opt_solomon", "balancing_completion_time", "$ins_name.json"))
-            println("Optimizing $(ins_name)!!!")
-            m, x, t, CM, CMAX, w, service = opt_balancing(ins_name, num_vehicle)
-            tex, route = show_opt_solution(x, length(t), num_vehicle)
-            write_solution(route, ins_name, tex, m, t, CMAX, service, obj_function="balancing_completion_time")
+        # chack the exiting of file
+        if !isfile(dir("data", "opt_solomon", "balancing_completion_time", "$ins_name.json")) 
+            # || JSON.parsefile(dir("data", "opt_solomon", "balancing_completion_time", "$ins_name.json"))["solve_time"] == "Inf"
+            @info "Optimizing $(ins_name)!!!"
+            m, x, t, CM, CMAX, w, service = opt_balancing(ins_name, num_vehicle, solver)
+            if has_values(m)      
+                tex, route = show_opt_solution(x, length(t), num_vehicle)
+                write_solution(route, ins_name, tex, m, t, CMAX, service, obj_function="balancing_completion_time")
+            else
+                # create dict
+                d = Dict("name" => ins_name, "num_vehicle" => num_vehicle, "route" => nothing, "tex" => "no solution", "max_completion_time" => "Inf", "obj_function" => "Inf", "solve_time" => solve_time(m), "relative_gap" => relative_gap(m), "solver_name" => solver_name(m), "total_com" => "Inf")
+
+                # save file
+                location = dir("data", "opt_solomon", "balancing_completion_time")
+                open(joinpath(location, "$ins_name.json"), "w") do io
+                    JSON3.pretty(io, d, JSON3.AlignmentContext(alignment=:Colon, indent=2))
+                end
+            end
         end
     end
 end
