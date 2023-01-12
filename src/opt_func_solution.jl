@@ -43,20 +43,44 @@ end
 
 
 function write_solution(route::Dict, ins_name::String, tex::String, m, t, CMAX, service; obj_function="balancing_completion_time"::String)
-    # check location
-    location = dir("data", "opt_solomon", "balancing_completion_time")
-    # location = joinpath(@__DIR__, "..", "" "opt_solomon", "$name") 
-    if isfile(location) == false
-        mkpath(location)
+
+    if obj_function == "balancing_completion_time"
+        # check location
+        location = dir("data", "opt_solomon", "balancing_completion_time")
+        # location = joinpath(@__DIR__, "..", "" "opt_solomon", "$name") 
+        if isfile(location) == false
+            mkpath(location)
+        end
+
+        # calculate max completion time
+        max_com = Dict(k => value.(CMAX[k]) for k in 1:(length(route)))
+
+        # total completion time
+        total_com = sum([value.(t[i]) + service[i+1] for i in 1:(length(t)-1)])
+
+
+        # create dict
+        d = Dict("name" => ins_name, "num_vehicle" => length(route), "route" => route, "tex" => tex, "max_completion_time" => max_com, "obj_function" => JuMP.objective_value(m), "solve_time" => solve_time(m), "relative_gap" => relative_gap(m), "solver_name" => solver_name(m), "total_com" => total_com)
+    else
+        location = dir("data", "opt_solomon", "total_completion_time")
+        # location = joinpath(@__DIR__, "..", "" "opt_solomon", "$name") 
+        if isfile(location) == false
+            mkpath(location)
+        end
+
+        # calculate max completion time
+        max_com = Dict(k => value.(CMAX[route[k][end-1]]) for k in 1:(length(route)))
+
+        # balancing
+        bc = sum([abs(max_com[i]-max_com[j]) for i in 1:length(route) for j in 1:length(route) if i < j])
+
+        # total completion time
+        total_com = sum([value.(t[i]) + service[i+1] for i in 1:(length(t)-1)])
+
+        # create dict
+        d = Dict("name" => ins_name, "num_vehicle" => length(route), "route" => route, "tex" => tex, "max_completion_time" => max_com, "obj_function" => bc, "solve_time" => solve_time(m), "relative_gap" => relative_gap(m), "solver_name" => solver_name(m), "total_com" => JuMP.objective_value(m))
     end
 
-    # calculate max completion time
-    max_com = Dict(k => value.(CMAX[k]) for k in 1:(length(route)))
-
-    # total completion time
-    total_com = sum([value.(t[i]) + service[i+1] for i in 1:(length(t)-1)])
-
-    d = Dict("name" => ins_name, "num_vehicle" => length(route), "route" => route, "tex" => tex, "max_completion_time" => max_com, "obj_function" => JuMP.objective_value(m), "solve_time" => solve_time(m), "relative_gap" => relative_gap(m), "solver_name" => solver_name(m), "total_com" => total_com)
 
     open(joinpath(location, "$ins_name.json"), "w") do io
         JSON3.pretty(io, d, JSON3.AlignmentContext(alignment=:Colon, indent=2))

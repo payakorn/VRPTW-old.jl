@@ -149,3 +149,52 @@ function load_solution(ins_name::String)
     problem = load_solomon_data(String(ins_name), num_node=parse(Int64, num_node))
     Solution(route, problem)
 end
+
+
+function list_ins_name()
+    NameNumVehicle = CSV.File(dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv"))
+    Ins_name = [String("$(NameNumVehicle[i][1])-$(NameNumVehicle[i][2])") for i in 1:(length(NameNumVehicle))]
+    Num_vehicle = [NameNumVehicle[i][3] for i in 1:(length(NameNumVehicle))]
+    return Ins_name, Num_vahicle
+end
+
+
+function read_opt_json(location::String)
+    return JSON.parsefile(location)
+end
+
+
+function read_optimal_solution()
+
+    # list of variables
+    # 1
+    balancing1 = []
+    total_com1 = []
+    solve_time1 = []
+    relative_gap1 = []
+
+    # 2
+    balancing2 = []
+    total_com2 = []
+    solve_time2 = []
+    relative_gap2 = []
+
+    Ins_name, Num_vehicle = list_ins_name()
+    for (ins_name) in Ins_name
+        location1 = dir("data", "opt_solomon", "balancing_completion_time", "$ins_name.json") 
+        location2 = dir("data", "opt_solomon", "total_completion_time", "$ins_name.json") 
+        if isfile(location1) && isfile(location2)
+            js1 = read_opt_solution(location1)
+            js2 = read_opt_solution(location2)
+
+            # add elements
+            push!(balancing1, js1["objective_function"])
+        elseif isfile(location1)
+            js1 = read_opt_solution(location1)
+        elseif isfile(locartion2)
+            js2 = read_opt_solution(location2)
+        else
+            nothing
+        end
+    end
+end
