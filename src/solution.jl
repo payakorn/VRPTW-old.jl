@@ -155,7 +155,7 @@ function list_ins_name()
     NameNumVehicle = CSV.File(dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv"))
     Ins_name = [String("$(NameNumVehicle[i][1])-$(NameNumVehicle[i][2])") for i in 1:(length(NameNumVehicle))]
     Num_vehicle = [NameNumVehicle[i][3] for i in 1:(length(NameNumVehicle))]
-    return Ins_name, Num_vahicle
+    return Ins_name, Num_vehicle
 end
 
 
@@ -181,20 +181,88 @@ function read_optimal_solution()
 
     Ins_name, Num_vehicle = list_ins_name()
     for (ins_name) in Ins_name
+
+        @info "reading $ins_name"
+
         location1 = dir("data", "opt_solomon", "balancing_completion_time", "$ins_name.json") 
         location2 = dir("data", "opt_solomon", "total_completion_time", "$ins_name.json") 
         if isfile(location1) && isfile(location2)
-            js1 = read_opt_solution(location1)
-            js2 = read_opt_solution(location2)
+            js1 = read_opt_json(location1)
+            js2 = read_opt_json(location2)
+            
+            # add elements
+            push!(balancing1, js1["obj_function"])
+            push!(balancing2, js2["obj_function"])
+            
+            # total completion time
+            push!(total_com1, js1["total_com"])
+            push!(total_com2, js2["total_com"])
+            
+            # solve time
+            push!(solve_time1, js1["solve_time"])
+            push!(solve_time2, js2["solve_time"])
+            
+            # relative gap
+            push!(relative_gap1, js1["relative_gap"])
+            push!(relative_gap2, js2["relative_gap"])
+            
+        elseif isfile(location1)
+
+            js1 = read_opt_json(location1)
+            
+            # add elements
+            push!(balancing1, js1["obj_function"])
+            push!(balancing2, Inf)
+
+            # total completion time
+            push!(total_com1, js1["total_com"])
+            push!(total_com2, Inf)
+
+            # solve time
+            push!(solve_time1, js1["solve_time"])
+            push!(solve_time2, Inf)
+
+            # relative gap
+            push!(relative_gap1, js1["relative_gap"])
+            push!(relative_gap2, 1)
+            
+        elseif isfile(location2)
+            
+            js2 = read_opt_json(location2)
 
             # add elements
-            push!(balancing1, js1["objective_function"])
-        elseif isfile(location1)
-            js1 = read_opt_solution(location1)
-        elseif isfile(locartion2)
-            js2 = read_opt_solution(location2)
+            push!(balancing1, Inf)
+            push!(balancing2, js2["obj_function"])
+
+            # total completion time
+            push!(total_com1, Inf)
+            push!(total_com2, round(js2["total_com"], digits=1))
+
+            # solve time
+            push!(solve_time1, Inf)
+            push!(solve_time2, js2["solve_time"])
+
+            # relative gap
+            push!(relative_gap1, 1)
+            push!(relative_gap2, js2["relative_gap"])
+            
         else
-            nothing
+            # add elements
+            push!(balancing1, Inf)
+            push!(balancing2, Inf)
+
+            # total completion time
+            push!(total_com1, Inf)
+            push!(total_com2, Inf)
+
+            # solve time
+            push!(solve_time1, Inf)
+            push!(solve_time2, Inf)
+
+            # relative gap
+            push!(relative_gap1, 1)
+            push!(relative_gap2, 1)
         end
     end
+    return DataFrame(ins_name=Ins_name, num_vehi=Num_vehicle, diff_b=balancing1, diff_t=balancing2, total_b=total_com1, total_t=total_com2, relative_gap_b=round.(relative_gap1, digits=3), relative_gap_t=round.(relative_gap2, digits=3), solve_time_b=round.(solve_time1, digits=2), solve_time_t=round.(solve_time2, digits=2))
 end
