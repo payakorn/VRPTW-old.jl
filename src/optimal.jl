@@ -2,9 +2,7 @@
 
 function opt_balancing(ins_name::String, num_vehicle::Integer, solver)
 
-    # data = load(joinpath(@__DIR__, "..", "data", "solomon_jld2", "c101-25.jld2"))
     data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
-    # data = load(joinpath(@__DIR__, "..", "data", "solomon_jld2", "$ins_name.jld2"))
     d = data["upper"]
     low_d = data["lower"]
     demand = data["demand"]
@@ -46,13 +44,6 @@ function opt_balancing(ins_name::String, num_vehicle::Integer, solver)
         @constraint(m, sum(x[i, 0, k] for i in 1:n) == 1)
 
     end
-
-
-    # # add new 
-    # for j in 1:n
-    #     @constraint(m, sum(x[i, j, k] for i in 1:n for k in K if i != j) == 1)
-    # end
-
 
     # one vehicle in and out each node
     for i = 1:n
@@ -138,9 +129,7 @@ end
 
 function opt_total_com(ins_name::String, num_vehicle::Integer, solver)
 
-    # data = load(joinpath(@__DIR__, "..", "data", "solomon_jld2", "c101-25.jld2"))
     data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
-    # data = load(joinpath(@__DIR__, "..", "data", "solomon_jld2", "$ins_name.jld2"))
     d = data["upper"]
     low_d = data["lower"]
     demand = data["demand"]
@@ -248,6 +237,96 @@ function opt_total_com(ins_name::String, num_vehicle::Integer, solver)
 end
 
 
+function opt_max_com(ins_name::String, num_vehicle::Integer, solver)
+
+    data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
+    d = data["upper"]
+    low_d = data["lower"]
+    demand = data["demand"]
+    solomon_demand = data["capacity"]
+    distance_matrix = data["distance_matrix"]
+    service = data["service"]
+
+    # number of node
+    n = length(d) - 1
+
+    m = Model(solver.Optimizer)
+    set_time_limit_sec(m, 600)
+    # set_optimizer_attribute(m, "logLevel", 1)
+
+    # num_vehicle = 3
+    K = 1:num_vehicle
+    M = n*1000
+
+
+    # test round distance (some papers truncate digits)
+    distance_matrix = floor.(distance_matrix, digits=1)
+
+    # add variables
+    @variable(m, x[i=0:n, j=0:n, k=K; i!=j], Bin)
+    @variable(m, low_d[i+1] <= t[i=0:n] <= d[i+1])
+
+    @variable(m, 0 <= CMAX)
+
+
+    for k in K
+        @constraint(m, sum(x[0, j, k] for j in 1:n) == 1)
+        @constraint(m, sum(x[i, 0, k] for i in 1:n) == 1)
+
+    end
+
+    # one vehicle in and out each node
+    for i = 1:n
+        @constraint(m, sum(x[j, i, k] for j in 0:n for k in K if i != j) == 1)
+        @constraint(m, sum(x[i, j, k] for j in 0:n for k in K if i != j) == 1)
+    end
+
+    # continuity
+    for j in 1:n
+        for k in K
+            @constraint(m, sum(x[i, j, k] for i in 0:n if i != j) - sum(x[j, l, k] for l in 0:n if j != l) == 0)
+        end
+    end
+
+
+    # time windows
+    for i in 1:n
+        for j in 0:n
+            if i != j
+                for k in K
+                    @constraint(m, t[i] + service[i+1] + distance_matrix[i+1, j+1] - M*(1-x[i, j, k]) <= t[j] )
+                end
+            end
+        end
+    end
+
+    # max completion time constraints
+    for i in 1:n
+        @constraint(m, t[i] + service[i+1] <= CMAX)
+    end
+
+
+    # subtour elimination constraints
+    @variable(m, demand[i+1] <= u[i=1:n] <= solomon_demand)
+    for i in 1:n
+        for j in 1:n
+            for k in K
+                if i!=j
+                    @constraint(m, u[i] - u[j] + demand[j+1] <= solomon_demand*(1 - x[i, j, k]))
+                end
+            end
+        end
+    end
+    
+
+    # objective to minimize the total different of max completion time of all vehicles
+    @objective(m, Min, CMAX)
+
+    optimize!(m)
+    return m, x, t, CMAX, service
+end
+
+
 function find_opt(solver; obj_func=opt_balancing)
     NameNumVehicle = CSV.File(dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv"))
     Ins_name = [String("$(NameNumVehicle[i][1])-$(NameNumVehicle[i][2])") for i in 1:(length(NameNumVehicle))]
@@ -255,8 +334,10 @@ function find_opt(solver; obj_func=opt_balancing)
 
     if obj_func == opt_balancing
         obj_name = "balancing_completion_time"
-    else
+    elseif obj_func == opt_total_com
         obj_name = "total_completion_time"
+    elseif obj_func == opt_max_com
+        obj_name = "max_completion_time"
     end
 
     for (ins_name, num_vehicle) in zip(Ins_name, Num_vehicle)
@@ -267,11 +348,7 @@ function find_opt(solver; obj_func=opt_balancing)
             m, x, t, CMAX, service = obj_func(ins_name, num_vehicle, solver)
             if has_values(m)
                 tex, route = show_opt_solution(x, length(t), num_vehicle)
-                if obj_func == opt_balancing
-                    write_solution(route, ins_name, tex, m, t, CMAX, service, obj_function="balancing_completion_time")
-                else
-                    write_solution(route, ins_name, tex, m, t, CMAX, service, obj_function="total_completion_time")
-                end
+                write_solution(route, ins_name, tex, m, t, CMAX, service, obj_function=obj_name)
             else
                 # create dict
                 d = Dict("name" => ins_name, "num_vehicle" => num_vehicle, "route" => nothing, "tex" => "no solution", "max_completion_time" => "Inf", "obj_function" => "Inf", "solve_time" => solve_time(m), "relative_gap" => relative_gap(m), "solver_name" => solver_name(m), "total_com" => "Inf")
