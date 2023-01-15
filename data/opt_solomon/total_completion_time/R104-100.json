@@ -1,0 +1,12 @@
+{
+   "max_completion_time": "Inf",
+                  "name": "R104-100",
+            "solve_time": 600.1239469051361,
+          "relative_gap": 1.0e100,
+                 "route": null,
+          "obj_function": "Inf",
+             "total_com": "Inf",
+           "num_vehicle": 11,
+           "solver_name": "Gurobi",
+                   "tex": "no solution"
+}

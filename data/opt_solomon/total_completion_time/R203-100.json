@@ -1,0 +1,12 @@
+{
+   "max_completion_time": "Inf",
+                  "name": "R203-100",
+            "solve_time": 600.0457680225372,
+          "relative_gap": 1.0e100,
+                 "route": null,
+          "obj_function": "Inf",
+             "total_com": "Inf",
+           "num_vehicle": 6,
+           "solver_name": "Gurobi",
+                   "tex": "no solution"
+}

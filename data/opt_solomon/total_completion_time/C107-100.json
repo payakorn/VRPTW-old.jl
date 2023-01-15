@@ -1,0 +1,12 @@
+{
+   "max_completion_time": "Inf",
+                  "name": "C107-100",
+            "solve_time": 600.0684010982513,
+          "relative_gap": 1.0e100,
+                 "route": null,
+          "obj_function": "Inf",
+             "total_com": "Inf",
+           "num_vehicle": 10,
+           "solver_name": "Gurobi",
+                   "tex": "no solution"
+}

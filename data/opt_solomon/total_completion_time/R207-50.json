@@ -1,0 +1,12 @@
+{
+   "max_completion_time": "Inf",
+                  "name": "R207-50",
+            "solve_time": 600.012622833252,
+          "relative_gap": 1.0e100,
+                 "route": null,
+          "obj_function": "Inf",
+             "total_com": "Inf",
+           "num_vehicle": 2,
+           "solver_name": "Gurobi",
+                   "tex": "no solution"
+}
