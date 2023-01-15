@@ -344,7 +344,7 @@ function find_opt(solver; obj_func=opt_balancing)
         # chack the exiting of file
         if !isfile(dir("data", "opt_solomon", obj_name, "$ins_name.json")) 
             # || JSON.parsefile(dir("data", "opt_solomon", "balancing_completion_time", "$ins_name.json"))["solve_time"] == "Inf"
-            @info "Optimizing $(ins_name)!!!"
+            @info "Optimizing $(ins_name) with $(num_vehicle) vehicles!!!"
             m, x, t, CMAX, service = obj_func(ins_name, num_vehicle, solver)
             if has_values(m)
                 tex, route = show_opt_solution(x, length(t), num_vehicle)

@@ -69,10 +69,15 @@ function write_solution(route::Dict, ins_name::String, tex::String, m, t, CMAX, 
         end
 
         # calculate max completion time
-        max_com = Dict(k => value.(CMAX[route[k][end-1]]) for k in 1:(length(route)))
-
+        # max_com = Dict(k => value.(CMAX[route[k][end-1]]) for k in 1:(length(route)))
+        max_com = Dict(k => value.(t[route[k][end-1]]) + service[route[k][end-1]+1] for k in 1:(length(route)))
+        
         # balancing
-        bc = sum([abs(max_com[i] - max_com[j]) for i in 1:length(route) for j in 1:length(route) if i < j])
+        if length(route) == 1
+            bc = 0.0
+        else
+            bc = sum([abs(max_com[i] - max_com[j]) for i in 1:length(route) for j in 1:length(route) if i < j])
+        end
 
         # total completion time
         total_com = sum([value.(t[i]) + service[i+1] for i in 1:(length(t)-1)])
@@ -103,3 +108,4 @@ function write_solution(route::Dict, ins_name::String, tex::String, m, t, CMAX, 
         JSON3.pretty(io, d, JSON3.AlignmentContext(alignment=:Colon, indent=2))
     end
 end
+# 
