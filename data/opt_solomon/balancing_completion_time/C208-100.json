@@ -1,0 +1,12 @@
+{
+   "max_completion_time": "Inf",
+                  "name": "C208-100",
+            "solve_time": 600.4260001182556,
+          "relative_gap": 1,
+                 "route": null,
+          "obj_function": "Inf",
+             "total_com": "Inf",
+           "num_vehicle": 3,
+           "solver_name": "CPLEX",
+                   "tex": "no solution"
+}

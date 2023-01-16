@@ -1,0 +1,12 @@
+{
+   "max_completion_time": "Inf",
+                  "name": "R111-100",
+            "solve_time": 600.2170000076294,
+          "relative_gap": 1,
+                 "route": null,
+          "obj_function": "Inf",
+             "total_com": "Inf",
+           "num_vehicle": 12,
+           "solver_name": "CPLEX",
+                   "tex": "no solution"
+}

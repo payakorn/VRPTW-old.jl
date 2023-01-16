@@ -351,7 +351,7 @@ function find_opt(solver; obj_func=opt_balancing)
                 write_solution(route, ins_name, tex, m, t, CMAX, service, obj_function=obj_name)
             else
                 # create dict
-                d = Dict("name" => ins_name, "num_vehicle" => num_vehicle, "route" => nothing, "tex" => "no solution", "max_completion_time" => "Inf", "obj_function" => "Inf", "solve_time" => solve_time(m), "relative_gap" => relative_gap(m), "solver_name" => solver_name(m), "total_com" => "Inf")
+                d = Dict("name" => ins_name, "num_vehicle" => num_vehicle, "route" => nothing, "tex" => "no solution", "max_completion_time" => "Inf", "obj_function" => "Inf", "solve_time" => solve_time(m), "relative_gap" => 1, "solver_name" => solver_name(m), "total_com" => "Inf")
 
                 # save file
                 location = dir("data", "opt_solomon", obj_name)
