@@ -1,0 +1,12 @@
+{
+   "max_completion_time": "Inf",
+                  "name": "R106-25",
+            "solve_time": 604.6010000705719,
+          "relative_gap": 1,
+                 "route": null,
+          "obj_function": "Inf",
+             "total_com": "Inf",
+           "num_vehicle": 3,
+           "solver_name": "CPLEX",
+                   "tex": "no solution"
+}
