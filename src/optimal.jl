@@ -342,10 +342,12 @@ function find_opt(solver; obj_func=opt_balancing)
 
     for (ins_name, num_vehicle) in zip(Ins_name, Num_vehicle)
         # chack the exiting of file
-        if !isfile(dir("data", "opt_solomon", obj_name, "$ins_name.json")) 
-            # || JSON.parsefile(dir("data", "opt_solomon", "balancing_completion_time", "$ins_name.json"))["solve_time"] == "Inf"
-            @info "Optimizing $(ins_name) with $(num_vehicle) vehicles!!!"
+        file_existing = !isfile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))
+        if !file_existing || JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["tex"] == "no solution"
+
+            @info "Optimizing $(ins_name) with $(num_vehicle) vehicles!!! --file exiting: $(file_existing)"
             m, x, t, CMAX, service = obj_func(ins_name, num_vehicle, solver)
+
             if has_values(m)
                 tex, route = show_opt_solution(x, length(t), num_vehicle)
                 write_solution(route, ins_name, tex, m, t, CMAX, service, obj_function=obj_name)
@@ -353,12 +355,12 @@ function find_opt(solver; obj_func=opt_balancing)
                 # create dict
                 d = Dict("name" => ins_name, "num_vehicle" => num_vehicle, "route" => nothing, "tex" => "no solution", "max_completion_time" => "Inf", "obj_function" => "Inf", "solve_time" => solve_time(m), "relative_gap" => 1, "solver_name" => solver_name(m), "total_com" => "Inf")
 
-
                 # save file
                 location = dir("data", "opt_solomon", obj_name)
                 if !isfile(location)
                     mkpath(location)
                 end
+                # save json file
                 open(joinpath(location, "$ins_name.json"), "w") do io
                     JSON3.pretty(io, d, JSON3.AlignmentContext(alignment=:Colon, indent=2))
                 end
