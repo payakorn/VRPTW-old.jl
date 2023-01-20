@@ -1,0 +1,12 @@
+{
+   "max_completion_time": "Inf",
+                  "name": "C204-50",
+            "solve_time": 605.2550001144409,
+          "relative_gap": 1,
+                 "route": null,
+          "obj_function": "Inf",
+             "total_com": "Inf",
+           "num_vehicle": 2,
+           "solver_name": "CPLEX",
+                   "tex": "no solution"
+}
