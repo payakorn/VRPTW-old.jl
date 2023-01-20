@@ -14,7 +14,7 @@ function opt_balancing(ins_name::String, num_vehicle::Integer, solver)
     n = length(d) - 1
 
     m = Model(solver.Optimizer)
-    set_time_limit_sec(m, 600)
+    set_time_limit_sec(m, 3600)
     # set_optimizer_attribute(m, "logLevel", 1)
 
     # num_vehicle = 3
@@ -141,7 +141,7 @@ function opt_total_com(ins_name::String, num_vehicle::Integer, solver)
     n = length(d) - 1
 
     m = Model(solver.Optimizer)
-    set_time_limit_sec(m, 600)
+    set_time_limit_sec(m, 3600)
     # set_optimizer_attribute(m, "logLevel", 1)
 
     # num_vehicle = 3
@@ -251,7 +251,7 @@ function opt_max_com(ins_name::String, num_vehicle::Integer, solver)
     n = length(d) - 1
 
     m = Model(solver.Optimizer)
-    set_time_limit_sec(m, 600)
+    set_time_limit_sec(m, 3600)
     # set_optimizer_attribute(m, "logLevel", 1)
 
     # num_vehicle = 3
@@ -327,7 +327,7 @@ function opt_max_com(ins_name::String, num_vehicle::Integer, solver)
 end
 
 
-function find_opt(solver; obj_func=opt_balancing)
+function find_opt(solver; obj_func=opt_balancing, solve_time=3600)
     NameNumVehicle = CSV.File(dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv"))
     Ins_name = [String("$(NameNumVehicle[i][1])-$(NameNumVehicle[i][2])") for i in 1:(length(NameNumVehicle))]
     Num_vehicle = [NameNumVehicle[i][3] for i in 1:(length(NameNumVehicle))]
@@ -343,7 +343,7 @@ function find_opt(solver; obj_func=opt_balancing)
     for (ins_name, num_vehicle) in zip(Ins_name, Num_vehicle)
         # chack the exiting of file
         file_existing = !isfile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))
-        if !file_existing || JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["tex"] == "no solution"
+        if !file_existing || JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["tex"] == "no solution" || (JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["solve_time"] < solve_time && abs(JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["relative_gap"]) > 0.1)
 
             @info "Optimizing $(ins_name) with $(num_vehicle) vehicles!!! --file exiting: $(file_existing)"
             m, x, t, CMAX, service = obj_func(ins_name, num_vehicle, solver)
