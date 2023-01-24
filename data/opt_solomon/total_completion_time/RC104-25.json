@@ -1,54 +1,13 @@
 {
-   "max_completion_time": {
-                             "2": 152,
-                             "3": 164,
-                             "1": 151
-                          },
+   "max_completion_time": "Inf",
                   "name": "RC104-25",
-            "solve_time": 600.017420053482,
-          "relative_gap": 0.23735281241662898,
-                 "route": {
-                             "2": [
-                                    0,
-                                    12,
-                                    14,
-                                    17,
-                                    16,
-                                    15,
-                                    11,
-                                    10,
-                                    9,
-                                    13,
-                                    0
-                                  ],
-                             "3": [
-                                    0,
-                                    24,
-                                    22,
-                                    20,
-                                    19,
-                                    18,
-                                    21,
-                                    23,
-                                    25,
-                                    0
-                                  ],
-                             "1": [
-                                    0,
-                                    5,
-                                    3,
-                                    1,
-                                    2,
-                                    6,
-                                    7,
-                                    8,
-                                    4,
-                                    0
-                                  ]
-                          },
-          "obj_function": 26,
-             "total_com": 1673.0996378077768,
+            "solve_time": 60,
+          "relative_gap": 1,
+                 "route": "nothing",
+          "obj_function": "Inf",
+             "total_com": "Inf",
            "num_vehicle": 3,
-           "solver_name": "Gurobi",
-                   "tex": "vehicle 1: [0, 5, 3, 1, 2, 6, 7, 8, 4, 0]\nvehicle 2: [0, 12, 14, 17, 16, 15, 11, 10, 9, 13, 0]\nvehicle 3: [0, 24, 22, 20, 19, 18, 21, 23, 25, 0]\n"
+           "solver_name": {
+                          },
+                   "tex": "no solution"
 }

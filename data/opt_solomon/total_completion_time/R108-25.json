@@ -1,59 +1,13 @@
 {
-   "max_completion_time": {
-                             "4": 166,
-                             "2": 159,
-                             "3": 125,
-                             "1": 149
-                          },
+   "max_completion_time": "Inf",
                   "name": "R108-25",
-            "solve_time": 600.0073959827423,
-          "relative_gap": 0.28507028695238246,
-                 "route": {
-                             "4": [
-                                    0,
-                                    24,
-                                    12,
-                                    3,
-                                    1,
-                                    9,
-                                    25,
-                                    0
-                                  ],
-                             "2": [
-                                    0,
-                                    18,
-                                    6,
-                                    5,
-                                    17,
-                                    16,
-                                    14,
-                                    13,
-                                    0
-                                  ],
-                             "3": [
-                                    0,
-                                    20,
-                                    10,
-                                    19,
-                                    11,
-                                    7,
-                                    8,
-                                    0
-                                  ],
-                             "1": [
-                                    0,
-                                    21,
-                                    2,
-                                    15,
-                                    23,
-                                    22,
-                                    4,
-                                    0
-                                  ]
-                          },
-          "obj_function": 133,
-             "total_com": 1859.5999999999788,
+            "solve_time": 3600,
+          "relative_gap": 1,
+                 "route": "nothing",
+          "obj_function": "Inf",
+             "total_com": "Inf",
            "num_vehicle": 4,
-           "solver_name": "Gurobi",
-                   "tex": "vehicle 1: [0, 21, 2, 15, 23, 22, 4, 0]\nvehicle 2: [0, 18, 6, 5, 17, 16, 14, 13, 0]\nvehicle 3: [0, 20, 10, 19, 11, 7, 8, 0]\nvehicle 4: [0, 24, 12, 3, 1, 9, 25, 0]\n"
+           "solver_name": {
+                          },
+                   "tex": "no solution"
 }

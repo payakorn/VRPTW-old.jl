@@ -1,12 +1,13 @@
 {
    "max_completion_time": "Inf",
                   "name": "C207-100",
-            "solve_time": 600.0259220600128,
-          "relative_gap": 1.0e100,
-                 "route": null,
+            "solve_time": 60,
+          "relative_gap": 1,
+                 "route": "nothing",
           "obj_function": "Inf",
              "total_com": "Inf",
            "num_vehicle": 3,
-           "solver_name": "Gurobi",
+           "solver_name": {
+                          },
                    "tex": "no solution"
 }
