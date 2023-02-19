@@ -1,12 +1,13 @@
 {
    "max_completion_time": "Inf",
                   "name": "RC207-100",
-            "solve_time": 600.175999879837,
+            "solve_time": 3600,
           "relative_gap": 1,
-                 "route": null,
+                 "route": "nothing",
           "obj_function": "Inf",
              "total_com": "Inf",
            "num_vehicle": 6,
-           "solver_name": "CPLEX",
+           "solver_name": {
+                          },
                    "tex": "no solution"
 }

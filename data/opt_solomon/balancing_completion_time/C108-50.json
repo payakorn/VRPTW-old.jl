@@ -1,12 +1,13 @@
 {
    "max_completion_time": "Inf",
                   "name": "C108-50",
-            "solve_time": 600.0087418556213,
-          "relative_gap": 1.0e100,
-                 "route": null,
+            "solve_time": 3600,
+          "relative_gap": 1,
+                 "route": "nothing",
           "obj_function": "Inf",
              "total_com": "Inf",
            "num_vehicle": 5,
-           "solver_name": "Gurobi",
+           "solver_name": {
+                          },
                    "tex": "no solution"
 }
