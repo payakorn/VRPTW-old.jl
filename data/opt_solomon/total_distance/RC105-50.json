@@ -1,0 +1,13 @@
+{
+   "max_completion_time": "Inf",
+                  "name": "RC105-50",
+            "solve_time": 3600,
+          "relative_gap": 1,
+                 "route": "nothing",
+          "obj_function": "Inf",
+             "total_com": "Inf",
+           "num_vehicle": 8,
+           "solver_name": {
+                          },
+                   "tex": "no solution"
+}
