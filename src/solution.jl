@@ -53,15 +53,17 @@ end
 
 function distance(route::Array, distance_matrix::Matrix)
     route = fix_route_zero(route)
+    route = route .+ 1
     dis = 0.0
     for i in 1:length(route)-1
         dis += distance_matrix[route[i], route[i+1]]
     end
+    return dis
 end
 
 
 function distance(solution::Solution)
-    nothing
+    return distance(solution.route, solution.problem.distance)
 end
 
 
@@ -142,8 +144,17 @@ function max_completion_time_and_feasible(solution::Solution)
 end
 
 
-function load_solution(ins_name::String)
-    js = JSON.parsefile(dir("data", "opt_solomon", "balancing_completion_time", "$ins_name.json"))
+function load_solution(location::String)
+    js = JSON.parsefile(location)
+    route = dict_to_solution(js["route"])
+    (ins_name, num_node) = split(js["name"], "-")
+    problem = load_solomon_data(String(ins_name), num_node=parse(Int64, num_node))
+    Solution(route, problem)
+end
+
+
+function load_solution(ins_name::String, obj_name::String)
+    js = JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))
     route = dict_to_solution(js["route"])
     (ins_name, num_node) = split(js["name"], "-")
     problem = load_solomon_data(String(ins_name), num_node=parse(Int64, num_node))
@@ -172,12 +183,28 @@ function read_optimal_solution()
     total_com1 = []
     solve_time1 = []
     relative_gap1 = []
-
+    dis1 = []
+    
     # 2
     balancing2 = []
     total_com2 = []
     solve_time2 = []
     relative_gap2 = []
+    dis2 = []
+    
+    # 3
+    balancing3 = []
+    total_com3 = []
+    solve_time3 = []
+    relative_gap3 = []
+    dis3 = []
+    
+    # 4
+    balancing4 = []
+    total_com4 = []
+    solve_time4 = []
+    relative_gap4 = []
+    dis4 = []
 
     Ins_name, Num_vehicle = list_ins_name()
     for (ins_name) in Ins_name
@@ -186,83 +213,71 @@ function read_optimal_solution()
 
         location1 = dir("data", "opt_solomon", "balancing_completion_time", "$ins_name.json") 
         location2 = dir("data", "opt_solomon", "total_completion_time", "$ins_name.json") 
-        if isfile(location1) && isfile(location2)
-            js1 = read_opt_json(location1)
-            js2 = read_opt_json(location2)
-            
-            # add elements
-            push!(balancing1, js1["obj_function"])
-            push!(balancing2, js2["obj_function"])
-            
-            # total completion time
-            push!(total_com1, js1["total_com"])
-            push!(total_com2, js2["total_com"])
-            
-            # solve time
-            push!(solve_time1, js1["solve_time"])
-            push!(solve_time2, js2["solve_time"])
-            
-            # relative gap
-            push!(relative_gap1, js1["relative_gap"])
-            push!(relative_gap2, js2["relative_gap"])
-            
-        elseif isfile(location1)
+        location3 = dir("data", "opt_solomon", "total_distance", "$ins_name.json") 
+        location4 = dir("data", "opt_solomon", "total_distance_compat", "$ins_name.json") 
+        # if isfile(location1) && isfile(location2)
+        js1 = try read_opt_json(location1) catch e; nothing end
+        js2 = try read_opt_json(location2) catch e; nothing end
+        js3 = try read_opt_json(location3) catch e; nothing end
+        js4 = try read_opt_json(location4) catch e; nothing end
+        
+        # add elements
+        try push!(balancing1, js1["obj_function"]) catch e; push!(balancing1, Inf) end
+        try push!(balancing2, js2["obj_function"]) catch e; push!(balancing2, Inf) end
+        try push!(balancing3, js3["obj_function"]) catch e; push!(balancing3, Inf) end
+        try push!(balancing4, js4["obj_function"]) catch e; push!(balancing4, Inf) end
+        
+        # total completion time
+        try push!(total_com1, js1["total_com"]) catch e; push!(total_com1, Inf) end
+        try push!(total_com2, js2["total_com"]) catch e; push!(total_com2, Inf) end
+        try push!(total_com3, js3["total_com"]) catch e; push!(total_com3, Inf) end
+        try push!(total_com4, js4["total_com"]) catch e; push!(total_com4, Inf) end
+        
+        # solve time
+        try push!(solve_time1, js1["solve_time"]) catch e; push!(solve_time1, Inf) end
+        try push!(solve_time2, js2["solve_time"]) catch e; push!(solve_time2, Inf) end
+        try push!(solve_time3, js3["solve_time"]) catch e; push!(solve_time3, Inf) end
+        try push!(solve_time4, js4["solve_time"]) catch e; push!(solve_time4, Inf) end
+        
+        # relative gap
+        try push!(relative_gap1, js1["relative_gap"]) catch e; push!(relative_gap1, 1) end
+        try push!(relative_gap2, js2["relative_gap"]) catch e; push!(relative_gap2, 1) end
+        try push!(relative_gap3, js3["relative_gap"]) catch e; push!(relative_gap3, 1) end
+        try push!(relative_gap4, js4["relative_gap"]) catch e; push!(relative_gap4, 1) end
 
-            js1 = read_opt_json(location1)
-            
-            # add elements
-            push!(balancing1, js1["obj_function"])
-            push!(balancing2, Inf)
-
-            # total completion time
-            push!(total_com1, js1["total_com"])
-            push!(total_com2, Inf)
-
-            # solve time
-            push!(solve_time1, js1["solve_time"])
-            push!(solve_time2, Inf)
-
-            # relative gap
-            push!(relative_gap1, js1["relative_gap"])
-            push!(relative_gap2, 1)
-            
-        elseif isfile(location2)
-            
-            js2 = read_opt_json(location2)
-
-            # add elements
-            push!(balancing1, Inf)
-            push!(balancing2, js2["obj_function"])
-
-            # total completion time
-            push!(total_com1, Inf)
-            push!(total_com2, round(js2["total_com"], digits=1))
-
-            # solve time
-            push!(solve_time1, Inf)
-            push!(solve_time2, js2["solve_time"])
-
-            # relative gap
-            push!(relative_gap1, 1)
-            push!(relative_gap2, js2["relative_gap"])
-            
-        else
-            # add elements
-            push!(balancing1, Inf)
-            push!(balancing2, Inf)
-
-            # total completion time
-            push!(total_com1, Inf)
-            push!(total_com2, Inf)
-
-            # solve time
-            push!(solve_time1, Inf)
-            push!(solve_time2, Inf)
-
-            # relative gap
-            push!(relative_gap1, 1)
-            push!(relative_gap2, 1)
-        end
+        try push!(dis1, distance(load_solution(location1))) catch e; push!(dis1, Inf) end
+        try push!(dis2, distance(load_solution(location2))) catch e; push!(dis2, Inf) end
+        try push!(dis3, distance(load_solution(location3))) catch e; push!(dis3, Inf) end
+        try push!(dis4, distance(load_solution(location4))) catch e; push!(dis4, Inf) end
     end
-    return DataFrame(ins_name=Ins_name, num_vehi=Num_vehicle, diff_b=balancing1, diff_t=balancing2, total_b=total_com1, total_t=total_com2, relative_gap_b=round.(relative_gap1, digits=3), relative_gap_t=round.(relative_gap2, digits=3), solve_time_b=round.(solve_time1, digits=2), solve_time_t=round.(solve_time2, digits=2))
+
+    return DataFrame(
+        ins_name=Ins_name, 
+        num_vehi=Num_vehicle, 
+        diff_b=balancing1, 
+        diff_t=balancing2, 
+        diff_d=balancing3, 
+        diff_c=balancing4, 
+        total_b=total_com1, 
+        total_t=total_com2, 
+        total_d=total_com3, 
+        total_c=total_com4, 
+        dis_b=dis1,
+        dis_t=dis2,
+        dis_d=dis3,
+        dis_c=dis4,
+        relative_gap_b=round.(relative_gap1, digits=3), 
+        relative_gap_t=round.(relative_gap2, digits=3), 
+        relative_gap_d=round.(relative_gap3, digits=3), 
+        relative_gap_c=round.(relative_gap4, digits=3), 
+        solve_time_b=round.(solve_time1, digits=2), 
+        solve_time_t=round.(solve_time2, digits=2),
+        solve_time_d=round.(solve_time3, digits=2),
+        solve_time_c=round.(solve_time4, digits=2))
+end
+
+
+function save_simulation_file(df::DataFrame, file_name::String)
+    loca = dir("data", "simulations", file_name)
+    CSV.write(loca, df)
 end
