@@ -5,7 +5,7 @@ mutable struct Solution
     # check
     Solution(route, problem, distance) = route[1] != 0 || route[end] != 0 ? error("This is not a route representation\nmust start with 0 and end with 0\n i.e. [0, 1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 0]") : new(route, problem, distance)
     function Solution(route, problem)
-        new(route, problem, length(route))
+        new(route, problem, distance(route, problem.distance))
     end
 end
 
@@ -67,6 +67,60 @@ function distance(solution::Solution)
 end
 
 
+function seperate_route(solution::Solution)::Dict
+
+    routing = Dict()
+
+    route = fix_route_zero(solution.route)
+    zero_position = findall(x->x==0, route)
+    num_vehi = length(zero_position) - 1
+
+    for vehi in 1:num_vehi
+        routing[vehi] = route[(zero_position[vehi]+1):(zero_position[vehi+1]-1)]
+    end
+    return routing
+end
+
+
+function check_time_window_capacity(solution::Solution)
+    routing = seperate_route(solution)
+
+    # capacity
+    if any([sum(solution.problem.demand[routing[i] .+ 1]) for i in 1:(length(routing))] .> solution.problem.vehicle_capacity)
+        @info "capacity false"
+        return false
+    end
+
+    # time windows
+    for i in 1:(length(routing))
+        @info "route $i"
+        start_time = 0.0
+        last_node = 0
+        for node in routing[i]
+            start_time += solution.problem.distance[last_node+1, node+1] + solution.problem.service_time[last_node+1]
+            if start_time < solution.problem.lower_time_window[node+1]
+                start_time = solution.problem.lower_time_window[node+1]
+            elseif start_time > solution.problem.upper_time_window[node+1]
+                return false
+            end
+            println("node $node, start time: $(start_time), time window: [$(solution.problem.lower_time_window[node+1]), $(solution.problem.upper_time_window[node+1])]")
+            last_node = node
+        end
+    end
+    return true
+end
+
+
+function feasibility(solution::Solution)
+    return check_time_window_capacity(solution)
+end
+
+
+function feasibility(route::Array, problem::Problem)
+    feasibility(Solution(route, problem))
+end
+
+
 function empty_solution(problem::Problem)
     route = [0, 0]
     return Solution(route, problem, zero(1))
@@ -81,8 +135,43 @@ end
 
 function add!(solution::Solution, pos::Integer, cus::Integer)
     route = solution.route
-    splice!(route, pos, cus)
+    insert!(route, pos, cus)
     return Solution(route, solution.problem)
+end
+
+
+function inserting(solution::Solution, cus::Integer, obj::Function)
+
+    # check if the node exist in the route
+    if cus in solution.route
+        return error("the inserting cusotomer already in the route")
+    end
+
+    save_route = deepcopy(solution.route)
+    best_route = deepcopy(save_route)
+
+    # insert in new route
+    insert!(best_route, 1, cus)
+    insert!(best_route, 1, 0)
+    best_obj = obj(best_route, solution.problem.distance)
+
+    @info "start inseting procedure with $(length(save_route)) positions"
+    for i in 2:(length(solution.route) - 1)
+        inserted_route = deepcopy(save_route)
+        insert!(inserted_route, i, cus)
+        new_obj = obj(inserted_route, solution.problem.distance)
+
+        # show information
+        println("insert in position $i,  best obj: $best_obj,   new obj: $new_obj")
+
+        # update best route
+        if new_obj <= best_obj && feasibility(inserted_route, solution.problem)
+            best_obj = deepcopy(new_obj)
+            best_route = deepcopy(inserted_route)
+        end
+
+    end
+    return Solution(fix_route_zero(best_route), solution.problem)
 end
 
 
@@ -141,6 +230,18 @@ function max_completion_time_and_feasible(solution::Solution)
         push!(max_com, c)
     end
     return max_com, total_com
+end
+
+
+function max_comp(solution::Solution)
+    max_com, ~ = max_completion_time_and_feasible(solution)
+    return max_com
+end
+
+
+function total_comp(solution::Solution)
+    ~, total_com = max_completion_time_and_feasible(solution)
+    return total_com
 end
 
 
