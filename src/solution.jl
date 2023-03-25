@@ -15,6 +15,65 @@ struct Point
     y::Float64
 end
 
+const ins_names = [
+    "C101",
+    "C102",
+    "C103",
+    "C104",
+    "C105",
+    "C106",
+    "C107",
+    "C108",
+    "C109",
+    "C201",
+    "C202",
+    "C203",
+    "C204",
+    "C205",
+    "C206",
+    "C207",
+    "C208",
+    "R101",
+    "R102",
+    "R103",
+    "R104",
+    "R105",
+    "R106",
+    "R107",
+    "R108",
+    "R109",
+    "R110",
+    "R111",
+    "R112",
+    "R201",
+    "R202",
+    "R203",
+    "R204",
+    "R205",
+    "R206",
+    "R207",
+    "R208",
+    "R209",
+    "R210",
+    "R211",
+    "RC101",
+    "RC102",
+    "RC103",
+    "RC104",
+    "RC105",
+    "RC106",
+    "RC107",
+    "RC108",
+    "RC201",
+    "RC202",
+    "RC203",
+    "RC204",
+    "RC205",
+    "RC206",
+    "RC207",
+    "RC208",
+]
+
 
 function fix_route_zero(route::Array)
     delete_position = Integer[]
@@ -93,7 +152,7 @@ function check_time_window_capacity(solution::Solution)
 
     # time windows
     for i in 1:(length(routing))
-        @info "route $i"
+        # @info "route $i"
         start_time = 0.0
         last_node = 0
         for node in routing[i]
@@ -103,7 +162,7 @@ function check_time_window_capacity(solution::Solution)
             elseif start_time > solution.problem.upper_time_window[node+1]
                 return false
             end
-            println("node $node, start time: $(start_time), time window: [$(solution.problem.lower_time_window[node+1]), $(solution.problem.upper_time_window[node+1])]")
+            # println("node $node, start time: $(start_time), time window: [$(solution.problem.lower_time_window[node+1]), $(solution.problem.upper_time_window[node+1])]")
             last_node = node
         end
     end
@@ -133,6 +192,21 @@ function swap!(solution::Solution, pos1::Integer, pos2::Integer)
 end
 
 
+function swapping_procedure(solution::Solution, obj::Function)
+    best_solution = deepcopy(solution)
+    all_posoble_position = shuffle(combinations(findall(x->x!=0, solution.route), 2))
+    # all_posoble_position = combinations(findall(x->x!=0, solution.route), 2)
+    for (i, position) in enumerate(all_posoble_position)
+        current_solution = deepcopy(best_solution)
+        @info "iteration $i, swapping between position $(position[1]) and position $(position[2])"
+        current_solution.route[position[1]], current_solution.route[position[2]] = current_solution.route[position[2]], current_solution.route[position[2]]
+        if feasibility(current_solution) && obj(current_solution) < obj(best_solution)
+            @info "new best found"
+        end
+    end
+end
+
+
 function add!(solution::Solution, pos::Integer, cus::Integer)
     route = solution.route
     insert!(route, pos, cus)
@@ -149,17 +223,20 @@ function inserting(solution::Solution, cus::Integer, obj::Function)
 
     save_route = deepcopy(solution.route)
     best_route = deepcopy(save_route)
+    best_obj = Inf
 
     # insert in new route
-    insert!(best_route, 1, cus)
-    insert!(best_route, 1, 0)
-    best_obj = obj(best_route, solution.problem.distance)
+    if route_length(solution) < solution.problem.max_vehi
+        insert!(best_route, 1, cus)
+        insert!(best_route, 1, 0)
+        best_obj = obj(Solution(best_route, solution.problem, 0))
+    end
 
     @info "start inseting procedure with $(length(save_route)) positions"
     for i in 2:(length(solution.route) - 1)
         inserted_route = deepcopy(save_route)
         insert!(inserted_route, i, cus)
-        new_obj = obj(inserted_route, solution.problem.distance)
+        new_obj = obj(Solution(inserted_route, solution.problem, 0))
 
         # show information
         println("insert in position $i,  best obj: $best_obj,   new obj: $new_obj")
@@ -172,6 +249,16 @@ function inserting(solution::Solution, cus::Integer, obj::Function)
 
     end
     return Solution(fix_route_zero(best_route), solution.problem)
+end
+
+
+function inserting_procedure(problem::Problem, obj::Function)
+    solution = empty_solution(problem)
+    all_nodes = 1:solution.problem.num_node
+    for node in all_nodes
+        solution = inserting(solution, node, obj)
+    end
+    return solution
 end
 
 
@@ -213,7 +300,7 @@ function max_completion_time_and_feasible(solution::Solution)
     for k in 1:num_vehicle
         t = zero(1)
         c = zero(1)
-        for i in 1:(length(route[k])-2)
+        for i in 1:(length(route[k])-1)
 
             # chack time window
             if t + solution.problem.service_time[route[k][i]+1] + solution.problem.distance[route[k][i]+1, route[k][i+1]+1] <= solution.problem.lower_time_window[route[k][i+1]+1]
@@ -239,6 +326,11 @@ function max_comp(solution::Solution)
 end
 
 
+function total_max_comp(solution::Solution)
+    return sum(max_comp(solution))
+end
+
+
 function total_comp(solution::Solution)
     ~, total_com = max_completion_time_and_feasible(solution)
     return total_com
@@ -251,6 +343,83 @@ function load_solution(location::String)
     (ins_name, num_node) = split(js["name"], "-")
     problem = load_solomon_data(String(ins_name), num_node=parse(Int64, num_node))
     Solution(route, problem)
+end
+
+
+function load_solution_phase0(ins_name::String)
+    pt = "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/solutions_benchmark/$ins_name.txt"
+    f = open(pt)
+    lines = readlines(f)
+    route = Integer[0]
+    for line in lines
+        x = parse.(Int64, split(line))
+        append!(route, x)
+        push!(route, 0)
+    end
+    close(f)
+
+    problem = load_solomon_data(ins_name, num_node=100)
+    return Solution(route, problem)
+end
+
+
+function load_solution_phase1(ins_name::String)
+    pt = "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/$ins_name.txt"
+    f = open(pt)
+    lines = readlines(f)
+    route = Integer[0]
+    for line in lines
+        x = parse.(Int64, split(line))
+        append!(route, x)
+        push!(route, 0)
+    end
+    close(f)
+
+    problem = load_solomon_data(ins_name, num_node=100)
+    return Solution(route, problem)
+end
+
+
+function load_solution_phase2(ins_name::String)
+    pt = "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/$ins_name.txt"
+    f = open(pt)
+    lines = readlines(f)
+    route = Integer[0]
+    for line in lines
+        x = parse.(Int64, split(line))
+        append!(route, x)
+        push!(route, 0)
+    end
+    close(f)
+
+    problem = load_solomon_data(ins_name, num_node=100)
+    return Solution(route, problem)
+end
+
+
+function load_solution_phase3(ins_name::String)
+    all_ins = glob("*", "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/random_swap_move/$ins_name/")
+
+    problem = load_solomon_data(ins_name, num_node=100)
+    min_obj = Inf
+    sol = nothing
+    for i in all_ins
+        f = open(i)
+        lines = readlines(f)
+        route = Integer[0]
+        for line in lines
+            x = parse.(Int64, split(line))
+            append!(route, x)
+            push!(route, 0)
+        end
+        close(f)
+        new_sol = Solution(route, problem)
+        if total_comp(new_sol) < min_obj
+            min_obj = total_comp(new_sol)
+            sol = deepcopy(new_sol)
+        end
+    end
+    return sol
 end
 
 
@@ -381,4 +550,20 @@ end
 function save_simulation_file(df::DataFrame, file_name::String)
     loca = dir("data", "simulations", file_name)
     CSV.write(loca, df)
+end
+
+
+function create_phase_conclusion()
+    df = DataFrame(
+        ins=ins_names,
+        comp0 = total_max_comp.(load_solution_phase0.(ins_names)),
+        comp1 = total_max_comp.(load_solution_phase1.(ins_names)),
+        comp2 = total_max_comp.(load_solution_phase2.(ins_names)),
+        comp3 = total_max_comp.(load_solution_phase3.(ins_names)),
+        dis0 = distance.(load_solution_phase0.(ins_names)),
+        dis1 = distance.(load_solution_phase1.(ins_names)),
+        dis2 = distance.(load_solution_phase2.(ins_names)),
+        dis3 = distance.(load_solution_phase3.(ins_names)),
+    )
+    CSV.write("data/simulations/phase1phase2phase3.csv", df)
 end
