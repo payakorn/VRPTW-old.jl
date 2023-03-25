@@ -608,8 +608,8 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600)
     for (ins_name, num_vehicle) in zip(Ins_name, Num_vehicle)
         # chack the exiting of file
         file_existing = !isfile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))
-        if !file_existing
-            if JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["tex"] == "no solution" || (JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["solve_time"] < time_solve && abs(JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["relative_gap"]) < 1e-1)
+        if file_existing == false
+            if JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["tex"] == "no solution" || (JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["solve_time"] < time_solve && abs(JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["relative_gap"]) > 0)
                 nothing
             else
                 continue
