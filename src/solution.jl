@@ -266,3 +266,14 @@ function read_optimal_solution()
     end
     return DataFrame(ins_name=Ins_name, num_vehi=Num_vehicle, diff_b=balancing1, diff_t=balancing2, total_b=total_com1, total_t=total_com2, relative_gap_b=round.(relative_gap1, digits=3), relative_gap_t=round.(relative_gap2, digits=3), solve_time_b=round.(solve_time1, digits=2), solve_time_t=round.(solve_time2, digits=2))
 end
+
+
+function save_csv_optimal()
+    df = read_optimal_solution()
+    CSV.write(dir("data", "simulations", "diff_and_total_com_opt.csv"), df)
+end
+
+
+function asdf()
+    x = 1:8
+end
