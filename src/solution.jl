@@ -1,13 +1,15 @@
 mutable struct Solution
     route::Array{Integer}
     problem::Problem
-    distance::Float64
+    obj_func::Function
     # check
-    Solution(route, problem, distance) = route[1] != 0 || route[end] != 0 ? error("This is not a route representation\nmust start with 0 and end with 0\n i.e. [0, 1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 0]") : new(route, problem, distance)
+    Solution(route, problem, obj_function) = route[1] != 0 || route[end] != 0 ? error("This is not a route representation\nmust start with 0 and end with 0\n i.e. [0, 1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 0]") : new(route, problem, obj_function)
     function Solution(route, problem)
-        new(route, problem, distance(route, problem.distance))
+        new(route, problem, distance)
     end
 end
+
+# Solution(route, problem, obj_function) = Solution(route, problem, obj_function)
 
 
 struct Point
@@ -146,7 +148,7 @@ function check_time_window_capacity(solution::Solution)
 
     # capacity
     if any([sum(solution.problem.demand[routing[i].+1]) for i in 1:(length(routing))] .> solution.problem.vehicle_capacity)
-        @info "capacity false"
+        # @info "capacity false"
         return false
     end
 
@@ -170,6 +172,11 @@ function check_time_window_capacity(solution::Solution)
 end
 
 
+function obj_value(solution::Solution)
+    return solution.obj_func(solution)
+end
+
+
 function feasibility(solution::Solution)
     return check_time_window_capacity(solution)
 end
@@ -182,28 +189,72 @@ end
 
 function empty_solution(problem::Problem)
     route = [0, 0]
-    return Solution(route, problem, zero(1))
+    return Solution(route, problem)
+end
+
+
+function empty_solution(problem::Problem, obj_func::Function)
+    route = [0, 0]
+    return Solution(route, problem, obj_func)
 end
 
 
 function swap!(solution::Solution, pos1::Integer, pos2::Integer)
     solution.route[pos1], solution.route[pos2] = solution.route[pos2], solution.route[pos1]
-    return Solution(solution.route, solution.problem)
+    return Solution(solution.route, solution.problem, solution.obj_func)
 end
 
 
-function swapping_procedure(solution::Solution, obj::Function)
+function move!(solution::Solution, cus::Integer)
+    new_sol = deepcopy(solution)
+    deleteat!(new_sol.route, findfirst(x->x==cus, new_sol.route))
+    new_sol = inserting(new_sol, cus, new_sol.obj_func)
+    if feasibility(new_sol)
+        return new_sol
+    else
+        return solution
+    end
+end
+
+
+function moving_procedure(solution::Solution)
+    obj = solution.obj_func
+    best_solution = deepcopy(solution)
+    all_posoble_position = shuffle(combinations(findall(x -> x != 0, solution.route), 2))
+    # all_posoble_position = combinations(findall(x->x!=0, solution.route), 2)
+    for (i, cus) in enumerate(shuffle(1:solution.problem.num_node))
+        current_solution = deepcopy(best_solution)
+        # @info "iteration $i, moving $cus"
+        current_solution = move!(current_solution, cus)
+        if feasibility(current_solution) && (obj(current_solution) < obj(best_solution))
+            @info "new best found"
+            # current_solution.obj_value = obj(current_solution)
+            best_solution = deepcopy(current_solution)
+            return best_solution
+        end
+    end
+    @info "no new best found"
+    return best_solution
+end
+
+function swapping_procedure(solution::Solution)
+    obj = solution.obj_func
     best_solution = deepcopy(solution)
     all_posoble_position = shuffle(combinations(findall(x -> x != 0, solution.route), 2))
     # all_posoble_position = combinations(findall(x->x!=0, solution.route), 2)
     for (i, position) in enumerate(all_posoble_position)
         current_solution = deepcopy(best_solution)
-        @info "iteration $i, swapping between position $(position[1]) and position $(position[2])"
+        # @info "iteration $i, swapping between position $(position[1]) and position $(position[2])"
         current_solution.route[position[1]], current_solution.route[position[2]] = current_solution.route[position[2]], current_solution.route[position[2]]
-        if feasibility(current_solution) && obj(current_solution) < obj(best_solution)
+        if feasibility(current_solution) && (obj(current_solution) < obj(best_solution))
             @info "new best found"
+            # current_solution.obj_value = obj(current_solution)
+            best_solution = deepcopy(current_solution)
+            return best_solution
         end
     end
+    @info "no new best found"
+    return best_solution
 end
 
 
@@ -229,17 +280,17 @@ function inserting(solution::Solution, cus::Integer, obj::Function)
     if route_length(solution) < solution.problem.max_vehi
         insert!(best_route, 1, cus)
         insert!(best_route, 1, 0)
-        best_obj = obj(Solution(best_route, solution.problem, 0))
+        best_obj = obj(Solution(best_route, solution.problem, obj))
     end
 
-    @info "start inseting procedure with $(length(save_route)) positions"
+    # @info "start inseting procedure with $(length(save_route)) positions"
     for i in 2:(length(solution.route)-1)
         inserted_route = deepcopy(save_route)
         insert!(inserted_route, i, cus)
-        new_obj = obj(Solution(inserted_route, solution.problem, 0))
+        new_obj = obj(Solution(inserted_route, solution.problem, obj))
 
         # show information
-        println("insert in position $i,  best obj: $best_obj,   new obj: $new_obj")
+        # println("insert in position $i,  best obj: $best_obj,   new obj: $new_obj")
 
         # update best route
         if new_obj <= best_obj && feasibility(inserted_route, solution.problem)
@@ -248,12 +299,12 @@ function inserting(solution::Solution, cus::Integer, obj::Function)
         end
 
     end
-    return Solution(fix_route_zero(best_route), solution.problem)
+    return Solution(fix_route_zero(best_route), solution.problem, obj)
 end
 
 
 function inserting_procedure(problem::Problem, obj::Function)
-    solution = empty_solution(problem)
+    solution = empty_solution(problem, obj)
     all_nodes = 1:solution.problem.num_node
     for node in all_nodes
         solution = inserting(solution, node, obj)
