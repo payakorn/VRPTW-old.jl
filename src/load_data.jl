@@ -8,6 +8,7 @@ struct Problem
     depot_time_window::Integer
     service_time::Vector
     vehicle_capacity::Integer
+    max_vehi::Integer
 end
 
 
@@ -54,7 +55,7 @@ end
 Returns:
     struct: Problem(...)
 """
-function load_solomon_data(class_ins::String; num_node=100)
+function load_solomon_data(class_ins::String; num_node=100, max_vehi=25)
     @info "loading Solomon $(uppercase(class_ins)) => with number of nodes = $num_node"
     data = load(dir_data(class_ins, num_node))
 
@@ -72,6 +73,7 @@ function load_solomon_data(class_ins::String; num_node=100)
         data["upper"],
         data["last_time_window"],
         data["service"],
-        data["capacity"]
+        data["capacity"],
+        max_vehi
     )
 end
