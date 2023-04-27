@@ -241,12 +241,26 @@ function cross_over(solution::Solution, pos1::Integer, pos2::Integer)
         @info "no first and last position"
         return solution
     elseif first_position == last_position
-        nothing
+        B = middle_part[1:first_position]
+        C = middle_part[last_position:end]
+        append!(A, D)
+        append!(C, B)
+        append!(A, C)
+        solution.route = A
+        @info "first == last"
+        return solution
     else
-        nothing
+        B = middle_part[1:first_position]
+        C = middle_part[last_position:end]
+        E = middle_part[first_position:last_position]
+        append!(A, D)
+        append!(C, B)
+        append!(C, E)
+        append!(A, C)
+        solution.route = A
+        @info "first != last"
+        return solution
     end
-
-    B = nothing
 
     solution.route[pos1], solution.route[pos2] = solution.route[pos2], solution.route[pos1]
     return Solution(solution.route, solution.problem, solution.obj_func)
@@ -299,6 +313,22 @@ function swapping_procedure(solution::Solution)
         if feasibility(current_solution)
             # @info "new best found"
             # current_solution.obj_value = obj(current_solution)
+            best_solution = deepcopy(current_solution)
+            return best_solution
+        end
+    end
+    @info "no new best found"
+    return best_solution
+end
+
+
+function opt_procedure(solution::Solution)
+    best_solution = deepcopy(solution)
+    all_posoble_position = shuffle(combinations(findall(x -> x != 0, solution.route), 2))
+    for (i, position) in enumerate(all_posoble_position)
+        current_solution = deepcopy(best_solution)
+        current_solution = cross_over(current_solution, position[1], position[2])
+        if feasibility(current_solution)
             best_solution = deepcopy(current_solution)
             return best_solution
         end

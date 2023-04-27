@@ -13,7 +13,7 @@ function simulated_annealing(ins_name)
     Tmin = 1
     alpha = 0.95
     i = 1
-    numIteration = 1e5
+    numIteration = 5e3
 
     ex_time = @elapsed begin
         while T > Tmin && i < numIteration
@@ -24,10 +24,8 @@ function simulated_annealing(ins_name)
                 new_solution = swapping_procedure(solution)
                 new_solution = moving_procedure(solution)
             else
-                new_solution = moving_procedure(solution)
-                new_solution = swapping_procedure(solution)
+                new_solution = opt_procedure(solution)
             end
-
 
             # calculate temperature
             new_obj = obj(new_solution)
