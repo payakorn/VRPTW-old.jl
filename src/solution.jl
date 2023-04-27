@@ -238,7 +238,7 @@ function cross_over(solution::Solution, pos1::Integer, pos2::Integer)
         append!(A, middle_part)
         push!(A, 0)
         solution.route = A
-        @info "no first and last position"
+        # @info "no first and last position"
         return solution
     elseif first_position == last_position
         B = middle_part[1:first_position]
@@ -247,7 +247,7 @@ function cross_over(solution::Solution, pos1::Integer, pos2::Integer)
         append!(C, B)
         append!(A, C)
         solution.route = A
-        @info "first == last"
+        # @info "first == last"
         return solution
     else
         B = middle_part[1:first_position]
@@ -258,7 +258,7 @@ function cross_over(solution::Solution, pos1::Integer, pos2::Integer)
         append!(C, E)
         append!(A, C)
         solution.route = A
-        @info "first != last"
+        # @info "first != last"
         return solution
     end
 
