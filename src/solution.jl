@@ -172,6 +172,20 @@ function check_time_window_capacity(solution::Solution)
 end
 
 
+function print_route(solution::Solution)
+    println("solution of $(solution.problem.name)")
+    r = 1
+    for i in solution.route[1:end-1]
+        if i != 0
+            print("$i ")
+        else
+            print("\nroute $r: ")
+            r += 1
+        end
+    end
+end
+
+
 function obj_value(solution::Solution)
     return solution.obj_func(solution)
 end
@@ -205,6 +219,40 @@ function swap!(solution::Solution, pos1::Integer, pos2::Integer)
 end
 
 
+function cross_over(solution::Solution, pos1::Integer, pos2::Integer)
+
+    if abs(pos1-pos2) <= 1
+        return solution
+    end
+
+    A = solution.route[1:pos1]
+    D = solution.route[pos2:end]
+
+    middle_part = solution.route[pos1+1:pos2-1]
+    first_position = findfirst(x->x==0, middle_part)
+    last_position = findlast(x->x==0, middle_part)
+
+    if isnothing(first_position) && isnothing(last_position)
+        append!(A, D)
+        push!(A, 0)
+        append!(A, middle_part)
+        push!(A, 0)
+        solution.route = A
+        @info "no first and last position"
+        return solution
+    elseif first_position == last_position
+        nothing
+    else
+        nothing
+    end
+
+    B = nothing
+
+    solution.route[pos1], solution.route[pos2] = solution.route[pos2], solution.route[pos1]
+    return Solution(solution.route, solution.problem, solution.obj_func)
+end
+
+
 function move!(solution::Solution, cus::Integer)
     new_sol = deepcopy(solution)
     deleteat!(new_sol.route, findfirst(x->x==cus, new_sol.route))
@@ -218,7 +266,7 @@ end
 
 
 function moving_procedure(solution::Solution)
-    obj = solution.obj_func
+    # obj = solution.obj_func
     best_solution = deepcopy(solution)
     all_posoble_position = shuffle(combinations(findall(x -> x != 0, solution.route), 2))
     # all_posoble_position = combinations(findall(x->x!=0, solution.route), 2)
@@ -226,8 +274,9 @@ function moving_procedure(solution::Solution)
         current_solution = deepcopy(best_solution)
         # @info "iteration $i, moving $cus"
         current_solution = move!(current_solution, cus)
-        if feasibility(current_solution) && (obj(current_solution) < obj(best_solution))
-            @info "new best found"
+        # if feasibility(current_solution) && (obj(current_solution) < obj(best_solution))
+        if feasibility(current_solution)
+            # @info "new best found"
             # current_solution.obj_value = obj(current_solution)
             best_solution = deepcopy(current_solution)
             return best_solution
@@ -238,16 +287,17 @@ function moving_procedure(solution::Solution)
 end
 
 function swapping_procedure(solution::Solution)
-    obj = solution.obj_func
+    # obj = solution.obj_func
     best_solution = deepcopy(solution)
     all_posoble_position = shuffle(combinations(findall(x -> x != 0, solution.route), 2))
     # all_posoble_position = combinations(findall(x->x!=0, solution.route), 2)
     for (i, position) in enumerate(all_posoble_position)
         current_solution = deepcopy(best_solution)
         # @info "iteration $i, swapping between position $(position[1]) and position $(position[2])"
-        current_solution.route[position[1]], current_solution.route[position[2]] = current_solution.route[position[2]], current_solution.route[position[2]]
-        if feasibility(current_solution) && (obj(current_solution) < obj(best_solution))
-            @info "new best found"
+        current_solution.route[position[1]], current_solution.route[position[2]] = current_solution.route[position[2]], current_solution.route[position[1]]
+        # if feasibility(current_solution) && (obj(current_solution) < obj(best_solution))
+        if feasibility(current_solution)
+            # @info "new best found"
             # current_solution.obj_value = obj(current_solution)
             best_solution = deepcopy(current_solution)
             return best_solution
