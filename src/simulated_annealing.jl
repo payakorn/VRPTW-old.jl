@@ -103,3 +103,12 @@ function simulated_annealing(ins_name; num_node=100, max_vehi=25, obj_func=dista
 
     return best_solution
 end
+
+
+function simulated_annealing_run()
+    for ij in 1:10
+        for ins_name in ins_names
+            simulated_annealing(ins_name)
+        end
+    end
+end
