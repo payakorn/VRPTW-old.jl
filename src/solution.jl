@@ -484,8 +484,8 @@ function load_solution(location::String)
     Solution(route, problem)
 end
 
-
-function load_solution_phase0(ins_name::String)
+# load benchmark solution 
+function load_solution_phase0(ins_name::String; obj_func=distance)
     pt = "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/solutions_benchmark/$ins_name.txt"
     f = open(pt)
     lines = readlines(f)
@@ -498,7 +498,7 @@ function load_solution_phase0(ins_name::String)
     close(f)
 
     problem = load_solomon_data(ins_name, num_node=100)
-    return Solution(route, problem)
+    return Solution(route, problem, obj_func)
 end
 
 
@@ -801,4 +801,35 @@ function create_phase_conclusion()
         dis3=distance.(load_solution_phase3.(ins_names)),
     )
     CSV.write("data/simulations/phase1phase2phase3.csv", df)
+end
+
+
+function find_best_solution_of_SA(ins_name; obj_func=distance, num_node=100)
+    ins_name = uppercase(ins_name)
+    location = dir("data", "simulated_annealing", obj_func, "num_node=$num_node", "$ins_name.csv")
+    df = CSV.File(location) |> DataFrame
+    # rename!(df, :i => :name)
+    obj_min, ind = findmin(df.obj)
+    df[!, :ins] = [ins_name for i in 1:length(df.obj)]
+    df = select(df, [:ins, :i, :date, :alpha, :iter, :time, :num_vehi, :obj])
+    dm = df[ind, :]
+    return dm
+end
+
+
+function create_simulated_annealing_summary(; obj_func=distance)
+    dg = DataFrame(find_best_solution_of_SA(ins_names[1]))
+    for ins_name in ins_names[2:end]
+        @info "add instance: $ins_name to dataframe"
+        df = DataFrame(find_best_solution_of_SA(ins_name))
+        append!(dg, df)
+    end
+    best_obj = [obj_func(load_solution_phase0(ins_name)) for ins_name in ins_names]
+    best_vehi = [route_length(load_solution_phase0(ins_name)) for ins_name in ins_names]
+    dg[!, :BestVehi] = best_vehi
+    dg[!, :BestKnown] = best_obj
+    dg = select(dg, :, [:obj, :BestKnown] => (a, b) -> (round.((a.-b)./b.*100, digits=2)))
+    rename!(dg, :obj_BestKnown_function => :gap)
+    CSV.write(dir("data", "simulated_annealing", obj_func, "SA_summary.csv"), dg)
+    return dg
 end
