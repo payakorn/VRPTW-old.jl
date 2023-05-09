@@ -811,7 +811,8 @@ function find_best_solution_of_SA(ins_name; obj_func=distance, num_node=100)
     # rename!(df, :i => :name)
     obj_min, ind = findmin(df.obj)
     df[!, :ins] = [ins_name for i in 1:length(df.obj)]
-    df = select(df, [:ins, :i, :date, :alpha, :iter, :time, :num_vehi, :obj])
+    df[!, :Num_Run] = size(df, 1) * ones(size(df, 1))
+    df = select(df, [:ins, :Num_Run, :i, :date, :alpha, :iter, :time, :num_vehi, :obj])
     dm = df[ind, :]
     return dm
 end
