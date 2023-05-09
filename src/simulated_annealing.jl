@@ -85,7 +85,7 @@ function simulated_annealing(ins_name; num_node=100, max_vehi=25, obj_func=dista
             # @info "current T = $T current best obj = $(obj(best_solution))"
         end
     end
-    println("iteration: $i, time: $ex_time, T: $T, current: $(obj(solution)) best: $(obj(best_solution))")
+    println("$ins_name iteration: $i, time: $ex_time, T: $T, current: $(obj(solution)) best: $(obj(best_solution))")
 
     # save log file
     close(ig)
@@ -106,7 +106,7 @@ end
 
 
 function simulated_annealing_run()
-    for ij in 1:10
+    for ij in 1:1
         for ins_name in ins_names
             simulated_annealing(ins_name)
         end
