@@ -453,7 +453,9 @@ function max_completion_time_and_feasible(solution::Solution)
             # calculate total completion time
             total_com += c
         end
-        push!(max_com, c)
+        push!(max_com, c - solution.problem.distance[route[k][end-1]+1, 1])
+        # push!(max_com, t)
+        # push!(max_com, c - solution.problem.distance[route[k][end-1]+1, 1])
     end
     return max_com, total_com
 end
@@ -473,6 +475,16 @@ end
 function total_comp(solution::Solution)
     ~, total_com = max_completion_time_and_feasible(solution)
     return total_com
+end
+
+
+function balancing_value(sol::Solution)
+    vec_max_comp = max_comp(sol)
+    total_balacing_value = 0.0
+    for (i, j) = combinations(1:length(vec_max_comp), 2)
+        total_balacing_value += abs(vec_max_comp[i] - vec_max_comp[j])
+    end
+    return total_balacing_value
 end
 
 

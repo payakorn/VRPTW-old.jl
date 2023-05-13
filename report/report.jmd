@@ -4,3 +4,12 @@ author : Matti Pastell
 date: 15th December 2016
 ---
 
+```julia; echo=false
+using VRPTW
+```
+
+---
+## Simulate annealing results in Solomon's instances
+```julia
+df = combine_best_known()
+```

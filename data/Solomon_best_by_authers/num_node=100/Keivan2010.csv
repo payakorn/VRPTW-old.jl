@@ -1,1 +1,57 @@
-﻿Instance,NV,TD,Provided_Sol,Round,Time,Alg,Auther,YearC101,10,828.94,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C102,10,828.94,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C103,10,828.06,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C104,10,824.78,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C105,10,828.94,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C106,10,828.94,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C107,10,828.94,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C108,10,828.94,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C109,10,828.94,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C201,3,591.56,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C202,3,591.56,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C203,3,591.17,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C204,3,599.96,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C205,3,588.88,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C206,3,588.88,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C207,3,591.56,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010C208,3,588.32,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R101,19,1677,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R102,18,1511.8,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R103,14,1287,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R104,10,974.24,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R105,15,1424.6,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R106,13,1270.3,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R107,11,1108.8,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R108,10,971.91,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R109,12,1212.3,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R110,12,1156.5,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R111,11,1111.9,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R112,10,1036.9,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R201,4,1351.4,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R202,4,1091.22,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R203,3,1041,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R204,3,1130.1,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R205,4,1087.8,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R206,3,940.12,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R207,3,904.9,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R208,3,774.18,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R209,4,1008,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R210,3,938.58,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010R211,4,1101.5,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC101,15,1690.6,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC102,14,1509.4,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC103,12,1331.8,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC104,11,1177.2,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC105,15,1611.5,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC106,13,1437.6,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC107,11,1222.1,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC108,11,1156.5,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC201,4,1423.7,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC202,4,1369.8,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC203,4,1060,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC204,3,901.46,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC205,4,1410.3,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC206,4,1194.8,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC207,4,1040.6,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010RC208,3,898.5,FALSE,FALSE,-,Genetic algorithm,Keivan Ghoseiri,2010
+﻿Instance,NV,TD,Provided_Sol,Round,Time,Alg,Auther,Year
+C101,10,828.94,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C102,10,828.94,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C103,10,828.06,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C104,10,824.78,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C105,10,828.94,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C106,10,828.94,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C107,10,828.94,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C108,10,828.94,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C109,10,828.94,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C201,3,591.56,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C202,3,591.56,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C203,3,591.17,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C204,3,599.96,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C205,3,588.88,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C206,3,588.88,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C207,3,591.56,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+C208,3,588.32,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R101,19,1677,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R102,18,1511.8,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R103,14,1287,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R104,10,974.24,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R105,15,1424.6,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R106,13,1270.3,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R107,11,1108.8,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R108,10,971.91,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R109,12,1212.3,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R110,12,1156.5,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R111,11,1111.9,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R112,10,1036.9,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R201,4,1351.4,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R202,4,1091.22,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R203,3,1041,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R204,3,1130.1,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R205,4,1087.8,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R206,3,940.12,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R207,3,904.9,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R208,3,774.18,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R209,4,1008,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R210,3,938.58,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+R211,4,1101.5,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC101,15,1690.6,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC102,14,1509.4,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC103,12,1331.8,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC104,11,1177.2,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC105,15,1611.5,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC106,13,1437.6,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC107,11,1222.1,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC108,11,1156.5,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC201,4,1423.7,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC202,4,1369.8,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC203,4,1060,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC204,3,901.46,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC205,4,1410.3,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC206,4,1194.8,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC207,4,1040.6,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
+RC208,3,898.5,FALSE,FALSE,-,GA,Keivan Ghoseiri,2010
