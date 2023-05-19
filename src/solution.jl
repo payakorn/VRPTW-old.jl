@@ -819,26 +819,37 @@ end
 function find_best_solution_of_SA(ins_name; obj_func=distance, num_node=100)
     ins_name = uppercase(ins_name)
     location = dir("data", "simulated_annealing", obj_func, "num_node=$num_node", "$ins_name.csv")
-    df = CSV.File(location) |> DataFrame
-    # rename!(df, :i => :name)
-    obj_min, ind = findmin(df.obj)
-    df[!, :ins] = [ins_name for i in 1:length(df.obj)]
-    df[!, :Num_Run] = size(df, 1) * ones(size(df, 1))
-    df = select(df, [:ins, :Num_Run, :i, :date, :alpha, :iter, :time, :num_vehi, :obj])
-    dm = df[ind, :]
-    return dm
+    if isfile(location)
+        df = CSV.File(location) |> DataFrame
+        # rename!(df, :i => :name)
+        obj_min, ind = findmin(df.obj)
+        df[!, :ins] = [ins_name for i in 1:length(df.obj)]
+        df[!, :Num_Run] = size(df, 1) * ones(size(df, 1))
+        df = select(df, [:ins, :Num_Run, :i, :date, :alpha, :iter, :time, :num_vehi, :obj])
+        dm = df[ind, :]
+        return dm
+    else
+        dm = CSV.File(dir("data", "simulated_annealing", "head_df.csv")) |> DataFrame
+        dm[1, 1] = ins_name
+        return dm
+    end
 end
 
 
 function create_simulated_annealing_summary(; obj_func=distance)
-    dg = DataFrame(find_best_solution_of_SA(ins_names[1]))
+    dg = DataFrame(find_best_solution_of_SA(ins_names[1], obj_func=obj_func))
     for ins_name in ins_names[2:end]
         @info "add instance: $ins_name to dataframe"
-        df = DataFrame(find_best_solution_of_SA(ins_name))
+        df = DataFrame(find_best_solution_of_SA(ins_name, obj_func=obj_func))
         append!(dg, df)
     end
-    best_obj = [obj_func(load_solution_phase0(ins_name)) for ins_name in ins_names]
-    best_vehi = [route_length(load_solution_phase0(ins_name)) for ins_name in ins_names]
+    if obj_func == distance
+        best_obj = [obj_func(load_solution_phase0(ins_name)) for ins_name in ins_names]
+        best_vehi = [route_length(load_solution_phase0(ins_name)) for ins_name in ins_names]
+    else
+        best_obj = [try obj_func(load_solution(ins_name, 100, obj_func)) catch e; Inf end for ins_name in ins_names]
+        best_vehi = [try route_length(load_solution(ins_name, 100, obj_func)) catch e; Inf end for ins_name in ins_names]
+    end
     dg[!, :BestVehi] = best_vehi
     dg[!, :BestKnown] = best_obj
     dg = select(dg, :, [:obj, :BestKnown] => (a, b) -> (round.((a.-b)./b.*100, digits=2)))

@@ -1,15 +1,19 @@
 ---
 title : Weave example
-author : Matti Pastell
-date: 15th December 2016
+author : Payakorn
+date: 15th MAY 2023
 ---
 
 ```julia; echo=false
 using VRPTW
+using PrettyTables
 ```
 
 ---
-## Simulate annealing results in Solomon's instances
-```julia
+## Best Known results from literature of 100-customer Solomon's instances 
+```julia; line_width=1000
 df = combine_best_known()
+pretty_table(df, show_subheader = false)
 ```
+---
+## Simulated Annealing (SA) results in Solomon's instances
