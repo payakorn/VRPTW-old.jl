@@ -17,3 +17,7 @@ pretty_table(df, show_subheader = false)
 ```
 ---
 ## Simulated Annealing (SA) results in Solomon's instances
+
+### Models
+
+$$\min x_{ij}^k$$
