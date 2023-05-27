@@ -12,7 +12,11 @@ struct Problem
 end
 
 
-"""dir()
+"""
+    dir();
+
+### Inputs:
+    N/A
 
 ### Returns:
 
@@ -32,12 +36,6 @@ end
 
 ### Returns:
     dir string: the directory of package VRPTW
-
-### Example:
-    ```julia-repl
-    dir("src", "data") 
-    return: ".../VRPTW/src/data"
-    ```
 """
 function dir(d...)
     d = string.(d)
@@ -50,10 +48,18 @@ function dir_data(class_ins::String, num_node::Integer)
 end
 
 
-"""load solomon instance into a struct of Problem
+"""
+    load_solomon_data(class_ins::String; num_node=100, max_vehi=25)
+    
+load solomon instance into a struct of Problem
 
-Returns:
-    struct: Problem(...)
+### Inputs
+    - class_ins => class in solomon instances e.g. clustered, random, clustered random
+    - num_node  => number of node (25, 50, 100)
+    - max_vehi  => define a maximum number of vehicles used in the problem
+
+### Returns:
+    Problem(...)
 """
 function load_solomon_data(class_ins::String; num_node=100, max_vehi=25)
     @info "loading Solomon $(uppercase(class_ins)) => with number of nodes = $num_node"

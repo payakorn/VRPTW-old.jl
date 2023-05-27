@@ -111,4 +111,4 @@ function simulated_annealing_run(;obj_func=distance)
             simulated_annealing(ins_name, obj_func=obj_func)
         end
     end
-end  ,
+end
