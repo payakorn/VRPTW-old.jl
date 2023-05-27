@@ -1,3 +1,15 @@
+"""
+    mutable struct Solution
+
+Solution of Solomon in the struct format 
+### Inputs
+- route::Array{Integer}
+- problem::Problem
+- obj_func::Function
+
+### Output
+- Solution
+"""
 mutable struct Solution
     route::Array{Integer}
     problem::Problem
@@ -8,6 +20,9 @@ mutable struct Solution
         new(route, problem, distance)
     end
 end
+
+# change display of struct
+Base.show(io::IO, solution::Solution) = print(io, "Solomon: $(solution.problem.name) with $(route_length(solution)) routes\n$(txt_route(solution))")
 
 # Solution(route, problem, obj_function) = Solution(route, problem, obj_function)
 
@@ -181,16 +196,25 @@ end
 
 
 function print_route(solution::Solution)
-    println("solution of $(solution.problem.name)")
+    print(txt_route(solution))
+end
+
+
+function txt_route(solution::Solution)
+    # println("solution of $(solution.problem.name)")
     r = 1
-    for i in solution.route[1:end-1]
+    txt = ""
+    txt *= "route $r: "
+    r += 1
+    for i in solution.route[2:end-1]
         if i != 0
-            print("$i ")
+            txt *= "$i "
         else
-            print("\nroute $r: ")
+            txt *= "\nroute $r: "
             r += 1
         end
     end
+    return txt
 end
 
 
