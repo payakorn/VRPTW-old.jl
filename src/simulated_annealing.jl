@@ -53,7 +53,7 @@ function simulated_annealing(ins_name; num_node=100, max_vehi=25, obj_func=dista
             if delta <= 0
                 solution = deepcopy(new_solution)
                 
-                if obj(solution) < obj(best_solution)
+                if obj(solution) < obj(best_solution) || route_length(solution) < route_length(best_solution)
                     @info "iteration: $i, found new best with num_vehi = $(route_length(solution)) $(obj(solution)), $local_func"
                     best_solution = deepcopy(solution)
                     not_improve = 1
@@ -111,4 +111,4 @@ function simulated_annealing_run(;obj_func=distance)
             simulated_annealing(ins_name, obj_func=obj_func)
         end
     end
-end  ,
+end
