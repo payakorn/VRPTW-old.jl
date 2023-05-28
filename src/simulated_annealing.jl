@@ -107,7 +107,7 @@ end
 
 function simulated_annealing_run(;obj_func=distance)
     for ij in 1:1
-        for ins_name in ins_names
+        for ins_name in ins_names[20:end]
             simulated_annealing(ins_name, obj_func=obj_func)
         end
     end
