@@ -868,24 +868,24 @@ function find_best_solution_of_SA(ins_name; obj_func=distance, num_node=100)
 end
 
 
-function create_simulated_annealing_summary(; obj_func=distance)
-    dg = DataFrame(find_best_solution_of_SA(ins_names[1], obj_func=obj_func))
+function create_simulated_annealing_summary(; obj_func=distance, num_node=100)
+    dg = DataFrame(find_best_solution_of_SA(ins_names[1], obj_func=obj_func, num_node=num_node))
     for ins_name in ins_names[2:end]
         @info "add instance: $ins_name to dataframe"
-        df = DataFrame(find_best_solution_of_SA(ins_name, obj_func=obj_func))
+        df = DataFrame(find_best_solution_of_SA(ins_name, obj_func=obj_func, num_node=num_node))
         append!(dg, df)
     end
-    if obj_func == distance
+    if obj_func == distance && num_node == 100
         best_obj = [obj_func(load_solution_phase0(ins_name)) for ins_name in ins_names]
         best_vehi = [route_length(load_solution_phase0(ins_name)) for ins_name in ins_names]
     else
-        best_obj = [try obj_func(load_solution(ins_name, 100, obj_func)) catch e; Inf end for ins_name in ins_names]
-        best_vehi = [try route_length(load_solution(ins_name, 100, obj_func)) catch e; Inf end for ins_name in ins_names]
+        best_obj = [try obj_func(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
+        best_vehi = [try route_length(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
     end
     dg[!, :BestVehi] = best_vehi
     dg[!, :BestKnown] = best_obj
     dg = select(dg, :, [:obj, :BestKnown] => (a, b) -> (round.((a.-b)./b.*100, digits=2)))
     rename!(dg, :obj_BestKnown_function => :gap)
-    CSV.write(dir("data", "simulated_annealing", obj_func, "SA_summary.csv"), dg)
+    CSV.write(dir("data", "simulated_annealing", obj_func, "SA_summary_$num_node.csv"), dg)
     return dg
 end
