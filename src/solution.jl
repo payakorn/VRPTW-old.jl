@@ -91,7 +91,15 @@ const ins_names = [
     "RC208",
 ]
 
+"""
+    fix_route_zero(route::Array)
 
+    ## example
+
+    ```julia
+        1+1
+    ```
+"""
 function fix_route_zero(route::Array)
     delete_position = Integer[]
     if route[1] != 0 || route[end] != 0

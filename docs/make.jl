@@ -1,25 +1,21 @@
-using VRPTW
 using Documenter
+using VRPTW
 
-DocMeta.setdocmeta!(VRPTW, :DocTestSetup, :(using VRPTW); recursive=true)
-
-makedocs(;
-    modules=[VRPTW],
-    authors="Payakorn Saksuriya",
-    repo="https://github.com/payakorn/VRPTW.jl/blob/{commit}{path}#{line}",
-    sitename="VRPTW.jl",
-    format=Documenter.HTML(;
-        prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://payakorn.github.io/VRPTW.jl",
-        edit_link="master",
-        assets=String[],
-    ),
-    pages=[
-        "Home" => "index.md",
-    ],
+makedocs(
+    sitename = "VRPTW",
+    source = "src",
+    build   = "build",
+    format = Documenter.HTML(),
+    modules = [VRPTW],
+    # pages = [
+    #     "VRPTW" => "index.md",
+    #     "SA" => "functions/sa.md"
+    # ]
 )
 
-deploydocs(;
-    repo="github.com/payakorn/VRPTW.jl",
-    devbranch="master",
-)
+# Documenter can also automatically deploy documentation to gh-pages.
+# See "Hosting Documentation" and deploydocs() in the Documenter manual
+# for more information.
+#=deploydocs(
+    repo = "<repository url>"
+)=#

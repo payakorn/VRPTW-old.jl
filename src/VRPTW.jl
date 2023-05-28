@@ -1,7 +1,7 @@
 module VRPTW
 
 import Base.push!, Base.splice!
-using Revise, JLD2, JuMP, CSV, JSON, JSON3, DataFrames, Combinatorics, Shuffle, Glob, Dates
+using Revise, JLD2, JuMP, CSV, JSON, JSON3, DataFrames, Combinatorics, Shuffle, Glob, Dates, Documenter
 
 # Write your package code here.
 include("func.jl")
