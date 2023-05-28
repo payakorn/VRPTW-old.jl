@@ -105,10 +105,10 @@ function simulated_annealing(ins_name; num_node=100, max_vehi=25, obj_func=dista
 end
 
 
-function simulated_annealing_run(;obj_func=distance)
+function simulated_annealing_run(;obj_func=distance, num_node=100, max_vehi=25)
     for ij in 1:1
-        for ins_name in ins_names[20:end]
-            simulated_annealing(ins_name, obj_func=obj_func)
+        for ins_name in ins_names
+            simulated_annealing(ins_name, obj_func=obj_func, num_node=num_node, max_vehi=max_vehi)
         end
     end
 end
