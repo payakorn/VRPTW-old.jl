@@ -1,5 +1,5 @@
 """
-    mutable struct Solution
+    mutable struct Solution(route::Array{Integer}, problem::Problem, obj_func::Function)
 
 Solution of Solomon in the struct format 
 ### Inputs
@@ -17,12 +17,12 @@ mutable struct Solution
     # check
     Solution(route, problem, obj_function) = route[1] != 0 || route[end] != 0 ? error("This is not a route representation\nmust start with 0 and end with 0\n i.e. [0, 1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 0]") : new(route, problem, obj_function)
     function Solution(route, problem)
-        new(route, problem, distance)
+        new(fix_route_zero(route), problem, distance)
     end
 end
 
 # change display of struct
-Base.show(io::IO, solution::Solution) = print(io, "Solomon: $(solution.problem.name) with $(route_length(solution)) routes\n$(txt_route(solution))")
+Base.show(io::IO, solution::Solution) = print(io, "Solution: $(solution.problem.name) with $(route_length(solution)) routes\n$(txt_route(solution))")
 
 # Solution(route, problem, obj_function) = Solution(route, problem, obj_function)
 
@@ -91,14 +91,22 @@ const ins_names = [
     "RC208",
 ]
 
+const C1 = ins_names[1:9]
+const C2 = ins_names[10:17]
+const R1 = ins_names[18:29]
+const R2 = ins_names[30:40]
+const RC1 = ins_names[41:48]
+const RC2 = ins_names[49:56]
+
 """
     fix_route_zero(route::Array)
 
-    ## example
+in some situation the route may have zero route in the Solution
+### Input:
+- route 
 
-    ```julia
-        1+1
-    ```
+### Output:
+- route
 """
 function fix_route_zero(route::Array)
     delete_position = Integer[]

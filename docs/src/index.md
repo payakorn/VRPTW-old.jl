@@ -19,6 +19,79 @@ To load the package use the code
 using VRPTW
 ```
 
+## Struct
+
+There are 2 structs using in this project: `Problem` and `Solution`. 
+
+- The `Problem` is used to defind the attributes in the problem including, name of problem, number of nodes, number of vehicles, the maximum number of vehicles, etc.
+- The `Solution` is used for storing the solution of `Problem`
+
+```@docs
+Problem
+```
+```@docs
+Solution
+```
+### Examples
+
+To create the problem struct, 
+```@repl 1
+num_node = 5;
+distance_matrix = [
+    0.0 1.0 2.0 3.0 4.0 5.0;
+    1.0 0.0 2.0 3.0 4.0 5.0;
+    2.0 1.0 0.0 3.0 0.0 5.0;
+    3.0 3.0 3.0 0.0 0.0 0.0;
+    4.0 5.0 6.0 3.0 0.0 0.0;
+    4.0 5.0 6.0 3.0 4.0 0.0;
+];
+demand = [0, 1, 3, 4, 5, 6];
+lower_time_window = [0, 0, 0, 0, 0, 0];
+upper_time_window = [100, 50, 50, 50, 50, 50];
+depot_time_window = 100;
+service_time = [0, 10, 10, 10, 10, 10, 10];
+vehicle_capacity = 1000;
+max_vehi = 15;
+ins = Problem("test", 
+        num_node, 
+        distance_matrix, 
+        demand, 
+        lower_time_window, 
+        upper_time_window, 
+        depot_time_window, 
+        service_time, 
+        vehicle_capacity, 
+        max_vehi)
+```
+
+To create `Solution` struct. We have to input route into the struct. The route must in the form of `Array` and 0 is used to seperate the route and the first and the last element in route must be 0.
+
+For example,
+```@repl 1
+route = [0, 1, 2, 3, 4, 0];
+sol = Solution(route, ins)
+```
+
+If there are more than one route,
+```@repl 1
+route = [0, 1, 2, 3, 4, 0, 5, 6, 7, 0];
+sol = Solution(route, ins)
+```
+
+
+# Solomon's instance
+
+The Solomon's instance is used for simulating in this project. The Solomon's instance can be divided into 3 classes; clustered, Random, and Random clustered. 
+
+There are 56 instances in Solomon's benchmark which are stored in the variable `ins_names`
+```@repl 1
+ins_names
+```
+
+The Solomon's instance can be divided into 3 classes; clustered (`C1, R2`), Random (`R1, R2`), and Random clustered (`RC1, RC2`). 
+```@repl 1
+R1
+```
 ## Functions
 
 ```@docs
@@ -41,14 +114,19 @@ load_solomon_data("c101", num_node=100, max_vehi=25)
 ```@docs
 fix_route_zero
 ```
-
+### Example for `fix_route_zero`
+```@repl 1
+route = [0, 1, 2, 3, 0, 0, 4, 5, 0, 0]
+fix_route_zero(route)
+```
 # Solomon instances
 
 ```@eval
 using CSV
+using VRPTW
+using DataFrames
 using Latexify
-using MDTable
-df = CSV.Files(dir("data", "simulated_annealing", "distance", "SA_summary.csv"))
+df = CSV.File(dir("data", "simulated_annealing", "distance", "SA_summary.csv")) |> DataFrame
 mdtable(df,latex=false)
 ```
 
