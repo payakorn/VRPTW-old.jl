@@ -3,8 +3,8 @@ using VRPTW
 
 makedocs(
     sitename = "VRPTW",
-    source = "src",
-    build   = "build",
+    source = "src/",
+    build   = "build/",
     format = Documenter.HTML(),
     modules = [VRPTW],
     # pages = [

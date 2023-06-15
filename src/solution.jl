@@ -1,5 +1,5 @@
 """
-    mutable struct Solution
+    mutable struct Solution(route::Array{Integer}, problem::Problem, obj_func::Function)
 
 Solution of Solomon in the struct format 
 ### Inputs
@@ -17,12 +17,12 @@ mutable struct Solution
     # check
     Solution(route, problem, obj_function) = route[1] != 0 || route[end] != 0 ? error("This is not a route representation\nmust start with 0 and end with 0\n i.e. [0, 1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 0]") : new(route, problem, obj_function)
     function Solution(route, problem)
-        new(route, problem, distance)
+        new(fix_route_zero(route), problem, distance)
     end
 end
 
 # change display of struct
-Base.show(io::IO, solution::Solution) = print(io, "Solomon: $(solution.problem.name) with $(route_length(solution)) routes\n$(txt_route(solution))")
+Base.show(io::IO, solution::Solution) = print(io, "Solution: $(solution.problem.name) with $(route_length(solution)) routes\n$(txt_route(solution))")
 
 # Solution(route, problem, obj_function) = Solution(route, problem, obj_function)
 
@@ -91,14 +91,22 @@ const ins_names = [
     "RC208",
 ]
 
+const C1 = ins_names[1:9]
+const C2 = ins_names[10:17]
+const R1 = ins_names[18:29]
+const R2 = ins_names[30:40]
+const RC1 = ins_names[41:48]
+const RC2 = ins_names[49:56]
+
 """
     fix_route_zero(route::Array)
 
-    ## example
+in some situation the route may have zero route in the Solution
+### Input:
+- route 
 
-    ```julia
-        1+1
-    ```
+### Output:
+- route
 """
 function fix_route_zero(route::Array)
     delete_position = Integer[]
@@ -868,24 +876,24 @@ function find_best_solution_of_SA(ins_name; obj_func=distance, num_node=100)
 end
 
 
-function create_simulated_annealing_summary(; obj_func=distance)
-    dg = DataFrame(find_best_solution_of_SA(ins_names[1], obj_func=obj_func))
+function create_simulated_annealing_summary(; obj_func=distance, num_node=100)
+    dg = DataFrame(find_best_solution_of_SA(ins_names[1], obj_func=obj_func, num_node=num_node))
     for ins_name in ins_names[2:end]
         @info "add instance: $ins_name to dataframe"
-        df = DataFrame(find_best_solution_of_SA(ins_name, obj_func=obj_func))
+        df = DataFrame(find_best_solution_of_SA(ins_name, obj_func=obj_func, num_node=num_node))
         append!(dg, df)
     end
-    if obj_func == distance
+    if obj_func == distance && num_node == 100
         best_obj = [obj_func(load_solution_phase0(ins_name)) for ins_name in ins_names]
         best_vehi = [route_length(load_solution_phase0(ins_name)) for ins_name in ins_names]
     else
-        best_obj = [try obj_func(load_solution(ins_name, 100, obj_func)) catch e; Inf end for ins_name in ins_names]
-        best_vehi = [try route_length(load_solution(ins_name, 100, obj_func)) catch e; Inf end for ins_name in ins_names]
+        best_obj = [try obj_func(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
+        best_vehi = [try route_length(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
     end
     dg[!, :BestVehi] = best_vehi
     dg[!, :BestKnown] = best_obj
     dg = select(dg, :, [:obj, :BestKnown] => (a, b) -> (round.((a.-b)./b.*100, digits=2)))
     rename!(dg, :obj_BestKnown_function => :gap)
-    CSV.write(dir("data", "simulated_annealing", obj_func, "SA_summary.csv"), dg)
+    CSV.write(dir("data", "simulated_annealing", obj_func, "SA_summary_$num_node.csv"), dg)
     return dg
 end

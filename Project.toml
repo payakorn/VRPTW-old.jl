@@ -21,6 +21,8 @@ Latexify = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
 PrettyTables = "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 Shuffle = "bf21e494-c40e-4daa-abfb-de5ec0aad010"
+VegaDatasets = "0ae4a718-28b7-58ec-9efb-cded64d6d5b4"
+VegaLite = "112f6efa-9a02-5b7d-90c0-432ed331239a"
 Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 
 [compat]

@@ -1,3 +1,15 @@
+"""
+    Problem(name::String, 
+    num_node::Integer, 
+    distance::Matrix, 
+    demand::Vector, 
+    lower_time_window::Vector, 
+    upper_time_window::Vector, 
+    depot_time_window::Integer, 
+    service_time::Vector, 
+    vehicle_capacity::Integer, 
+    max_vehi::Integer)
+"""
 struct Problem
     name::String
     num_node::Integer
@@ -10,6 +22,10 @@ struct Problem
     vehicle_capacity::Integer
     max_vehi::Integer
 end
+
+
+# change display of struct
+Base.show(io::IO, ins::Problem) = print(io, "Problem $(ins.name) with $(ins.num_node) nodes")
 
 
 """
