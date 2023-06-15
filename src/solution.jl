@@ -890,10 +890,21 @@ function create_simulated_annealing_summary(; obj_func=distance, num_node=100)
         best_obj = [try obj_func(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
         best_vehi = [try route_length(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
     end
+
+    # change column name
     dg[!, :BestVehi] = best_vehi
     dg[!, :BestKnown] = best_obj
+
+    # round column gap
     dg = select(dg, :, [:obj, :BestKnown] => (a, b) -> (round.((a.-b)./b.*100, digits=2)))
     rename!(dg, :obj_BestKnown_function => :gap)
+
+    # round degits for columns objective value and best known value
+    dg.obj = round.(dg.obj, digits=2)
+    dg.BestKnown = round.(dg.BestKnown, digits=2)
+
+    # export to csv
     CSV.write(dir("data", "simulated_annealing", obj_func, "SA_summary_$num_node.csv"), dg)
+
     return dg
 end

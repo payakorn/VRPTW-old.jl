@@ -2,6 +2,8 @@
 
 function opt_balancing(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
 
+    # ins = load_solomon_data(ins_name, num_node = num_vehicle)
+
     data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
     d = data["upper"]
     low_d = data["lower"]
@@ -588,10 +590,14 @@ function opt_max_com(ins_name::String, num_vehicle::Integer, solver; time_solve=
 end
 
 
-function find_opt(solver; obj_func=opt_balancing, time_solve=3600)
+function find_opt(solver; obj_func=opt_balancing, time_solve=3600, start_stop = nothing)
     NameNumVehicle = CSV.File(dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv"))
     Ins_name = [String("$(NameNumVehicle[i][1])-$(NameNumVehicle[i][2])") for i in 1:(length(NameNumVehicle))]
     Num_vehicle = [NameNumVehicle[i][3] for i in 1:(length(NameNumVehicle))]
+
+    if !isnothing(start_stop)
+        Ins_name = Ins_name[start_stop]
+    end
 
     if obj_func == opt_balancing
         obj_name = "balancing_completion_time"

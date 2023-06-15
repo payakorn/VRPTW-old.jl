@@ -6,7 +6,7 @@
                  "route": "nothing",
           "obj_function": "Inf",
              "total_com": "Inf",
-           "num_vehicle": 4,
+           "num_vehicle": 3,
            "solver_name": {
                           },
                    "tex": "no solution"
