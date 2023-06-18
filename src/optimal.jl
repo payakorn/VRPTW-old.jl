@@ -590,8 +590,13 @@ function opt_max_com(ins_name::String, num_vehicle::Integer, solver; time_solve=
 end
 
 
-function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run = nothing)
-    NameNumVehicle = CSV.File(dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv"))
+function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run = nothing, customize_num=false)
+    if customize_num
+        file_name = dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_customize.csv")
+    else
+        file_name = dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv")
+    end
+    NameNumVehicle = CSV.File(file_name)
     Ins_name = [String("$(NameNumVehicle[i][1])-$(NameNumVehicle[i][2])") for i in 1:(length(NameNumVehicle))]
     Num_vehicle = [NameNumVehicle[i][3] for i in 1:(length(NameNumVehicle))]
 
@@ -603,6 +608,12 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run = not
         Ins_name = Ins_name[fix_run]
         Num_vehicle = Num_vehicle[fix_run]
     end
+
+    # if isnothing(fix_run)
+    #     Ins = ins_names
+    # else
+    #     Ins = fix_run
+    # end
 
 
     if obj_func == opt_balancing
