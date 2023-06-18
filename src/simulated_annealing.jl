@@ -106,7 +106,7 @@ end
 
 
 function simulated_annealing_run(;obj_func=distance, num_node=100, max_vehi=25, fix_run=nothing)
-    if !isnothing(fix_run)
+    if isnothing(fix_run)
         Ins = ins_names
     else
         Ins = fix_run
