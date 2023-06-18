@@ -1,7 +1,7 @@
 {
    "max_completion_time": "Inf",
                   "name": "R107-25",
-            "solve_time": 3600,
+            "solve_time": 36000,
           "relative_gap": 1,
                  "route": "nothing",
           "obj_function": "Inf",
