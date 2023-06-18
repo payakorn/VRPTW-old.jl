@@ -595,11 +595,15 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run = not
     Ins_name = [String("$(NameNumVehicle[i][1])-$(NameNumVehicle[i][2])") for i in 1:(length(NameNumVehicle))]
     Num_vehicle = [NameNumVehicle[i][3] for i in 1:(length(NameNumVehicle))]
 
-    if !isnothing(fix_run)
+    if !isnothing(fix_run) && length(fix_run) == 1
         Ins_name = Ins_name[fix_run]
         Num_vehicle = Num_vehicle[fix_run]
         Ins_name = [Ins_name]
+    elseif !isnothing(fix_run)
+        Ins_name = Ins_name[fix_run]
+        Num_vehicle = Num_vehicle[fix_run]
     end
+
 
     if obj_func == opt_balancing
         obj_name = "balancing_completion_time"
