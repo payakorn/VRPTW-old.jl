@@ -22,7 +22,7 @@ mutable struct Solution
 end
 
 # change display of struct
-Base.show(io::IO, solution::Solution) = print(io, "Solution: $(solution.problem.name) with $(route_length(solution)) routes\n$(txt_route(solution))")
+Base.show(io::IO, solution::Solution) = print(io, txt_route_full(solution))
 
 # Solution(route, problem, obj_function) = Solution(route, problem, obj_function)
 
@@ -210,19 +210,35 @@ end
 
 function txt_route(solution::Solution)
     # println("solution of $(solution.problem.name)")
+    sp = length(string(solution.problem.num_node)) + 1
     r = 1
     txt = ""
-    txt *= "route $r: "
+    # txt *= "route $r: "
+    txt *= rpad("route $r:", 9, " ")
     r += 1
     for i in solution.route[2:end-1]
         if i != 0
-            txt *= "$i "
+            # txt *= "$i "
+            txt *= lpad("$i", sp, " ")
         else
-            txt *= "\nroute $r: "
+            # txt *= "\nroute $r: "
+            txt *= rpad("\nroute $r:", 9, " ")
             r += 1
         end
     end
     return txt
+end
+
+
+function txt_route_full(solution::Solution)
+    return "Solution: $(solution.problem.name) with $(solution.problem.num_node) nodes and $(route_length(solution)) routes, obj_func: $(solution.obj_func)\n$(txt_route(solution))"
+end
+
+
+function write_solution_txt(solution::Solution, location::String)
+    open(location, "w") do f
+        write(f, txt_route_full(solution))
+    end
 end
 
 
@@ -619,7 +635,16 @@ function load_solution(ins_name::String, obj_name::String)
     route = dict_to_solution(js["route"])
     (ins_name, num_node) = split(js["name"], "-")
     problem = load_solomon_data(String(ins_name), num_node=parse(Int64, num_node))
-    Solution(route, problem)
+    return Solution(route, problem)
+end
+
+
+function load_solution(ins_name::String, obj_name::Function)
+    js = JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))
+    route = dict_to_solution(js["route"])
+    (ins_name, num_node) = split(js["name"], "-")
+    problem = load_solomon_data(String(ins_name), num_node=parse(Int64, num_node))
+    return Solution(route, problem, obj_name)
 end
 
 
@@ -837,6 +862,14 @@ end
 function save_simulation_file(df::DataFrame, file_name::String)
     loca = dir("data", "simulations", file_name)
     CSV.write(loca, df)
+end
+
+
+function save_solution_struct(solution::Solution)
+    data = Dict("route" => solution.route, "obj_func" => solution.obj_func)
+    open("test.json", "w") do f
+        JSON3.write(f, solution)
+    end
 end
 
 

@@ -27,7 +27,7 @@ function load_solution(ins_name::String, num_node::Integer, obj_func::Function)
     end
     try return load_solution("$ins_name-$num_node", objf) 
     catch e; 
-        begin 
+        begin
             @warn "optimal solution not found return nothing instead"
             return nothing
         end
