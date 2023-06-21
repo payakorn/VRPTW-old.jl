@@ -138,6 +138,17 @@ function route_length(solution::Solution)
 end
 
 
+function seperate_route(solution::Solution)
+    route = solution.route
+    zero_position = findall(x->x==0, route)
+    result = []
+    for i in 1:route_length(solution)
+        push!(result, route[(zero_position[i]+1):(zero_position[i+1]-1)])
+    end
+    return result
+end
+
+
 function distance(point1::Point, point2::Point)
     sqrt((point1.x^2 - point1.x)^2 + (point2.x^2 - point2.x)^2)
 end
@@ -648,6 +659,22 @@ function load_solution(ins_name::String, obj_name::Function)
 end
 
 
+function load_solution_SA(ins_name::String, obj_func::Function, num_node::Integer, num_ins::Integer)
+    location = dir("data", "simulated_annealing", "$(obj_func)", "num_node=$num_node", "$(ins_name)-solution", "$(ins_name)-$(num_ins).txt")
+
+    text = readdlm(location, '\t', '\n', skipstart=1)
+    text = [split(i, ":")[2] for i in text]
+    route = Int[0]
+    for a_route in text
+        all_nodes = [parse(Int, i) for i in split(a_route)]
+        append!(route, all_nodes)
+        push!(route, 0)
+    end
+    solution = Solution(route, load_solomon_data(ins_name, num_node=num_node), obj_func)
+    return solution
+end
+
+
 function list_ins_name()
     NameNumVehicle = CSV.File(dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv"))
     Ins_name = [String("$(NameNumVehicle[i][1])-$(NameNumVehicle[i][2])") for i in 1:(length(NameNumVehicle))]
@@ -894,18 +921,43 @@ function find_best_solution_of_SA(ins_name; obj_func=distance, num_node=100)
     location = dir("data", "simulated_annealing", obj_func, "num_node=$num_node", "$ins_name.csv")
     if isfile(location)
         df = CSV.File(location) |> DataFrame
+
+        diff_route = [find_difference_min_max_length_each_route(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :DiffRoute] = diff_route
         # rename!(df, :i => :name)
         obj_min, ind = findmin(df.obj)
         df[!, :ins] = [ins_name for i in 1:length(df.obj)]
         df[!, :Num_Run] = size(df, 1) * ones(size(df, 1))
-        df = select(df, [:ins, :Num_Run, :i, :date, :alpha, :iter, :time, :num_vehi, :obj])
+        df = select(df, [:ins, :Num_Run, :i, :date, :alpha, :iter, :time, :num_vehi, :DiffRoute, :obj])
         dm = df[ind, :]
+
+        # find max-min of length of all routes
+        solution = load_solution_SA(ins_name, obj_func, num_node, ind)
+        diff_route = find_difference_min_max_length_each_route(solution)
+
+        # add to dataframe
+        # dm[!, :DiffRoute] = [diff_route]
         return dm
     else
         dm = CSV.File(dir("data", "simulated_annealing", "head_df.csv")) |> DataFrame
         dm[1, 1] = ins_name
         return dm
     end
+end
+
+
+function find_min_max_num_node_each_route(solution::Solution)
+    sep = seperate_route(solution)
+    length_each_route = [length(i) for i in sep]
+    min_each = minimum(length_each_route)
+    max_each = maximum(length_each_route)
+    return min_each, max_each
+end
+
+
+function find_difference_min_max_length_each_route(solution::Solution)
+    min_length, max_length = find_min_max_num_node_each_route(solution)
+    return max_length - min_length
 end
 
 
@@ -922,6 +974,7 @@ function create_simulated_annealing_summary(; obj_func=distance, num_node=100)
     else
         best_obj = [try obj_func(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
         best_vehi = [try route_length(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
+        # diff_num_each_route = [try find_difference_min_max_length_each_route(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
     end
 
     # change column name
@@ -935,6 +988,9 @@ function create_simulated_annealing_summary(; obj_func=distance, num_node=100)
     # round degits for columns objective value and best known value
     dg.obj = round.(dg.obj, digits=2)
     dg.BestKnown = round.(dg.BestKnown, digits=2)
+
+    # add new column
+    # dg[!, :DiffRouteEach] = diff_num_each_route
 
     # export to csv
     CSV.write(dir("data", "simulated_annealing", obj_func, "SA_summary_$num_node.csv"), dg)
