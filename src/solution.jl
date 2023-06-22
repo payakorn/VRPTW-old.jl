@@ -138,7 +138,7 @@ function route_length(solution::Solution)
 end
 
 
-function seperate_route(solution::Solution)
+function seperate_route_to_array(solution::Solution)
     route = solution.route
     zero_position = findall(x->x==0, route)
     result = []
@@ -919,24 +919,32 @@ end
 function find_best_solution_of_SA(ins_name; obj_func=distance, num_node=100)
     ins_name = uppercase(ins_name)
     location = dir("data", "simulated_annealing", obj_func, "num_node=$num_node", "$ins_name.csv")
+
+    # defind function to calculate
+    # func_to = find_average_node_each_route
+    func_to = find_min_max_num_node_each_route
+
+    # main
     if isfile(location)
         df = CSV.File(location) |> DataFrame
 
-        diff_route = [find_difference_min_max_length_each_route(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        # add new column
+        diff_route = [func_to(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
         df[!, :DiffRoute] = diff_route
+        
+        # add distance column
+        dis = [distance(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :Dis] = dis
+
+        # remane
         # rename!(df, :i => :name)
+
         obj_min, ind = findmin(df.obj)
         df[!, :ins] = [ins_name for i in 1:length(df.obj)]
         df[!, :Num_Run] = size(df, 1) * ones(size(df, 1))
-        df = select(df, [:ins, :Num_Run, :i, :date, :alpha, :iter, :time, :num_vehi, :DiffRoute, :obj])
+        df = select(df, [:ins, :Num_Run, :i, :date, :alpha, :iter, :time, :num_vehi, :obj, :DiffRoute, :Dis])
         dm = df[ind, :]
 
-        # find max-min of length of all routes
-        solution = load_solution_SA(ins_name, obj_func, num_node, ind)
-        diff_route = find_difference_min_max_length_each_route(solution)
-
-        # add to dataframe
-        # dm[!, :DiffRoute] = [diff_route]
         return dm
     else
         dm = CSV.File(dir("data", "simulated_annealing", "head_df.csv")) |> DataFrame
@@ -947,11 +955,19 @@ end
 
 
 function find_min_max_num_node_each_route(solution::Solution)
-    sep = seperate_route(solution)
+    sep = seperate_route_to_array(solution)
     length_each_route = [length(i) for i in sep]
     min_each = minimum(length_each_route)
     max_each = maximum(length_each_route)
     return min_each, max_each
+end
+
+
+function find_average_node_each_route(solution::Solution)
+    sep = seperate_route_to_array(solution)
+    length_each_route = [length(i) for i in sep]
+    average = sum(length_each_route)/length(length_each_route)
+    return round(average, digits=2)
 end
 
 
@@ -963,6 +979,12 @@ end
 
 function create_simulated_annealing_summary(; obj_func=distance, num_node=100)
     dg = DataFrame(find_best_solution_of_SA(ins_names[1], obj_func=obj_func, num_node=num_node))
+
+    # defind function to calculate result column
+    # func_to = find_average_node_each_route
+    func_to = find_min_max_num_node_each_route
+
+    # main
     for ins_name in ins_names[2:end]
         @info "add instance: $ins_name to dataframe"
         df = DataFrame(find_best_solution_of_SA(ins_name, obj_func=obj_func, num_node=num_node))
@@ -971,15 +993,20 @@ function create_simulated_annealing_summary(; obj_func=distance, num_node=100)
     if obj_func == distance && num_node == 100
         best_obj = [obj_func(load_solution_phase0(ins_name)) for ins_name in ins_names]
         best_vehi = [route_length(load_solution_phase0(ins_name)) for ins_name in ins_names]
+        diff_num_each_route = [try func_to(load_solution_phase0(ins_name)) catch e; Inf end for ins_name in ins_names]
+        dis = [try distance(load_solution_phase0(ins_name)) catch e; Inf end for ins_name in ins_names]
     else
         best_obj = [try obj_func(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
         best_vehi = [try route_length(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
-        # diff_num_each_route = [try find_difference_min_max_length_each_route(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
+        diff_num_each_route = [try func_to(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
+        dis = [try distance(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
     end
 
     # change column name
     dg[!, :BestVehi] = best_vehi
     dg[!, :BestKnown] = best_obj
+    dg[!, :BestDiffRoute] = diff_num_each_route
+    dg[!, :BestDis] = dis
 
     # round column gap
     dg = select(dg, :, [:obj, :BestKnown] => (a, b) -> (round.((a.-b)./b.*100, digits=2)))
