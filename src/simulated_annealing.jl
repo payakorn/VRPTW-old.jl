@@ -125,4 +125,5 @@ function simulated_annealing_run(;obj_func=distance, num_node=100, max_vehi=25, 
             simulated_annealing(ins_name, obj_func=obj_func, num_node=num_node, max_vehi=max_vehi)
         end
     end
+    sent_email("simulated_annealing_run", "Completed!!!")
 end
