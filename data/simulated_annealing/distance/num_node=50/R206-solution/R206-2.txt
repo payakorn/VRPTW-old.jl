@@ -1,0 +1,6 @@
+Solution: R206 with 50 nodes and 5 routes, obj_func: distance
+route 1:  27  1 50 33  9 30 11 19  7 18
+route 2:  45 48 47 36 49 46  8 17  5 13
+route 3:   2 15 42 37 16 44 38 14 43  6
+route 4:  26 39 23 41 22 40 21  4 25 24 12
+route 5:  28  3 29 34 35 20 32 10 31
