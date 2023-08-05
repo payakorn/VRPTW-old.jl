@@ -630,9 +630,9 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run = not
 
     for (ins_name, num_vehicle) in zip(Ins_name, Num_vehicle)
         # chack the exiting of file
-        file_existing = !isfile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))
+        file_existing = !isfile(dir("data", "opt_solomon", obj_name, "$ins_name-$num_vehicle.json"))
         if file_existing == false
-            if JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["tex"] == "no solution" || (JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["solve_time"] < time_solve && abs(JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["relative_gap"]) > 0)
+            if JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name-$num_vehicle.json"))["tex"] == "no solution" || (JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name-$num_vehicle.json"))["solve_time"] < time_solve && abs(JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name-$num_vehicle.json"))["relative_gap"]) > 0)
                 nothing
             else
                 continue
@@ -656,7 +656,7 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run = not
                 mkpath(location)
             end
             # save json file
-            open(joinpath(location, "$ins_name.json"), "w") do io
+            open(joinpath(location, "$ins_name-$num_vehicle.json"), "w") do io
                 JSON3.pretty(io, d, JSON3.AlignmentContext(alignment=:Colon, indent=2))
             end
         end
