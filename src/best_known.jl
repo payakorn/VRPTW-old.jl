@@ -24,6 +24,8 @@ function load_solution(ins_name::String, num_node::Integer, obj_func::Function)
         objf = "total_distance"
     elseif obj_func == balancing_value
         objf = "balancing_completion_time"
+    elseif obj_func == balancing_value_weighted_sum
+        objf = "balancing_completion_time_weighted_sum"
     end
     try return load_solution("$ins_name-$num_node", objf) 
     catch e; 

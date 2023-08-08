@@ -555,6 +555,11 @@ function balancing_value(sol::Solution)
 end
 
 
+function balancing_value_weighted_sum(sol::Solution)
+    return balancing_value(sol) + distance(sol)
+end
+
+
 function load_solution(location::String)
     js = JSON.parsefile(location)
     route = dict_to_solution(js["route"])
