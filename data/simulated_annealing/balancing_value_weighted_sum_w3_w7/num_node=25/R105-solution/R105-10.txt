@@ -1,0 +1,7 @@
+Solution: R105 with 25 nodes and 6 routes, obj_func: balancing_value_weighted_sum_w3_w7
+route 1:  12  9  3 24
+route 2:   5 14 16 17
+route 3:  11 19  7 10 20
+route 4:   2 15  6 13
+route 5:  21 23 22  4 25
+route 6:  18  8  1

@@ -1,0 +1,4 @@
+Solution: RC107 with 25 nodes and 3 routes, obj_func: balancing_value_weighted_sum_w4_w6
+route 1:  25 18 19 21 23 20 22 24
+route 2:  14 16 15 10 12 11 13  9 17
+route 3:   2  6  7  4  5  8  3  1
