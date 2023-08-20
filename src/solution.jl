@@ -572,6 +572,18 @@ function balancing_value_weighted_sum_w2_w8(sol::Solution)
 end
 
 
+function balancing_value_weighted_sum_w3_w7(sol::Solution)
+    w1, w2 = 0.3, 0.7
+    return w1*balancing_value(sol) + w2*distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w4_w6(sol::Solution)
+    w1, w2 = 0.4, 0.6
+    return w1*balancing_value(sol) + w2*distance(sol)
+end
+
+
 function load_solution(location::String)
     js = JSON.parsefile(location)
     route = dict_to_solution(js["route"])
