@@ -584,6 +584,36 @@ function balancing_value_weighted_sum_w4_w6(sol::Solution)
 end
 
 
+function balancing_value_weighted_sum_w5_w5(sol::Solution)
+    w1, w2 = 0.5, 0.5
+    return w1*balancing_value(sol) + w2*distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w6_w4(sol::Solution)
+    w1, w2 = 0.6, 0.4
+    return w1*balancing_value(sol) + w2*distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w7_w3(sol::Solution)
+    w1, w2 = 0.7, 0.3
+    return w1*balancing_value(sol) + w2*distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w8_w2(sol::Solution)
+    w1, w2 = 0.8, 0.2
+    return w1*balancing_value(sol) + w2*distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w9_w1(sol::Solution)
+    w1, w2 = 0.9, 0.1
+    return w1*balancing_value(sol) + w2*distance(sol)
+end
+
+
 function load_solution(location::String)
     js = JSON.parsefile(location)
     route = dict_to_solution(js["route"])

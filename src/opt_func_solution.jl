@@ -121,9 +121,10 @@ function write_solution(route::Dict, ins_name::String, tex::String, m, t, CMAX, 
     elseif obj_function == "total_distance"
         location = dir("data", "opt_solomon", "total_distance")
         # location = joinpath(@__DIR__, "..", "" "opt_solomon", "$name") 
-        if isfile(location) == false
-            mkpath(location)
-        end
+        # if isfile(location) == false
+        #     mkpath(location)
+        # end
+        try mkpath(location) catch e; nothing end
 
         # calculate max completion time
         max_com = Dict(k => value.(t[route[k][end-1]]) + service[route[k][end-1]+1] for k in 1:(length(route)))
@@ -132,6 +133,9 @@ function write_solution(route::Dict, ins_name::String, tex::String, m, t, CMAX, 
 
         # total completion time
         total_com = sum([value.(t[i]) + service[i+1] for i in 1:(length(t)-1)])
+
+        # find total distance (not complete)
+        # total_dis = sum([value.(x[i, j, k]) for i in 1:l)
 
         # create dict
         d = Dict("name" => ins_name, "num_vehicle" => length(route), "route" => route, "tex" => tex, "max_completion_time" => max_com, "obj_function" => bc, "solve_time" => solve_time(m), "relative_gap" => relative_gap(m), "solver_name" => solver_name(m), "total_com" => total_com)
@@ -155,7 +159,7 @@ function write_solution(route::Dict, ins_name::String, tex::String, m, t, CMAX, 
     end
 
 
-    if isfile(joinpath(location, "$ins_name.json"))
+    if isfile(joinpath(location, "$ins_name.json")) == false
         mkdir(joinpath(location, "$ins_name.json"))
     end
     open(joinpath(location, "$ins_name.json"), "w") do io
