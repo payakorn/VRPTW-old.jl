@@ -1,10 +1,10 @@
 {
    "max_completion_time": {
-                             "2": 709.1999999999971,
+                             "2": 975,
                              "1": 988
                           },
                   "name": "R211-25",
-            "solve_time": 363.6400001049042,
+            "solve_time": 74.80516600608826,
           "relative_gap": 0,
                  "route": {
                              "2": [
@@ -41,9 +41,9 @@
                                     0
                                   ]
                           },
-          "obj_function": 278.8000000000029,
-             "total_com": 13877.800000000003,
+          "obj_function": 13,
+             "total_com": 12323.700000000008,
            "num_vehicle": 2,
-           "solver_name": "CPLEX",
+           "solver_name": "Gurobi",
                    "tex": "vehicle 1: [0, 12, 21, 23, 22, 2, 15, 14, 16, 17, 5, 6, 13, 0]\nvehicle 2: [0, 18, 8, 7, 19, 11, 10, 1, 20, 9, 3, 24, 25, 4, 0]\n"
 }

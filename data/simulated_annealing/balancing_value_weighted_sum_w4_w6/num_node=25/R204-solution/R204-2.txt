@@ -1,2 +1,8 @@
+<<<<<<< HEAD
 Solution: R204 with 25 nodes and 1 routes, obj_func: balancing_value_weighted_sum_w4_w6
 route 1:  15 23 18 19 11 10 20  9  7  8  6  5 17 16 14 13  2 22 21  4 25 24 12  3  1
+=======
+Solution: R204 with 25 nodes and 2 routes, obj_func: balancing_value_weighted_sum_w4_w6
+route 1:  21 23 22 15  2 13  6 14 16 17  5 18
+route 2:   1 10 11 19  8  7 20  9  3 12 24  4 25
+>>>>>>> 8b577976fb024df635ee1eaee3aa280543f1aea4

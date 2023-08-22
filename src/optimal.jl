@@ -128,115 +128,115 @@ function opt_balancing(ins_name::String, num_vehicle::Integer, solver; time_solv
     return m, x, t, CMAX, service
 end
 
+# maybe dupplicate!!!
+# function opt_total_com(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
 
-function opt_total_com(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
+#     data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
+#     d = data["upper"]
+#     low_d = data["lower"]
+#     demand = data["demand"]
+#     solomon_demand = data["capacity"]
+#     distance_matrix = data["distance_matrix"]
+#     service = data["service"]
 
-    data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
-    d = data["upper"]
-    low_d = data["lower"]
-    demand = data["demand"]
-    solomon_demand = data["capacity"]
-    distance_matrix = data["distance_matrix"]
-    service = data["service"]
+#     # number of node
+#     n = length(d) - 1
 
-    # number of node
-    n = length(d) - 1
+#     m = Model(solver.Optimizer)
+#     set_time_limit_sec(m, time_solve)
+#     # set_optimizer_attribute(m, "logLevel", 1)
 
-    m = Model(solver.Optimizer)
-    set_time_limit_sec(m, time_solve)
-    # set_optimizer_attribute(m, "logLevel", 1)
-
-    # num_vehicle = 3
-    K = 1:num_vehicle
-    M = n * 1000
-
-
-    # test round distance (some papers truncate digits)
-    distance_matrix = floor.(distance_matrix, digits=1)
-
-    # add variables
-    @variable(m, x[i=0:n, j=0:n, k=K; i != j], Bin)
-    @variable(m, low_d[i+1] <= t[i=0:n] <= d[i+1])
-
-    @variable(m, 0 <= C[i=1:n])
+#     # num_vehicle = 3
+#     K = 1:num_vehicle
+#     M = n * 1000
 
 
-    for k in K
-        @constraint(m, sum(x[0, j, k] for j in 1:n) == 1)
-        @constraint(m, sum(x[i, 0, k] for i in 1:n) == 1)
+#     # test round distance (some papers truncate digits)
+#     distance_matrix = floor.(distance_matrix, digits=1)
 
-    end
+#     # add variables
+#     @variable(m, x[i=0:n, j=0:n, k=K; i != j], Bin)
+#     @variable(m, low_d[i+1] <= t[i=0:n] <= d[i+1])
 
-
-    # # add new 
-    # for j in 1:n
-    #     @constraint(m, sum(x[i, j, k] for i in 1:n for k in K if i != j) == 1)
-    # end
+#     @variable(m, 0 <= C[i=1:n])
 
 
-    # one vehicle in and out each node
-    for i = 1:n
-        @constraint(m, sum(x[j, i, k] for j in 0:n for k in K if i != j) == 1)
-        @constraint(m, sum(x[i, j, k] for j in 0:n for k in K if i != j) == 1)
-    end
+#     for k in K
+#         @constraint(m, sum(x[0, j, k] for j in 1:n) == 1)
+#         @constraint(m, sum(x[i, 0, k] for i in 1:n) == 1)
 
-    # continuity
-    for j in 1:n
-        for k in K
-            @constraint(m, sum(x[i, j, k] for i in 0:n if i != j) - sum(x[j, l, k] for l in 0:n if j != l) == 0)
-        end
-    end
-
-    # # time windows
-    # for k in K
-    #     # fix(t[0,k], 0, force=true)
-    #     for j in 1:n
-    #         @constraint(m, distance_matrix[1, j+1] <= t[j]+ M*(1-x[0, j, k]) + M*w[j])
-    #         # @constraint(m, distance_matrix[1, j+1] >= t[j]- M*(1-x[0, j, k]) - M*w[j])
-    #     end
-    # end
-
-    for i in 1:n
-        for j in 0:n
-            if i != j
-                for k in K
-
-                    @constraint(m, t[i] + service[i+1] + distance_matrix[i+1, j+1] - M * (1 - x[i, j, k]) <= t[j])
+#     end
 
 
-                    # 
-                    # @constraint(m, t[i] + service[i+1] + distance_matrix[i+1, j+1] - M*(1-x[i, j, k]) - M*w[j] <= t[j] )
-                    # @constraint(m, t[i] + service[i+1] + distance_matrix[i+1, j+1] + M*(1-x[i, j, k]) + M*w[j] >= t[j] )
-                end
-            end
-        end
-    end
-
-    # completion time constraints
-    for i in 1:n
-        @constraint(m, t[i] + service[i+1] <= C[i])
-    end
+#     # # add new 
+#     # for j in 1:n
+#     #     @constraint(m, sum(x[i, j, k] for i in 1:n for k in K if i != j) == 1)
+#     # end
 
 
-    # subtour elimination constraints
-    @variable(m, demand[i+1] <= u[i=1:n] <= solomon_demand)
-    for i in 1:n
-        for j in 1:n
-            for k in K
-                if i != j
-                    @constraint(m, u[i] - u[j] + demand[j+1] <= solomon_demand * (1 - x[i, j, k]))
-                end
-            end
-        end
-    end
+#     # one vehicle in and out each node
+#     for i = 1:n
+#         @constraint(m, sum(x[j, i, k] for j in 0:n for k in K if i != j) == 1)
+#         @constraint(m, sum(x[i, j, k] for j in 0:n for k in K if i != j) == 1)
+#     end
+
+#     # continuity
+#     for j in 1:n
+#         for k in K
+#             @constraint(m, sum(x[i, j, k] for i in 0:n if i != j) - sum(x[j, l, k] for l in 0:n if j != l) == 0)
+#         end
+#     end
+
+#     # # time windows
+#     # for k in K
+#     #     # fix(t[0,k], 0, force=true)
+#     #     for j in 1:n
+#     #         @constraint(m, distance_matrix[1, j+1] <= t[j]+ M*(1-x[0, j, k]) + M*w[j])
+#     #         # @constraint(m, distance_matrix[1, j+1] >= t[j]- M*(1-x[0, j, k]) - M*w[j])
+#     #     end
+#     # end
+
+#     for i in 1:n
+#         for j in 0:n
+#             if i != j
+#                 for k in K
+
+#                     @constraint(m, t[i] + service[i+1] + distance_matrix[i+1, j+1] - M * (1 - x[i, j, k]) <= t[j])
 
 
-    # objective to minimize the total different of max completion time of all vehicles
-    @objective(m, Min, sum(C[i] for i in 1:n))
+#                     # 
+#                     # @constraint(m, t[i] + service[i+1] + distance_matrix[i+1, j+1] - M*(1-x[i, j, k]) - M*w[j] <= t[j] )
+#                     # @constraint(m, t[i] + service[i+1] + distance_matrix[i+1, j+1] + M*(1-x[i, j, k]) + M*w[j] >= t[j] )
+#                 end
+#             end
+#         end
+#     end
 
-    optimize!(m)
-    return m, x, t, C, service
-end
+#     # completion time constraints
+#     for i in 1:n
+#         @constraint(m, t[i] + service[i+1] <= C[i])
+#     end
+
+
+#     # subtour elimination constraints
+#     @variable(m, demand[i+1] <= u[i=1:n] <= solomon_demand)
+#     for i in 1:n
+#         for j in 1:n
+#             for k in K
+#                 if i != j
+#                     @constraint(m, u[i] - u[j] + demand[j+1] <= solomon_demand * (1 - x[i, j, k]))
+#                 end
+#             end
+#         end
+#     end
+
+
+#     # objective to minimize the total different of max completion time of all vehicles
+#     @objective(m, Min, sum(C[i] for i in 1:n))
+
+#     optimize!(m)
+#     return m, x, t, C, service
+# end
 
 
 function opt_balancing_weighted_sum(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)

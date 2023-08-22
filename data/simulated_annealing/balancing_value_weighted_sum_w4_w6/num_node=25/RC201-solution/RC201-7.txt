@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 Solution: RC201 with 25 nodes and 4 routes, obj_func: balancing_value_weighted_sum_w4_w6
 route 1:   9 10 13 24
 route 2:   2  5  8  7  6  3  1  4
 route 3:  14 12 11 15 16 17
 route 4:  23 21 18 19 22 20 25
+=======
+Solution: RC201 with 25 nodes and 3 routes, obj_func: balancing_value_weighted_sum_w4_w6
+route 1:   2  5  8  7  6  3  1  4
+route 2:  14 12 11 15 16  9 10 17 13
+route 3:  19 23 21 18 22 20 24 25
+>>>>>>> 8b577976fb024df635ee1eaee3aa280543f1aea4

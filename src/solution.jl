@@ -140,7 +140,7 @@ end
 
 function seperate_route_to_array(solution::Solution)
     route = solution.route
-    zero_position = findall(x->x==0, route)
+    zero_position = findall(x -> x == 0, route)
     result = []
     for i in 1:route_length(solution)
         push!(result, route[(zero_position[i]+1):(zero_position[i+1]-1)])
@@ -288,7 +288,7 @@ end
 
 function cross_over(solution::Solution, pos1::Integer, pos2::Integer)
 
-    if abs(pos1-pos2) <= 1
+    if abs(pos1 - pos2) <= 1
         return solution
     end
 
@@ -296,8 +296,8 @@ function cross_over(solution::Solution, pos1::Integer, pos2::Integer)
     D = solution.route[pos2:end]
 
     middle_part = solution.route[pos1+1:pos2-1]
-    first_position = findfirst(x->x==0, middle_part)
-    last_position = findlast(x->x==0, middle_part)
+    first_position = findfirst(x -> x == 0, middle_part)
+    last_position = findlast(x -> x == 0, middle_part)
 
     if isnothing(first_position) && isnothing(last_position)
         append!(A, D)
@@ -336,7 +336,7 @@ end
 
 function move!(solution::Solution, cus::Integer)
     new_sol = deepcopy(solution)
-    deleteat!(new_sol.route, findfirst(x->x==cus, new_sol.route))
+    deleteat!(new_sol.route, findfirst(x -> x == cus, new_sol.route))
     new_sol = inserting(new_sol, cus, new_sol.obj_func)
     if feasibility(new_sol)
         return new_sol
@@ -562,13 +562,55 @@ end
 
 function balancing_value_weighted_sum_w1_w9(sol::Solution)
     w1, w2 = 0.1, 0.9
-    return w1*balancing_value(sol) + w2*distance(sol)
+    return w1 * balancing_value(sol) + w2 * distance(sol)
 end
 
 
 function balancing_value_weighted_sum_w2_w8(sol::Solution)
     w1, w2 = 0.2, 0.8
-    return w1*balancing_value(sol) + w2*distance(sol)
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w3_w7(sol::Solution)
+    w1, w2 = 0.3, 0.7
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w4_w6(sol::Solution)
+    w1, w2 = 0.4, 0.6
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w5_w5(sol::Solution)
+    w1, w2 = 0.5, 0.5
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w6_w4(sol::Solution)
+    w1, w2 = 0.6, 0.4
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w7_w3(sol::Solution)
+    w1, w2 = 0.7, 0.3
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w8_w2(sol::Solution)
+    w1, w2 = 0.8, 0.2
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w9_w1(sol::Solution)
+    w1, w2 = 0.9, 0.1
+    return w1 * balancing_value(sol) + w2 * distance(sol)
 end
 
 
@@ -960,7 +1002,7 @@ function find_best_solution_of_SA(ins_name; obj_func=distance, num_node=100)
         # add new column
         diff_route = [func_to(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
         df[!, :DiffRoute] = diff_route
-        
+
         # add distance column
         dis = [distance(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
         df[!, :Dis] = dis
@@ -983,6 +1025,54 @@ function find_best_solution_of_SA(ins_name; obj_func=distance, num_node=100)
 end
 
 
+"""
+    The function aim to find all solutions from SA of `ins_name`. This is created for finding Pareto front
+    
+    
+    This function is modified from `find_best_solution_of_SA`
+"""
+function find_all_solutions_of_SA(ins_name::String; obj_func=distance, num_node=100)
+    ins_name = uppercase(ins_name)
+    location = dir("data", "simulated_annealing", obj_func, "num_node=$num_node", "$ins_name.csv")
+
+    # defind function to calculate
+    # func_to = find_average_node_each_route
+    func_to = find_min_max_num_node_each_route
+
+    # main
+    if isfile(location)
+        df = CSV.File(location) |> DataFrame
+
+        # add new column
+        diff_route = [func_to(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :DiffRoute] = diff_route
+
+        # add distance column
+        dis = [distance(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :Dis] = dis
+
+        # add balancing column
+        bal = [balancing_value(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :Bal] = bal
+
+        # remane
+        # rename!(df, :i => :name)
+
+        # obj_min, ind = findmin(df.obj)
+        # df[!, :ins] = [ins_name for i in 1:length(df.obj)]
+        # df[!, :Num_Run] = size(df, 1) * ones(size(df, 1))
+        # df = select(df, [:ins, :Num_Run, :i, :date, :alpha, :iter, :time, :num_vehi, :obj, :DiffRoute, :Dis])
+        # dm = df[ind, :]
+
+        return df
+    else
+        dm = CSV.File(dir("data", "simulated_annealing", "head_df.csv")) |> DataFrame
+        dm[1, 1] = ins_name
+        return dm
+    end
+end
+
+
 function find_min_max_num_node_each_route(solution::Solution)
     sep = seperate_route_to_array(solution)
     length_each_route = [length(i) for i in sep]
@@ -995,7 +1085,7 @@ end
 function find_average_node_each_route(solution::Solution)
     sep = seperate_route_to_array(solution)
     length_each_route = [length(i) for i in sep]
-    average = sum(length_each_route)/length(length_each_route)
+    average = sum(length_each_route) / length(length_each_route)
     return round(average, digits=2)
 end
 
@@ -1003,6 +1093,41 @@ end
 function find_difference_min_max_length_each_route(solution::Solution)
     min_length, max_length = find_min_max_num_node_each_route(solution)
     return max_length - min_length
+end
+
+
+function plot_pareto_front(ins_name::String; num_node=25::Integer)
+
+    obj_funcs = [balancing_value_weighted_sum_w1_w9,
+        balancing_value_weighted_sum_w2_w8,
+        balancing_value_weighted_sum_w3_w7,
+        balancing_value_weighted_sum_w4_w6,
+        balancing_value_weighted_sum_w5_w5,
+        balancing_value_weighted_sum_w6_w4,
+        balancing_value_weighted_sum_w7_w3,
+    ]
+
+    # plot first solution in all_solutions
+    sol = find_all_solutions_of_SA(ins_name; obj_func=obj_funcs[1], num_node=num_node)
+    legend_name = "$(obj_funcs[1])"[30:end]
+    @info "plot objective function $(obj_funcs[1])"
+    p = Plots.scatter(sol.Dis, sol.Bal, label=legend_name, legend=:outertopright, title=uppercase(ins_name))
+    xlabel!("Total distance")
+    ylabel!("Total diff")
+
+    # plot others
+    for obj_func in obj_funcs[2:end]
+        @info "plot objective function $(obj_func)"
+        sol = find_all_solutions_of_SA(ins_name, obj_func=obj_func, num_node=num_node)
+        legend_name = "$(obj_func)"[30:end] # only last 30 characters
+        p = Plots.scatter!(sol.Dis, sol.Bal, label=legend_name)
+    end
+    savefig(p, dir("data", "simulated_annealing", "plot_pareto", "plot_pareto_$(ins_name).pdf"))
+end
+
+
+function plot_pareto(ins_name::String)
+    all_solutions = find_all_solutions_of_SA(ins_name, obj_func=obj_func, num_node=num_node)
 end
 
 
@@ -1022,13 +1147,49 @@ function create_simulated_annealing_summary(; obj_func=distance, num_node=100)
     if obj_func == distance && num_node == 100
         best_obj = [obj_func(load_solution_phase0(ins_name)) for ins_name in ins_names]
         best_vehi = [route_length(load_solution_phase0(ins_name)) for ins_name in ins_names]
-        diff_num_each_route = [try func_to(load_solution_phase0(ins_name)) catch e; Inf end for ins_name in ins_names]
-        dis = [try distance(load_solution_phase0(ins_name)) catch e; Inf end for ins_name in ins_names]
+        diff_num_each_route = [
+            try
+                func_to(load_solution_phase0(ins_name))
+            catch e
+                Inf
+            end for ins_name in ins_names
+        ]
+        dis = [
+            try
+                distance(load_solution_phase0(ins_name))
+            catch e
+                Inf
+            end for ins_name in ins_names
+        ]
     else
-        best_obj = [try obj_func(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
-        best_vehi = [try route_length(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
-        diff_num_each_route = [try func_to(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
-        dis = [try distance(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
+        best_obj = [
+            try
+                obj_func(load_solution(ins_name, num_node, obj_func))
+            catch e
+                Inf
+            end for ins_name in ins_names
+        ]
+        best_vehi = [
+            try
+                route_length(load_solution(ins_name, num_node, obj_func))
+            catch e
+                Inf
+            end for ins_name in ins_names
+        ]
+        diff_num_each_route = [
+            try
+                func_to(load_solution(ins_name, num_node, obj_func))
+            catch e
+                Inf
+            end for ins_name in ins_names
+        ]
+        dis = [
+            try
+                distance(load_solution(ins_name, num_node, obj_func))
+            catch e
+                Inf
+            end for ins_name in ins_names
+        ]
     end
 
     # change column name
@@ -1038,7 +1199,7 @@ function create_simulated_annealing_summary(; obj_func=distance, num_node=100)
     dg[!, :BestDis] = dis
 
     # round column gap
-    dg = select(dg, :, [:obj, :BestKnown] => (a, b) -> (round.((a.-b)./b.*100, digits=2)))
+    dg = select(dg, :, [:obj, :BestKnown] => (a, b) -> (round.((a .- b) ./ b .* 100, digits=2)))
     rename!(dg, :obj_BestKnown_function => :gap)
 
     # round degits for columns objective value and best known value

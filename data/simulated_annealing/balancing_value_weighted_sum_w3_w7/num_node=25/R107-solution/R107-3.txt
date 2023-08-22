@@ -1,6 +1,16 @@
+<<<<<<< HEAD
 Solution: R107 with 25 nodes and 5 routes, obj_func: balancing_value_weighted_sum_w3_w7
 route 1:   2 15 14 16  5 17
 route 2:   1 11 19  8  7 18
 route 3:  21 23 22  4 25
 route 4:   6 13
 route 5:  12  3 24  9 20 10
+=======
+Solution: R107 with 25 nodes and 6 routes, obj_func: balancing_value_weighted_sum_w3_w7
+route 1:  13
+route 2:   6  5 16 14
+route 3:   7 19 11 20 10  1
+route 4:   2 15 23 22 21  4
+route 5:  12  3  9 24 25
+route 6:  18  8 17
+>>>>>>> 8b577976fb024df635ee1eaee3aa280543f1aea4

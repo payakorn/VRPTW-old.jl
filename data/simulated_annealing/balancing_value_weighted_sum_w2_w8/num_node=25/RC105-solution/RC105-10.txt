@@ -1,6 +1,16 @@
+<<<<<<< HEAD
 Solution: RC105 with 25 nodes and 5 routes, obj_func: balancing_value_weighted_sum_w2_w8
 route 1:  11  9 10 13
 route 2:  12 14 15 16 17
 route 3:  19 23 18 22 20 24 21 25
 route 4:   2  6  4
 route 5:   7  8  5  3  1
+=======
+Solution: RC105 with 25 nodes and 6 routes, obj_func: balancing_value_weighted_sum_w2_w8
+route 1:  11  9 10 13
+route 2:  19 23 21 18 25
+route 3:   2  6  4
+route 4:  12 14 15 16 17
+route 5:  22 24 20
+route 6:   7  8  5  3  1
+>>>>>>> 8b577976fb024df635ee1eaee3aa280543f1aea4

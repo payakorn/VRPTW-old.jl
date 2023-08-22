@@ -1,5 +1,12 @@
 Solution: C102 with 25 nodes and 4 routes, obj_func: balancing_value_weighted_sum_w2_w8
+<<<<<<< HEAD
 route 1:  10 23 21
 route 2:   3  1  2  8 11  9  6  4  7
 route 3:  20 24 25 22
 route 4:  13 17 18 19 15 16 14 12  5
+=======
+route 1:  20 24 25 22
+route 2:   5  1  2  8  9  6  4  7
+route 3:  10 11 23 21
+route 4:  13 17 18 19 15 16 14 12  3
+>>>>>>> 8b577976fb024df635ee1eaee3aa280543f1aea4
