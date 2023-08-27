@@ -831,6 +831,26 @@ function opt_max_com(ins_name::String, num_vehicle::Integer, solver; time_solve=
 end
 
 
+# function instances()
+#     nothing
+# end
+
+
+# function instances(num_vehicle::Integer)
+#     file_name = dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv")
+#     NameNumVehicle = CSV.File(file_name)
+#     Ins_name = [String("$(NameNumVehicle[i][1])-$(NameNumVehicle[i][2])") for i in 1:(length(NameNumVehicle))]
+#     Num_vehicle = [NameNumVehicle[i][3] for i in 1:(length(NameNumVehicle))]
+#     if num_vehicle == 25
+#         return Ins_name[1:56]
+#     elseif num_vehicle == 50
+#         return Ins_name[57:56+56]
+#     elseif num_vehicle == 100
+#         return Ins_name[56+56+1:end]
+#     end
+# end
+
+
 function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run = nothing, customize_num=false)
     if customize_num
         file_name = dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_customize.csv")
@@ -865,6 +885,7 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run = not
     end
 
     for (ins_name, num_vehicle) in zip(Ins_name, Num_vehicle)
+
         # chack the exiting of file
         file_existing = !isfile(dir("data", "opt_solomon", obj_name, "$ins_name-$num_vehicle.json"))
         if file_existing == false
@@ -891,6 +912,7 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run = not
             if !isfile(location)
                 mkpath(location)
             end
+
             # save json file
             open(joinpath(location, "$ins_name-$num_vehicle.json"), "w") do io
                 JSON3.pretty(io, d, JSON3.AlignmentContext(alignment=:Colon, indent=2))

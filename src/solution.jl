@@ -1087,9 +1087,9 @@ end
 function plot_pareto_front(ins_name::String; num_node=25::Integer)
 
     obj_funcs = [balancing_value_weighted_sum_w1_w9,
-        # balancing_value_weighted_sum_w2_w8,
-        # balancing_value_weighted_sum_w3_w7,
-        # balancing_value_weighted_sum_w4_w6,
+        balancing_value_weighted_sum_w2_w8,
+        balancing_value_weighted_sum_w3_w7,
+        balancing_value_weighted_sum_w4_w6,
         balancing_value_weighted_sum_w5_w5,
         balancing_value_weighted_sum_w6_w4,
         balancing_value_weighted_sum_w7_w3,
