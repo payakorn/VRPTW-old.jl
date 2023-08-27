@@ -822,7 +822,6 @@ function opt_max_com(ins_name::String, num_vehicle::Integer, solver; time_solve=
         end
     end
 
-
     # objective to minimize the total different of max completion time of all vehicles
     @objective(m, Min, CMAX)
 
