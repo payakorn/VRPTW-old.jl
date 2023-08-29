@@ -560,6 +560,11 @@ function balancing_value_weighted_sum(sol::Solution)
 end
 
 
+function balancing_value_weighted_sum_w0_w10(sol::Solution)
+    return distance(sol)
+end
+
+
 function balancing_value_weighted_sum_w1_w9(sol::Solution)
     w1, w2 = 0.1, 0.9
     return w1 * balancing_value(sol) + w2 * distance(sol)
@@ -611,6 +616,11 @@ end
 function balancing_value_weighted_sum_w9_w1(sol::Solution)
     w1, w2 = 0.9, 0.1
     return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w10_w0(sol::Solution)
+    return balancing_value(sol)
 end
 
 
@@ -1086,13 +1096,18 @@ end
 
 function plot_pareto_front(ins_name::String; num_node=25::Integer)
 
-    obj_funcs = [balancing_value_weighted_sum_w1_w9,
+    obj_funcs = [
+        balancing_value_weighted_sum_w0_w10,
+        balancing_value_weighted_sum_w1_w9,
         balancing_value_weighted_sum_w2_w8,
         balancing_value_weighted_sum_w3_w7,
         balancing_value_weighted_sum_w4_w6,
         balancing_value_weighted_sum_w5_w5,
         balancing_value_weighted_sum_w6_w4,
         balancing_value_weighted_sum_w7_w3,
+        balancing_value_weighted_sum_w8_w2,
+        balancing_value_weighted_sum_w9_w1,
+        balancing_value_weighted_sum_w10_w0,
     ]
 
     # plot first solution in all_solutions
