@@ -61,9 +61,9 @@ function write_solution(route::Dict, ins_name::String, tex::String, m, t, CMAX, 
 
         # create dict
         d = Dict("name" => ins_name, "num_vehicle" => length(route), "route" => route, "tex" => tex, "max_completion_time" => max_com, "obj_function" => JuMP.objective_value(m), "solve_time" => solve_time(m), "relative_gap" => relative_gap(m), "solver_name" => solver_name(m), "total_com" => total_com)
-    elseif obj_function == "balancing_completion_time_weighted_sum"
+    elseif obj_function == "balancing_completion_time_weighted_sum" || obj_function == "balancing_completion_time_weighted_sum_w1_w9" || obj_function == "balancing_completion_time_weighted_sum_w2_w8" || obj_function == "balancing_completion_time_weighted_sum_w3_w7" || obj_function == "balancing_completion_time_weighted_sum_w4_w6" || obj_function == "balancing_completion_time_weighted_sum_w5_w5" || obj_function == "balancing_completion_time_weighted_sum_w6_w4" || obj_function == "balancing_completion_time_weighted_sum_w7_w3" || obj_function == "balancing_completion_time_weighted_sum_w8_w2" || obj_function == "balancing_completion_time_weighted_sum_w9_w1" || obj_function == "balancing_completion_time_weighted_sum_w10_w0"
         # check location
-        location = dir("data", "opt_solomon", "balancing_completion_time_weighted_sum")
+        location = dir("data", "opt_solomon", obj_function)
         # location = joinpath(@__DIR__, "..", "" "opt_solomon", "$name") 
         if isfile(location) == false
             mkpath(location)
@@ -159,8 +159,8 @@ function write_solution(route::Dict, ins_name::String, tex::String, m, t, CMAX, 
     end
 
 
-    if isfile(joinpath(location, "$ins_name.json")) == false
-        mkdir(joinpath(location, "$ins_name.json"))
+    if ispath(location) == false
+        mkdir(location)
     end
     open(joinpath(location, "$ins_name.json"), "w") do io
         JSON3.pretty(io, d, JSON3.AlignmentContext(alignment=:Colon, indent=2))
