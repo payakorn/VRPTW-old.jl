@@ -650,9 +650,12 @@ function load_solution_phase0(ins_name::String; obj_func=distance)
 end
 
 
-function load_solution_phase1(ins_name::String)
-    # pt = "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/$ins_name.txt"
-    pt = "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1/Alg-clustering-heuristic/$ins_name.txt"
+function load_solution_phase1(ins_name::String; totalcomp=false)
+    if totalcomp
+        pt = "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/$ins_name.txt"
+    else
+        pt = "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1/Alg-clustering-heuristic/$ins_name.txt"
+    end
     f = open(pt)
     lines = readlines(f)
     route = Integer[0]
@@ -668,9 +671,13 @@ function load_solution_phase1(ins_name::String)
 end
 
 
-function load_solution_phase2(ins_name::String)
-    # pt = "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/$ins_name.txt"
-    pt = "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/$ins_name.txt"
+function load_solution_phase2(ins_name::String; totalcomp=false)
+    if totalcomp
+        pt = "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/$ins_name.txt"
+    else
+        pt = "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/$ins_name.txt"
+    end
+
     f = open(pt)
     lines = readlines(f)
     route = Integer[0]
@@ -686,9 +693,13 @@ function load_solution_phase2(ins_name::String)
 end
 
 
-function load_solution_phase3(ins_name::String)
-    # all_ins = glob("*", "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/random_swap_move/$ins_name/")
-    all_ins = glob("*", "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/random_swap_move/$ins_name/")
+function load_solution_phase3(ins_name::String; totalcomp=false)
+
+    if totalcomp
+        all_ins = glob("*", "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/random_swap_move/$ins_name/")
+    else
+        all_ins = glob("*", "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/random_swap_move/$ins_name/")
+    end
 
     problem = load_solomon_data(ins_name, num_node=100)
     min_obj = Inf
@@ -979,19 +990,26 @@ function save_solution_struct(solution::Solution)
 end
 
 
-function create_phase_conclusion()
+function create_phase_conclusion(;totalcomp=false)
+
+    if totalcomp
+        obj_func = total_comp
+    else
+        obj_func = distance
+    end
+
     df = DataFrame(
         ins=ins_names,
-        comp0=total_comp.(load_solution_phase0.(ins_names)),
-        comp1=total_comp.(load_solution_phase1.(ins_names)),
-        comp2=total_comp.(load_solution_phase2.(ins_names)),
-        comp3=total_comp.(load_solution_phase3.(ins_names)),
-        dis0=distance.(load_solution_phase0.(ins_names)),
-        dis1=distance.(load_solution_phase1.(ins_names)),
-        dis2=distance.(load_solution_phase2.(ins_names)),
-        dis3=distance.(load_solution_phase3.(ins_names)),
+        comp0=total_comp.(load_solution_phase0.(ins_names, obj_func=obj_func)),
+        comp1=total_comp.(load_solution_phase1.(ins_names, totalcomp=totalcomp)),
+        comp2=total_comp.(load_solution_phase2.(ins_names, totalcomp=totalcomp)),
+        comp3=total_comp.(load_solution_phase3.(ins_names, totalcomp=totalcomp)),
+        dis0=distance.(load_solution_phase0.(ins_names, obj_func=obj_func)),
+        dis1=distance.(load_solution_phase1.(ins_names, totalcomp=totalcomp)),
+        dis2=distance.(load_solution_phase2.(ins_names, totalcomp=totalcomp)),
+        dis3=distance.(load_solution_phase3.(ins_names, totalcomp=totalcomp)),
     )
-    CSV.write("data/simulations/phase1phase2phase3.csv", df)
+    CSV.write("data/simulations/phase1phase2phase3_$obj_func.csv", df)
 end
 
 
