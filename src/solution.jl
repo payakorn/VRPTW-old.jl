@@ -982,10 +982,10 @@ end
 function create_phase_conclusion()
     df = DataFrame(
         ins=ins_names,
-        comp0=total_max_comp.(load_solution_phase0.(ins_names)),
-        comp1=total_max_comp.(load_solution_phase1.(ins_names)),
-        comp2=total_max_comp.(load_solution_phase2.(ins_names)),
-        comp3=total_max_comp.(load_solution_phase3.(ins_names)),
+        comp0=total_comp.(load_solution_phase0.(ins_names)),
+        comp1=total_comp.(load_solution_phase1.(ins_names)),
+        comp2=total_comp.(load_solution_phase2.(ins_names)),
+        comp3=total_comp.(load_solution_phase3.(ins_names)),
         dis0=distance.(load_solution_phase0.(ins_names)),
         dis1=distance.(load_solution_phase1.(ins_names)),
         dis2=distance.(load_solution_phase2.(ins_names)),
