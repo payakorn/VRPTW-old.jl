@@ -634,7 +634,7 @@ end
 
 # load benchmark solution 
 function load_solution_phase0(ins_name::String; obj_func=distance)
-    pt = "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/solutions_benchmark/$ins_name.txt"
+    pt = "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/solutions_benchmark/$ins_name.txt"
     f = open(pt)
     lines = readlines(f)
     route = Integer[0]
@@ -651,7 +651,8 @@ end
 
 
 function load_solution_phase1(ins_name::String)
-    pt = "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/$ins_name.txt"
+    # pt = "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/$ins_name.txt"
+    pt = "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1/Alg-clustering-heuristic/$ins_name.txt"
     f = open(pt)
     lines = readlines(f)
     route = Integer[0]
@@ -668,7 +669,8 @@ end
 
 
 function load_solution_phase2(ins_name::String)
-    pt = "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/$ins_name.txt"
+    # pt = "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/$ins_name.txt"
+    pt = "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/$ins_name.txt"
     f = open(pt)
     lines = readlines(f)
     route = Integer[0]
@@ -685,7 +687,8 @@ end
 
 
 function load_solution_phase3(ins_name::String)
-    all_ins = glob("*", "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/random_swap_move/$ins_name/")
+    # all_ins = glob("*", "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/random_swap_move/$ins_name/")
+    all_ins = glob("*", "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/random_swap_move/$ins_name/")
 
     problem = load_solomon_data(ins_name, num_node=100)
     min_obj = Inf
@@ -706,8 +709,15 @@ function load_solution_phase3(ins_name::String)
             sol = deepcopy(new_sol)
         end
     end
-    return sol
+    if isnothing(sol)
+        return load_solution_phase2(ins_name)
+    else
+        return sol
+    end
 end
+
+
+# function create_phase_conclusion
 
 
 function load_solution(ins_name::String, obj_name::String)
