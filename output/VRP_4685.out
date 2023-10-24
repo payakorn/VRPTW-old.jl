@@ -1,0 +1,11 @@
+ERROR: LoadError: ArgumentError: Package Gurobi not found in current path.
+- Run `import Pkg; Pkg.add("Gurobi")` to install the Gurobi package.
+Stacktrace:
+ [1] macro expansion
+   @ ./loading.jl:1163 [inlined]
+ [2] macro expansion
+   @ ./lock.jl:223 [inlined]
+ [3] require(into::Module, mod::Symbol)
+   @ Base ./loading.jl:1144
+in expression starting at /home/payakorn_sak/.julia/dev/VRPTW/src/script.jl:2
+srun: error: compute1: task 0: Exited with exit code 1

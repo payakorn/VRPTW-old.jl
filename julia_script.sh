@@ -1,13 +1,13 @@
 #!/bin/bash
 
-#SBATCH --job-name=VRPTW         ## ชื่อของงาน
+#SBATCH --job-name=solo         ## ชื่อของงาน
 #SBATCH --output=output/VRP_%j.out    ## ชื่อไฟล์ Output (%j = Job-ID)
 #SBATCH --error=output/VRP_%j.out     ## ชื่อไฟล์ error (%j = Job-ID)
 #SBATCH --time=168:00:00          ## เวลาที่ใช้รันงาน
 #SBATCH --partition=cpu         ## ระบุ partition ที่ต้องการใช้งาน
 #SBATCH --nodes=1               # node count
 #SBATCH --ntasks=1              ## จำนวน tasks ที่ต้องการใช้ในการรัน
-#SBATCH --cpus-per-task=32      ## จำนวน code ที่ต้องการใช้ในการรัน
+#SBATCH --cpus-per-task=10      ## จำนวน code ที่ต้องการใช้ในการรัน
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=payakornn@gmail.com
 

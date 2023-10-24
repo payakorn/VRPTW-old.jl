@@ -11,6 +11,7 @@ for i in [50, 100]
     # simulated_annealing_run(obj_func=VRPTW.balancing_value_weighted_sum_w10_w0, num_node=i)
     # date_finish = now()
     # print("end program W10-0: q$(Dates.format(date_now, "e, d u yyyy H:M:S"))")
+    # print("end program W10-0: $(Dates.format(date_now, "e, d u yyyy H:M:S"))")
     
     simulated_annealing_run(obj_func=VRPTW.balancing_value_weighted_sum_w9_w1, num_node=i)
     date_finish = now()
