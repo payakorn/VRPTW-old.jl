@@ -19,4 +19,4 @@ module load julia
 
 
 # srun python copy_of_atom_10_payakorn.py           ## สั่งรัน code
-srun julia src/script.jl           ## สั่งรัน code
+srun julia --threads 10 src/script.jl           ## สั่งรัน code

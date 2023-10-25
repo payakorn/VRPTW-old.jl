@@ -54,7 +54,7 @@ function simulated_annealing(ins_name; num_node=100, max_vehi=25, obj_func=dista
                 solution = deepcopy(new_solution)
                 
                 if obj(solution) < obj(best_solution) || route_length(solution) < route_length(best_solution)
-                    @info "iteration: $i, found new best with num_vehi = $(route_length(solution)) $(obj(solution)), $local_func"
+                    # @info "iteration: $i, found new best with num_vehi = $(route_length(solution)) $(obj(solution)), $local_func"
                     best_solution = deepcopy(solution)
                     not_improve = 1
                     write(ig, "$i,$(route_length(solution)),$(obj(solution)),$(route_length(best_solution)),$(obj(best_solution)),$local_func,newBest\n")
@@ -64,7 +64,7 @@ function simulated_annealing(ins_name; num_node=100, max_vehi=25, obj_func=dista
                 write(ig, "$i,$(route_length(solution)),$(obj(solution)),$(route_length(best_solution)),$(obj(best_solution)),$local_func,improve\n")
             else
                 if p < exp(-100delta/(T))
-                    @info "iteration: $i, accept with pop: $(round(exp(-100delta/T), digits=1)), delta: $(round(delta, digits=2)), T: $(round(T, digits=1)), $(local_func)"
+                    # @info "iteration: $i, accept with pop: $(round(exp(-100delta/T), digits=1)), delta: $(round(delta, digits=2)), T: $(round(T, digits=1)), $(local_func)"
                     solution = deepcopy(new_solution)
                     not_improve = 1
                     T *= alpha
@@ -78,14 +78,14 @@ function simulated_annealing(ins_name; num_node=100, max_vehi=25, obj_func=dista
             not_improve += 1
             
             if mod(i, 200) == 0
-                @info "iteration: $i, T: $T, $local_func, best: $(obj(best_solution))"
+                # @info "iteration: $i, T: $T, $local_func, best: $(obj(best_solution))"
                 T *= alpha^4
             end
             i += 1
             # @info "current T = $T current best obj = $(obj(best_solution))"
         end
     end
-    println("$ins_name iteration: $i, time: $ex_time, T: $T, current: $(obj(solution)) best: $(obj(best_solution))")
+    # println("$ins_name iteration: $i, time: $ex_time, T: $T, current: $(obj(solution)) best: $(obj(best_solution))")
 
     # save log file
     close(ig)
@@ -120,8 +120,9 @@ function simulated_annealing_run(;obj_func=distance, num_node=100, max_vehi=25, 
         Ins = fix_run
     end
 
-    Threads.@threads for ij in 1:10
-        for ins_name in Ins
+    for ij in 1:10
+        Threads.@threads for ins_name in Ins
+            println("ins: ", ins_name, "\t Thread ID: ", Threads.threadid())
             simulated_annealing(ins_name, obj_func=obj_func, num_node=num_node, max_vehi=max_vehi)
         end
     end
