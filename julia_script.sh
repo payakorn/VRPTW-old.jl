@@ -7,7 +7,7 @@
 #SBATCH --partition=cpu         ## ระบุ partition ที่ต้องการใช้งาน
 #SBATCH --nodes=1               # node count
 #SBATCH --ntasks=1              ## จำนวน tasks ที่ต้องการใช้ในการรัน
-#SBATCH --cpus-per-task=10      ## จำนวน code ที่ต้องการใช้ในการรัน
+#SBATCH --cpus-per-task=32      ## จำนวน code ที่ต้องการใช้ในการรัน
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=payakornn@gmail.com
 
@@ -19,4 +19,4 @@ module load julia
 
 
 # srun python copy_of_atom_10_payakorn.py           ## สั่งรัน code
-srun julia --threads 10 src/script.jl           ## สั่งรัน code
+srun julia --threads 32 src/script.jl           ## สั่งรัน code
