@@ -1,0 +1,10 @@
+Solution: R106 with 50 nodes and 9 routes, obj_func: total_max_comp
+route 1:  21 39 23 22 41 43 13
+route 2:  26 28 27 31 30 10 32
+route 3:   7 48 47 18  8 46 17
+route 4:  42 15  2 40 12 24
+route 5:  36 19 11 49
+route 6:  37 14 44 38
+route 7:  50  3 29 34  9 20 35
+route 8:   5 45 16  6  4 25
+route 9:   1 33

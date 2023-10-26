@@ -1,0 +1,17 @@
+Solution: R204 with 50 nodes and 16 routes, obj_func: total_comp
+route 1:   6  5
+route 2:  28
+route 3:  26
+route 4:  27
+route 5:  12 24 29
+route 6:  48 47 46
+route 7:  50 33
+route 8:   3 34 35 15 23 44 38  9  8  4 13 25
+route 9:  37 16
+route 10: 40 21 39
+route 11: 42 43 14
+route 12:  1 30 20
+route 13: 31 10 32
+route 14:  2 41 22
+route 15: 18 45 17
+route 16:  7 19 49 36 11

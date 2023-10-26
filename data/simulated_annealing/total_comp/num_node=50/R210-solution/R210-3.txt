@@ -1,0 +1,7 @@
+Solution: R210 with 50 nodes and 6 routes, obj_func: total_comp
+route 1:  28
+route 2:  12 33 29 48 11 50 40 41 22 43
+route 3:  31 27  7 19 23 44 38 37  6  8 46 49 32 10 35  4 13 17 25
+route 4:  21 39
+route 5:   5 45 47 36 15 18
+route 6:   2 42 14 16  1 30 34  3 26  9 20 24
