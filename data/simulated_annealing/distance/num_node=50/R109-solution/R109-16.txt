@@ -1,0 +1,10 @@
+Solution: R109 with 50 nodes and 9 routes, obj_func: distance
+route 1:  50
+route 2:   5 16 44 38 14 43 37 13
+route 3:  40 12  3 24 25  4
+route 4:  28 29 33  9 35 34  1
+route 5:  30 20 32 10
+route 6:  15 42 45  8 46 17
+route 7:  27 31 11 19 47 36 49 48
+route 8:   2 21 39 23 41 22 26
+route 9:   7 18  6
