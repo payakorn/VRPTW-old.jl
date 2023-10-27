@@ -10,15 +10,15 @@ println("number of Threads: $(Threads.nthreads())")
 # Simulated Annealing 
 for i in [50, 100]
     
-    simulated_annealing_run(obj_func=VRPTW.distance, num_node=i)
+    simulated_annealing_run(obj_func=VRPTW.distance, num_node=i, fix_run=nothing)
     date_finish = now()
     println("end program distance: $(Dates.format(date_now, "e, d u yyyy H:M:S"))")
 
-    simulated_annealing_run(obj_func=VRPTW.total_comp, num_node=i)
+    simulated_annealing_run(obj_func=VRPTW.total_comp, num_node=i, fix_run=nothing)
     date_finish = now()
     println("end program total completion time: $(Dates.format(date_now, "e, d u yyyy H:M:S"))")
 
-    simulated_annealing_run(obj_func=VRPTW.total_max_comp, num_node=i)
+    simulated_annealing_run(obj_func=VRPTW.total_max_comp, num_node=i, fix_run=nothing)
     date_finish = now()
     println("end program max total completion time: $(Dates.format(date_now, "e, d u yyyy H:M:S"))")
 

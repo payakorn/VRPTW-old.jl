@@ -122,7 +122,7 @@ function simulated_annealing_run(;obj_func=distance, num_node=100, max_vehi=25, 
 
     println("Simulate obj: $(obj_func), num node: $(num_node)")
 
-    for ij in 1:10
+    for ij in 1:6
         Threads.@threads for ins_name in Ins
             println("ins: ", ins_name, "\t Thread ID: ", Threads.threadid(), "\t round: ", "$(ij)")
             simulated_annealing(ins_name, obj_func=obj_func, num_node=num_node, max_vehi=max_vehi)
