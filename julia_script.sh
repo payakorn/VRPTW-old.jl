@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=VRPTW         ## ชื่อของงาน
+#SBATCH --job-name=solo         ## ชื่อของงาน
 #SBATCH --output=output/VRP_%j.out    ## ชื่อไฟล์ Output (%j = Job-ID)
 #SBATCH --error=output/VRP_%j.out     ## ชื่อไฟล์ error (%j = Job-ID)
 #SBATCH --time=168:00:00          ## เวลาที่ใช้รันงาน
@@ -17,6 +17,6 @@
 module load julia
 # module load gurobi
 
-
 # srun python copy_of_atom_10_payakorn.py           ## สั่งรัน code
-srun julia src/script.jl           ## สั่งรัน code
+# srun julia --threads 32 src/script.jl           ## สั่งรัน code
+srun julia --threads 32 src/script2.jl           ## สั่งรัน code

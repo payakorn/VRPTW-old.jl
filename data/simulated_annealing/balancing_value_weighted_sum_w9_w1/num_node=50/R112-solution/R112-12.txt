@@ -1,0 +1,20 @@
+Solution: R112 with 50 nodes and 19 routes, obj_func: balancing_value_weighted_sum_w9_w1
+route 1:  25 32
+route 2:  33 31 45 16
+route 3:  27 38  4
+route 4:  24 14
+route 5:  20 47
+route 6:  37 28
+route 7:   1 30 11
+route 8:  13 10
+route 9:  35 23
+route 10: 42  3 39
+route 11: 22  7 48
+route 12: 34 29  9
+route 13: 26 18
+route 14: 46 43
+route 15: 50 41
+route 16: 21 17 12
+route 17:  6 49 19
+route 18: 15 44  8  5
+route 19: 40  2 36

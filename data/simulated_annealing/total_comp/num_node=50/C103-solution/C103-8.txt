@@ -1,0 +1,26 @@
+Solution: C103 with 50 nodes and 25 routes, obj_func: total_comp
+route 1:  26
+route 2:  34
+route 3:  47
+route 4:   7
+route 5:  12
+route 6:  48
+route 7:  20
+route 8:  24
+route 9:   2
+route 10: 50
+route 11: 29
+route 12: 21
+route 13: 13
+route 14:  1
+route 15:  5
+route 16:  3
+route 17: 31
+route 18: 46
+route 19: 28
+route 20: 18 17 35 30
+route 21: 37 41 40 44 38 39 23 22 49
+route 22: 14 16  8 10 11  9  6  4
+route 23: 43 42
+route 24: 32 33
+route 25: 19 25 27 15 45 36

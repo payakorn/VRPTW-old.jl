@@ -78,7 +78,7 @@ load solomon instance into a struct of Problem
     Problem(...)
 """
 function load_solomon_data(class_ins::String; num_node=100, max_vehi=25)
-    @info "loading Solomon $(uppercase(class_ins)) => with number of nodes = $num_node"
+    # @info "loading Solomon $(uppercase(class_ins)) => with number of nodes = $num_node"
     data = load(dir_data(class_ins, num_node))
 
 

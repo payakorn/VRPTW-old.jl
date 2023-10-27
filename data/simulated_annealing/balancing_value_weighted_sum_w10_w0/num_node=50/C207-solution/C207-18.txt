@@ -1,0 +1,8 @@
+Solution: C207 with 50 nodes and 7 routes, obj_func: balancing_value_weighted_sum_w10_w0
+route 1:  42 14
+route 2:  41 47
+route 3:  10 45 15
+route 4:  43  8 21
+route 5:  48
+route 6:   5  1  2 22 30 35 39  6 34 12 26 44 40 19 25  9 11
+route 7:  20 27 33 24 29 37 31 49 32  7  4  3 36 38 16 23 28 50 18 46 13 17
