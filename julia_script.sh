@@ -17,7 +17,6 @@
 module load julia
 # module load gurobi
 
-
 # srun python copy_of_atom_10_payakorn.py           ## สั่งรัน code
 # srun julia --threads 32 src/script.jl           ## สั่งรัน code
 srun julia --threads 32 src/script2.jl           ## สั่งรัน code
