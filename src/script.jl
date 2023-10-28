@@ -1,5 +1,4 @@
 using VRPTW
-# using Gurobi
 using Dates
 
 date_now = now()

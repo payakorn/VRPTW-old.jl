@@ -1,0 +1,15 @@
+Solution: C202 with 50 nodes and 14 routes, obj_func: total_comp
+route 1:   5
+route 2:   2
+route 3:   1
+route 4:  50
+route 5:   3
+route 6:  26
+route 7:  12
+route 8:   7
+route 9:  20
+route 10: 31
+route 11: 21
+route 12: 48
+route 13: 22 24 27  6 49  4 28 23 18 19 16 14 15 47 43 42 41
+route 14: 34 37 30 29 32 33 35 38 39 36 40 44 46 45 17 13 25  9 11 10  8

@@ -1,0 +1,7 @@
+Solution: C104 with 50 nodes and 6 routes, obj_func: distance
+route 1:  13 17 19 18 33 32 29 27 24 20
+route 2:  49 50 31 35 37 38 39 36 34 30 28 26
+route 3:  47 46 48 45 44 40 41 42 43
+route 4:  21 22 25 23
+route 5:  12 14 16 15 11 10
+route 6:   5  3  7  8  9  6  4  2  1

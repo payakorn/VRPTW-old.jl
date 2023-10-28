@@ -1,0 +1,14 @@
+Solution: RC104 with 50 nodes and 13 routes, obj_func: total_comp
+route 1:  50 32 30 33 25
+route 2:  14 47 17 16  9 13
+route 3:  41 39 40 38
+route 4:  12 10 11 15
+route 5:  19 48 18
+route 6:   2  6  7 46  8  4
+route 7:  37 36 35
+route 8:  31 29 27
+route 9:  42 43 44
+route 10: 45  5  3  1
+route 11: 49 21 23
+route 12: 34 28 26
+route 13: 20 22 24

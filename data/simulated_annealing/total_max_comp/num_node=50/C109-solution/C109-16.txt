@@ -1,0 +1,7 @@
+Solution: C109 with 50 nodes and 6 routes, obj_func: total_max_comp
+route 1:  13 17 18 19 15 16 14 12
+route 2:  41 42 40 46 45 44 48 50 49 47
+route 3:   3  7 10 11  9  6  4  2  1
+route 4:   5  8 25 27 29 36 34 39
+route 5:  32 33 31 35 37 38
+route 6:  43 20 24 30 28 26 23 22 21
