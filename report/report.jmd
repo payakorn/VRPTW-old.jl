@@ -10,13 +10,24 @@ using PrettyTables
 ```
 
 ---
-## Best Known results from literature of 100-customer Solomon's instances 
+## Best Known results from literature of 100-customer Solomon's instances
+
 ```julia; line_width=1000
 df = combine_best_known()
 pretty_table(df, show_subheader = false)
 ```
 ---
 ## Simulated Annealing (SA) results in Solomon's instances
+
+### load solomon data
+```julia; echo = true
+methods(load_solomon_data)
+```
+
+To use
+```julia
+ins = load_solomon_data("c101", num_node=100, max_vehi=25)
+```
 
 ### Models
 

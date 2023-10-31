@@ -78,6 +78,11 @@ route = [0, 1, 2, 3, 4, 0, 5, 6, 7, 0];
 sol = Solution(route, ins)
 ```
 
+## sent email
+```@repl 1
+methods(sent_email)
+```
+
 
 # Solomon's instance
 
@@ -129,6 +134,40 @@ using Latexify
 df = CSV.File(dir("data", "simulated_annealing", "distance", "SA_summary.csv")) |> DataFrame
 mdtable(df,latex=false)
 ```
+
+
+### load solution from simulation 
+
+```@repl 1 
+methods(load_solution)
+```
+
+Example load solution of instance C101 which minimizing total distance
+```@repl 1
+solution = load_solution("C101", 100, distance)
+```
+
+To calculate (total distance, total completion time, ...) => there are 2 ways
+```@repl 1
+distance(load_solution("C101", 100, distance))
+```
+```@repl 1
+total_comp(load_solution("C101", 100, distance))
+```
+```@repl 1
+max_comp(load_solution("C101", 100, distance))
+```
+Or, use the piping options
+```@repl 1
+load_solution("C101", 100, distance) |> distance
+```
+```@repl 1
+load_solution("C101", 100, distance) |> total_comp
+```
+```@repl 1
+solution |> max_comp |> sum
+```
+
 
 # Description
 
