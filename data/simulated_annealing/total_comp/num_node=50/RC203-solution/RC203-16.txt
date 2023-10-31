@@ -1,0 +1,9 @@
+Solution: RC203 with 50 nodes and 8 routes, obj_func: total_comp
+route 1:  19 21 48 18 15 11 38 40  8  6 41 35
+route 2:  45  5  3  1
+route 3:  42 43 39 37 36 23 30  9 22 49 10  4 17 13 25
+route 4:  12 14 47 16
+route 5:  20 24
+route 6:  34 31 29
+route 7:   2 46  7
+route 8:  50 32 28 26 33 27 44
