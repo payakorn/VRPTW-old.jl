@@ -30,7 +30,7 @@ function sent_email(subject::String, message::String)
 	from = "payakornsaksuriya@gmail.com"
 
 	attachments = [
-        "./docs/build/index.html",
+        "report/report.html",
 	]
 
 	body = get_body(to, from, subject, mime_msg; attachments)
