@@ -7,7 +7,7 @@ println("start program $(Dates.format(date_now, "e, d u yyyy H:M:S"))")
 println("number of Threads: $(Threads.nthreads())")
 
 # Simulated Annealing 
-for i in [50, 100]
+for i in [100]
     
     simulated_annealing_run(obj_func=VRPTW.balancing_value_weighted_sum_w10_w0, num_node=i)
     date_finish = now()
