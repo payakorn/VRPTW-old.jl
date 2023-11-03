@@ -125,7 +125,7 @@ function simulated_annealing_run(; obj_func = distance, num_node = 100, max_vehi
 	for ij in 1:10
 		Threads.@threads for ins_name in Ins
 			println("ins: ", ins_name, "\t Thread ID: ", Threads.threadid(), "\t round: ", "$(ij)")
-			simulated_annealing(ins_name, obj_func = obj_func, num_node = num_node, max_vehi = max_vehi)
+			try simulated_annealing(ins_name, obj_func = obj_func, num_node = num_node, max_vehi = max_vehi) catch e; continue end
 		end
 	end
 	# sent_email("simulated_annealing_run", "Completed!!!")
