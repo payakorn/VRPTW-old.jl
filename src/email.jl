@@ -24,7 +24,7 @@ function sent_email(subject::String, message::String)
 	# 	Here's an <a href="https://github.com/aviks/SMTPClient.jl">important link</a>
 	# 	"""
 
-	mime_msg = get_mime_msg(message)
+	mime_msg = get_mime_msg(HTML(message))
 
 	to = ["payakornn@gmail.com"]
 	from = "payakornsaksuriya@gmail.com"
