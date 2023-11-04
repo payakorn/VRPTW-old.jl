@@ -138,6 +138,12 @@ function route_length(solution::Solution)
 end
 
 
+# add length function to have number of vehicles
+function Base.length(solution::Solution)
+    return route_length(solution)
+end
+
+
 function seperate_route_to_array(solution::Solution)
     route = solution.route
     zero_position = findall(x -> x == 0, route)
@@ -1029,9 +1035,25 @@ function find_best_solution_of_SA(ins_name; obj_func=distance, num_node=100)
         diff_route = [func_to(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
         df[!, :DiffRoute] = diff_route
 
+        # vehicles
+        Vehi = [length(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :Vehi] = Vehi
+
         # add distance column
         dis = [distance(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
         df[!, :Dis] = dis
+        
+        # add total completion time column
+        Comp = [total_comp(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :Comp] = Comp
+
+        # add total completion time column
+        Balance = [balancing_value(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :Balance] = Balance
+        
+        # add max completion time column
+        MaxComp = [maximum(max_comp(load_solution_SA(ins_name, obj_func, num_node, ind))) for ind in 1:size(df, 1)]
+        df[!, :MaxComp] = MaxComp
 
         # remane
         # rename!(df, :i => :name)
@@ -1039,12 +1061,30 @@ function find_best_solution_of_SA(ins_name; obj_func=distance, num_node=100)
         obj_min, ind = findmin(df.obj)
         df[!, :ins] = [ins_name for i in 1:length(df.obj)]
         df[!, :Num_Run] = size(df, 1) * ones(size(df, 1))
-        df = select(df, [:ins, :Num_Run, :i, :date, :alpha, :iter, :time, :num_vehi, :obj, :DiffRoute, :Dis])
+        df = select(df, [:ins, :Num_Run, :i, :date, :alpha, :iter, :time, :DiffRoute, :Vehi, :Dis, :Comp, :MaxComp, :Balance])
         dm = df[ind, :]
 
         return dm
     else
-        dm = CSV.File(dir("data", "simulated_annealing", "head_df.csv")) |> DataFrame
+        # head for dataframe
+        # ins,Num_Run,i,date,alpha,iter,time,num_vehi,obj,DiffRoute,Dis
+        # C101,1.0,1,1994-01-01,Inf,0,Inf,0,Inf,Inf,Inf
+        dm = DataFrame(
+            ins="C101",
+            Num_Run=1.0,
+            i=1,
+            date="1994-11-01",
+            alpha=Inf,
+            iter=0,
+            time=Inf,
+            DiffRoute=Inf,
+            Vehi=Inf,
+            Dis=Inf,
+            Comp=Inf,
+            MaxComp=Inf,
+            Balance=Inf,
+        )
+        # dm = CSV.File(dir("data", "simulated_annealing", "head_df.csv")) |> DataFrame
         dm[1, 1] = ins_name
         return dm
     end
@@ -1163,6 +1203,7 @@ end
 
 
 function create_simulated_annealing_summary(; obj_func=distance, num_node=100)
+
     dg = DataFrame(find_best_solution_of_SA(ins_names[1], obj_func=obj_func, num_node=num_node))
 
     # defind function to calculate result column
@@ -1175,73 +1216,94 @@ function create_simulated_annealing_summary(; obj_func=distance, num_node=100)
         df = DataFrame(find_best_solution_of_SA(ins_name, obj_func=obj_func, num_node=num_node))
         append!(dg, df)
     end
-    if obj_func == distance && num_node == 100
-        best_obj = [obj_func(load_solution_phase0(ins_name)) for ins_name in ins_names]
-        best_vehi = [route_length(load_solution_phase0(ins_name)) for ins_name in ins_names]
-        diff_num_each_route = [
-            try
-                func_to(load_solution_phase0(ins_name))
-            catch e
-                Inf
-            end for ins_name in ins_names
-        ]
-        dis = [
-            try
-                distance(load_solution_phase0(ins_name))
-            catch e
-                Inf
-            end for ins_name in ins_names
-        ]
-    else
-        best_obj = [
-            try
-                obj_func(load_solution(ins_name, num_node, obj_func))
-            catch e
-                Inf
-            end for ins_name in ins_names
-        ]
-        best_vehi = [
-            try
-                route_length(load_solution(ins_name, num_node, obj_func))
-            catch e
-                Inf
-            end for ins_name in ins_names
-        ]
-        diff_num_each_route = [
-            try
-                func_to(load_solution(ins_name, num_node, obj_func))
-            catch e
-                Inf
-            end for ins_name in ins_names
-        ]
-        dis = [
-            try
-                distance(load_solution(ins_name, num_node, obj_func))
-            catch e
-                Inf
-            end for ins_name in ins_names
-        ]
-    end
 
-    # change column name
+    best_dis = [distance(load_solution_phase0(ins_name)) for ins_name in ins_names]
+    best_vehi = [route_length(load_solution_phase0(ins_name)) for ins_name in ins_names]
+    diff_num_each_route = [
+        try
+            func_to(load_solution_phase0(ins_name))
+        catch e
+            Inf
+        end for ins_name in ins_names
+    ]
+    best_comp = [total_comp(load_solution_phase0(ins_name)) for ins_name in ins_names]
+    best_max_comp = [maximum(max_comp(load_solution_phase0(ins_name))) for ins_name in ins_names]
+    best_balance = [balancing_value(load_solution_phase0(ins_name)) for ins_name in ins_names]
+
+    # if obj_func == distance && num_node == 100
+    #     diff_num_each_route = [
+    #         try
+    #             func_to(load_solution_phase0(ins_name))
+    #         catch e
+    #             Inf
+    #         end for ins_name in ins_names
+    #     ]
+    #     dis = [
+    #         try
+    #             distance(load_solution_phase0(ins_name))
+    #         catch e
+    #             Inf
+    #         end for ins_name in ins_names
+    #     ]
+    # else
+    #     Dis = [
+    #         try
+    #             distance(load_solution(ins_name, num_node, obj_func))
+    #         catch e
+    #             Inf
+    #         end for ins_name in ins_names
+    #     ]
+    #     DisVehi = [
+    #         try
+    #             route_length(load_solution(ins_name, num_node, obj_func))
+    #         catch e
+    #             Inf
+    #         end for ins_name in ins_names
+    #     ]
+    #     diff_num_each_route = [
+    #         try
+    #             func_to(load_solution(ins_name, num_node, obj_func))
+    #         catch e
+    #             Inf
+    #         end for ins_name in ins_names
+    #     ]
+    #     TotalComp = [
+    #         try
+    #             total_comp(load_solution(ins_name, num_node, obj_func))
+    #         catch e
+    #             Inf
+    #         end for ins_name in ins_names
+    #     ]
+    # end
+
+    # add best known column
+    dg[!, :BestDiff] = diff_num_each_route
     dg[!, :BestVehi] = best_vehi
-    dg[!, :BestKnown] = best_obj
-    dg[!, :BestDiffRoute] = diff_num_each_route
-    dg[!, :BestDis] = dis
+    dg[!, :BestDis] = best_dis
+    dg[!, :BestComp] = best_comp
+    dg[!, :BestMaxComp] = best_max_comp
+    dg[!, :BestBalance] = best_balance
 
     # round column gap
-    dg = select(dg, :, [:obj, :BestKnown] => (a, b) -> (round.((a .- b) ./ b .* 100, digits=2)))
-    rename!(dg, :obj_BestKnown_function => :gap)
+    dg = select(dg, :, [:Dis, :BestDis] => (a, b) -> (round.((a .- b) ./ b .* 100, digits=2)))
+    rename!(dg, :Dis_BestDis_function => :GapDis)
+
+    dg = select(dg, :, [:Comp, :BestComp] => (a, b) -> (round.((a .- b) ./ b .* 100, digits=2)))
+    rename!(dg, :Comp_BestComp_function => :GapComp)
+    
+    dg = select(dg, :, [:MaxComp, :BestMaxComp] => (a, b) -> (round.((a .- b) ./ b .* 100, digits=2)))
+    rename!(dg, :MaxComp_BestMaxComp_function => :GapMaxComp)
+
+    dg = select(dg, :, [:Balance, :BestBalance] => (a, b) -> (round.((a .- b) ./ b .* 100, digits=2)))
+    rename!(dg, :Balance_BestBalance_function => :GapBalance)
 
     # round degits for columns objective value and best known value
-    dg.obj = round.(dg.obj, digits=2)
-    dg.BestKnown = round.(dg.BestKnown, digits=2)
+    # dg.obj = round.(dg.obj, digits=2)
+    # dg.BestDis = round.(dg.BestDis, digits=2)
 
-    # add new column
-    # dg[!, :DiffRouteEach] = diff_num_each_route
 
     # export to csv
-    CSV.write(dir("data", "simulated_annealing", obj_func, "SA_summary_$num_node.csv"), dg)
+    CSV.write(dir("data", "simulated_annealing", obj_func, "SA_summary_$(obj_func)_$(num_node).csv"), dg)
 
     return dg
 end
