@@ -1,0 +1,13 @@
+Solution: R202 with 100 nodes and 12 routes, obj_func: balancing_value_weighted_sum_w10_w0
+route 1:   77  34
+route 2:   74  59  31  72  96
+route 3:  100  95  83
+route 4:   42  28  14  44  61  16   9  46  10  97  55  54  60   4   5
+route 5:   36  63  64  18  20  52  68  32  91  17   1
+route 6:   92  33  87  22  53  98  80
+route 7:   69  71  73  26  57  41  58
+route 8:   15  23  19  88  30  76  81  78  75  66  56  43  48  13  50
+route 9:   45  29  62  51  99  86   6  84  49   2  35  12   3  85  21
+route 10:  65  39  11  47  38   8  90  70  25
+route 11:  67  93   7
+route 12:  27  79  40  24  82  94  37  89

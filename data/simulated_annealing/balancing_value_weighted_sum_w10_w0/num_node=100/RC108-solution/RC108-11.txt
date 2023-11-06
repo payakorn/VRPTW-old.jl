@@ -1,0 +1,36 @@
+Solution: RC108 with 100 nodes and 35 routes, obj_func: balancing_value_weighted_sum_w10_w0
+route 1:   35  73
+route 2:   56  31
+route 3:   75  96
+route 4:   78  65  79
+route 5:   72  88  83  57
+route 6:   85  34  51
+route 7:   64   9  50
+route 8:   67  27  20
+route 9:   32  86
+route 10:  60  15  13  59
+route 11:  49  23  22
+route 12:  44  26  28  30
+route 13:  25   3
+route 14:  48  38
+route 15:  40  94  66
+route 16:  62  87  58  74
+route 17:  90  18  19  21
+route 18:   4   5  36
+route 19:  77   8
+route 20: 100  17   6
+route 21:  46  95
+route 22:  41  97
+route 23:  91  42
+route 24:  10  47  14
+route 25:  11  81  63
+route 26:  37  68
+route 27:  99  93  98
+route 28:  80   2
+route 29:  12  43  54
+route 30:  61  53   1  45
+route 31:  82  29  89
+route 32:  76  71  84
+route 33:  39  52  24
+route 34:  92  69   7  70  55
+route 35:  16  33

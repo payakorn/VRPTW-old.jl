@@ -1,0 +1,17 @@
+Solution: RC203 with 100 nodes and 16 routes, obj_func: balancing_value_weighted_sum_w10_w0
+route 1:    4  16  97  89  50
+route 2:   70  43
+route 3:   58  47  12
+route 4:   80  95
+route 5:   56  10   1  73  19  28
+route 6:   13  94  14   7  60
+route 7:   17  75   5
+route 8:   87   6  55  91  37  31  52  83
+route 9:   88  11  82  74  86  46  81  51  20
+route 10:  39  69  24  40  78  25  96
+route 11:  36  27  15  41  79  48  35  85  98  18
+route 12:  92   3  30  44  77   2
+route 13:  99  22  61  66  72  59  71  63  32
+route 14:  64  93  34
+route 15:  33  84   9 100  54
+route 16:  65  45  42  23  67  62  76  38   8  53  49  68  90  21  26  29  57
