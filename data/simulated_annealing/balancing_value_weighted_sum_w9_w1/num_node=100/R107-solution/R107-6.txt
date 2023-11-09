@@ -1,0 +1,27 @@
+Solution: R107 with 100 nodes and 26 routes, obj_func: balancing_value_weighted_sum_w9_w1
+route 1:   93  85
+route 2:   13  83
+route 3:   61  67  19
+route 4:   71  65  47  51
+route 5:   55   3  29
+route 6:   58
+route 7:   94  23  84   7  70
+route 8:   99  66  32  63
+route 9:   50  11  30   4  74  73
+route 10:  56  86
+route 11:  17  97
+route 12:  39  25  54
+route 13:  33  10  31 100
+route 14:  20  76  79  98  28
+route 15:  41  22  37  60  18
+route 16:  92  95  44   6  34  80
+route 17:  40  57  14  43  59
+route 18:  53  35  24
+route 19:  87  26  68   2
+route 20:  48  36  21  90
+route 21:  27  62  78  52   5
+route 22:  64  49  75
+route 23:  12  69  88  89  72  81
+route 24:  82  38  46   1
+route 25:  42  15   8  96  77
+route 26:  45   9  16  91

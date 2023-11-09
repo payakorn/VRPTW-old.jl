@@ -1,0 +1,23 @@
+Solution: RC208 with 100 nodes and 22 routes, obj_func: balancing_value_weighted_sum_w8_w2
+route 1:   27  26  28  43   1
+route 2:   93  16   6 100
+route 3:   24  19  15   4
+route 4:   45   3  70  88  75  23
+route 5:   66  38  50
+route 6:   68  96  10
+route 7:   91  98   8
+route 8:   35  84  30
+route 9:   86  74  77  48  57
+route 10:  58  60  73   2
+route 11:  80  67  55
+route 12:  41  37  44  72  62  95
+route 13:  53  78  47  17  12  69  36  40
+route 14:  82  11   9  13  42   5
+route 15:   7  46  49  52  87  61
+route 16:  20  33  51  92
+route 17:  63  32  14
+route 18:  34  31  76  89  79
+route 19:  54  83  90
+route 20:  94  21  18  29  81  71  56
+route 21:  99  59  97  39
+route 22:  25  85  64  65  22

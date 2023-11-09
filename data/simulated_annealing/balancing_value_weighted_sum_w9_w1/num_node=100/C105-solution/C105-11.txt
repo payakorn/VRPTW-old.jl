@@ -1,0 +1,14 @@
+Solution: C105 with 100 nodes and 13 routes, obj_func: balancing_value_weighted_sum_w9_w1
+route 1:   32  33  31  35  38  28  26  49
+route 2:   43  42  41  44  59  48  47
+route 3:    7  94  74  84  97  89  52
+route 4:   90  87  86  82  88  75
+route 5:   76  71  30  14  12  23  66
+route 6:   13  17  18   8  11  39  36  34  91
+route 7:   67  65  62  70  73  77  79  80   1
+route 8:   98  95  92  93   9  21
+route 9:    5   3  63  40  37  61  51  99
+route 10:  24  96  19  15  16  85  68   2
+route 11:  57  55  54  53  56  58  60  69
+route 12:  20  25  27  29  46  45   6   4  50
+route 13:  81  78  83  10  72  64 100  22
