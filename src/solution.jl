@@ -45,6 +45,7 @@ struct Point
     y::Float64
 end
 
+
 const ins_names = [
     "C101",
     "C102",
@@ -111,6 +112,24 @@ const R2 = ins_names[30:40]
 const RC1 = ins_names[41:48]
 const RC2 = ins_names[49:56]
 
+
+const all_obj_functions = (
+    distance,
+    total_comp,
+    balancing_value_weighted_sum_w0_w10,
+    balancing_value_weighted_sum_w1_w9,
+    balancing_value_weighted_sum_w2_w8,
+    balancing_value_weighted_sum_w3_w7,
+    balancing_value_weighted_sum_w4_w6,
+    balancing_value_weighted_sum_w5_w5,
+    balancing_value_weighted_sum_w6_w4,
+    balancing_value_weighted_sum_w7_w3,
+    balancing_value_weighted_sum_w8_w2,
+    balancing_value_weighted_sum_w9_w1,
+    balancing_value_weighted_sum_w10_w0,
+)
+
+
 """
     <=: compare two solution with multiple objective (distance and balancing completion time)
 
@@ -168,7 +187,12 @@ julia> sol2 < sol1
 false
 ```
 """
-function Base.:<(sol1::Solution, sol2::Solution)
+function Base.isless(sol1::Solution, sol2::Solution)
+    """
+        alternative: function Base.:<(sol1::Solution, sol2::Solution)
+
+        the version above is used because the sort function can apply to solution
+    """
     dis1 = distance(sol1)
     dis2 = distance(sol2)
 
@@ -1306,7 +1330,7 @@ function find_difference_min_max_length_each_route(solution::Solution)
 end
 
 
-function plot_pareto_front(ins_name::String; num_node=25::Integer)
+function plot_pareto_front(ins_name::String; num_node::Integer=25, num_ins::Integer=10)
 
     obj_funcs = [
         balancing_value_weighted_sum_w0_w10,
@@ -1324,25 +1348,31 @@ function plot_pareto_front(ins_name::String; num_node=25::Integer)
 
     # plot first solution in all_solutions
     sol = find_all_solutions_of_SA(ins_name; obj_func=obj_funcs[1], num_node=num_node)
+    sort!(sol, [:obj, :Dis, :Bal])
+    sol = sol[1:num_ins, :]
     legend_name = "$(obj_funcs[1])"[30:end]
-    @info "plot objective function $(obj_funcs[1])"
+    @info "plot $ins_name => num_node: $num_node => obj function: $(obj_funcs[1])"
     p = Plots.scatter(sol.Dis, sol.Bal, label=legend_name, legend=:outertopright, title=uppercase(ins_name))
     xlabel!("Total distance")
     ylabel!("Total diff")
-
+    
     # plot others
     for obj_func in obj_funcs[2:end]
-        @info "plot objective function $(obj_func)"
+        @info "plot $ins_name => num_node: $num_node => obj function: $(obj_func)"
         sol = find_all_solutions_of_SA(ins_name, obj_func=obj_func, num_node=num_node)
+        sort!(sol, [:obj, :Dis, :Bal])
+        sol = sol[1:num_ins, :]
         legend_name = "$(obj_func)"[30:end] # only last 30 characters
-        p = Plots.scatter!(sol.Dis, sol.Bal, label=legend_name)
+        p = Plots.scatter!(sol.Dis, sol.Bal, label=legend_name, palette=:tab10)
     end
     savefig(p, dir("data", "simulated_annealing", "plot_pareto", "plot_pareto_$(ins_name)-$(num_node).pdf"))
 end
 
 
-function plot_pareto(ins_name::String)
-    all_solutions = find_all_solutions_of_SA(ins_name, obj_func=obj_func, num_node=num_node)
+function plot_pareto(num_node::Integer)
+    for ins_name in ins_names
+        plot_pareto_front(ins_name, num_node=num_node)
+    end
 end
 
 
@@ -1450,4 +1480,76 @@ function create_simulated_annealing_summary(; obj_func=distance, num_node=100)
     CSV.write(dir("data", "simulated_annealing", obj_func, "SA_summary_$(obj_func)_$(num_node).csv"), dg)
 
     return dg
+end
+
+
+"""
+    function fix_num_solution(ins_name::String, num_node::Integer, obj_func::Function)
+
+fix the number of solution not in the sequence e.g. C101-1.txt, C101-2.txt, ...
+
+"""
+function fix_num_solution(ins_name::String, num_node::Integer, obj_func::Function)
+
+    # files in folder txt
+    all_sorted_dir = sort(glob("*", dir("data", "simulated_annealing", obj_func, "num_node=$(num_node)", "$ins_name-solution")), lt=VRPTW.natural)
+    all_sorted_solution = all_sorted_dir .|> splitdir
+    head_dir = all_sorted_solution[1][1]
+    all_sorted_solution = [i[2] for i in all_sorted_solution]
+
+    sorted_name = [joinpath(head_dir, "$ins_name-$i.txt") for i in 1:length(all_sorted_dir)]
+
+    @info "Working in $head_dir"
+    for (old_ins, new_ins) in zip(all_sorted_dir, sorted_name)
+        if old_ins == new_ins
+            @info "Not change (get the same name)"
+        else
+            @info "change name from $(splitdir(old_ins)[2]) to $(splitdir(new_ins)[2])"
+            mv(old_ins, new_ins)
+        end
+    end
+
+    # files outside txt
+    dir_file = dir("data", "simulated_annealing", obj_func, "num_node=$(num_node)", "$ins_name.csv")
+    df = CSV.read(dir_file, DataFrame)
+    df.i = 1:length(df.i)
+    CSV.write(dir_file, df)
+end
+
+
+function fix_num_solution()
+    for num_node in [50]
+        for obj_func in all_obj_functions
+            for ins_name in ins_names
+                fix_num_solution(ins_name, num_node, obj_func)
+            end
+        end
+    end
+end
+
+"""
+    natural(x, y)
+
+sort String on natural way e.g. A2 < A10
+
+# Examples:
+```julia-repl
+julia> sort(["a1", "a2", "a10"], lt=VRPTW.natural)
+3-element Vector{String}:
+ "a1"
+ "a2"
+ "a10"
+```
+"""
+function natural(x, y)
+    k(x) = [occursin(r"\d+", s) ? parse(Int, s) : s 
+            for s in split(replace(x, r"\d+" => s->" $s "))]
+    A = k(x); B= k(y)    
+    for (a, b) in zip(A, B)
+        if !isequal(a, b)
+            return typeof(a) <: typeof(b) ? isless(a, b) :
+                   isa(a,Int) ? true : false
+        end
+    end
+    return length(A) < length(B)
 end
