@@ -1001,23 +1001,10 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run=nothi
         Num_vehicle = Num_vehicle[fix_run]
     end
 
-    # if obj_func == opt_balancing
-    #     obj_name = "balancing_completion_time"
-    # elseif obj_func == opt_balancing_weighted_sum
-    #     obj_name = "balancing_completion_time_weighted_sum"
-    # elseif obj_func == opt_balancing_weighted_sum_w1_w9
-    #     obj_name = "balancing_completion_time_weighted_sum_w1_w9"
-    # elseif obj_func == opt_total_com
-    #     obj_name = "total_completion_time"
-    # elseif obj_func == opt_max_com
-    #     obj_name = "max_completion_time"
-    # elseif obj_func == opt_total_dis
-    #     obj_name = "total_distance"
-    # elseif obj_func == opt_total_dis_compat
-    #     obj_name = "total_distance_compat"
-    # end
-
     for (ins_name, num_vehicle) in zip(Ins_name, Num_vehicle)
+
+        date_now = now()
+        println("start program $(Dates.format(date_now, "e, d u yyyy H:M:S"))")
 
         # chack the exiting of file
         file_existing = !isfile(dir("data", "opt_solomon", obj_func, "$ins_name-$num_vehicle.json"))
@@ -1051,5 +1038,26 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run=nothi
                 JSON3.pretty(io, d, JSON3.AlignmentContext(alignment=:Colon, indent=2))
             end
         end
+
+        date_end = now()
+
+        sent_email(
+            "$ins_name-$num_vehicle Completed!!! => ($(obj_func))",
+            """
+                <!DOCTYPE html>
+                <html>
+                <body>
+                    <h4>solver: $(solver_name)</h4>
+                    <h4>objective function: $(obj_func)</h4>
+                    <h4>time limit: $(time_solve)</h4>
+                    <h4>start time: start program $(Dates.format(date_now, "e, d u yyyy H:M:S"))</h4>
+                    <h4>end   time: start program $(Dates.format(date_end, "e, d u yyyy H:M:S"))</h4>
+                </body>
+                </html>
+            """,
+            attachments = [
+                joinpath(location, "$ins_name-$num_vehicle.json")
+            ]
+        )
     end
 end

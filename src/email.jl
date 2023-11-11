@@ -6,7 +6,7 @@
                                     Here's an <a href="https://github.com/aviks/SMTPClient.jl">important link</a>
 
 """
-function sent_email(subject::String, message::String)
+function sent_email(subject::String, message::String, attachments=nothing)
 
 	# new version
 	opt = SendOptions(
@@ -29,11 +29,15 @@ function sent_email(subject::String, message::String)
 	to = ["payakornn@gmail.com"]
 	from = "payakornsaksuriya@gmail.com"
 
-	attachments = [
-        "report/report.html",
-	]
+	# attachments = [
+    #     "report/report.html",
+	# ]
 
-	body = get_body(to, from, subject, mime_msg; attachments)
+	if isnothing(attachments)
+		body = get_body(to, from, subject, mime_msg)
+	else
+		body = get_body(to, from, subject, mime_msg; attachments)
+	end
 
 	rcpt = to
 	resp = send(url, rcpt, from, body, opt)
