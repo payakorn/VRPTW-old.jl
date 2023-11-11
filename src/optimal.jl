@@ -1001,47 +1001,47 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run=nothi
         Num_vehicle = Num_vehicle[fix_run]
     end
 
-    if obj_func == opt_balancing
-        obj_name = "balancing_completion_time"
-    elseif obj_func == opt_balancing_weighted_sum
-        obj_name = "balancing_completion_time_weighted_sum"
-    elseif obj_func == opt_balancing_weighted_sum_w1_w9
-        obj_name = "balancing_completion_time_weighted_sum_w1_w9"
-    elseif obj_func == opt_total_com
-        obj_name = "total_completion_time"
-    elseif obj_func == opt_max_com
-        obj_name = "max_completion_time"
-    elseif obj_func == opt_total_dis
-        obj_name = "total_distance"
-    elseif obj_func == opt_total_dis_compat
-        obj_name = "total_distance_compat"
-    end
+    # if obj_func == opt_balancing
+    #     obj_name = "balancing_completion_time"
+    # elseif obj_func == opt_balancing_weighted_sum
+    #     obj_name = "balancing_completion_time_weighted_sum"
+    # elseif obj_func == opt_balancing_weighted_sum_w1_w9
+    #     obj_name = "balancing_completion_time_weighted_sum_w1_w9"
+    # elseif obj_func == opt_total_com
+    #     obj_name = "total_completion_time"
+    # elseif obj_func == opt_max_com
+    #     obj_name = "max_completion_time"
+    # elseif obj_func == opt_total_dis
+    #     obj_name = "total_distance"
+    # elseif obj_func == opt_total_dis_compat
+    #     obj_name = "total_distance_compat"
+    # end
 
     for (ins_name, num_vehicle) in zip(Ins_name, Num_vehicle)
 
         # chack the exiting of file
-        file_existing = !isfile(dir("data", "opt_solomon", obj_name, "$ins_name-$num_vehicle.json"))
+        file_existing = !isfile(dir("data", "opt_solomon", obj_func, "$ins_name-$num_vehicle.json"))
         if file_existing == false
-            if JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name-$num_vehicle.json"))["tex"] == "no solution" || (JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name-$num_vehicle.json"))["solve_time"] < time_solve && abs(JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name-$num_vehicle.json"))["relative_gap"]) > 0)
+            if JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name-$num_vehicle.json"))["tex"] == "no solution" || (JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name-$num_vehicle.json"))["solve_time"] < time_solve && abs(JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name-$num_vehicle.json"))["relative_gap"]) > 0)
                 nothing
             else
                 continue
             end
         end
-        # if !file_existing || JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["tex"] == "no solution" || (JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["solve_time"] < time_solve && abs(JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))["relative_gap"]) < 1e-1)
+        # if !file_existing || JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name.json"))["tex"] == "no solution" || (JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name.json"))["solve_time"] < time_solve && abs(JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name.json"))["relative_gap"]) < 1e-1)
 
         @info "Optimizing $(ins_name) with $(num_vehicle) vehicles!!! --file exiting: $(file_existing)"
         m, x, t, CMAX, service = obj_func(ins_name, num_vehicle, solver, time_solve=time_solve)
 
         if has_values(m)
             tex, route = show_opt_solution(x, length(t), num_vehicle)
-            write_solution(route, ins_name, tex, m, t, CMAX, service, obj_function=obj_name)
+            save_solution(route, ins_name, tex, m, t, CMAX, service, obj_function=obj_func)
         else
             # create dict
             d = Dict("name" => ins_name, "num_vehicle" => num_vehicle, "route" => "nothing", "tex" => "no solution", "max_completion_time" => "Inf", "obj_function" => "Inf", "solve_time" => time_solve, "relative_gap" => 1, "solver_name" => solver, "total_com" => "Inf")
 
             # save file
-            location = dir("data", "opt_solomon", obj_name)
+            location = dir("data", "opt_solomon", obj_func)
             if !isfile(location)
                 mkpath(location)
             end

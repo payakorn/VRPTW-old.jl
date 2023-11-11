@@ -107,7 +107,7 @@ function simulated_annealing(ins_name; num_node = 100, max_vehi = 25, obj_func =
 	if !isfile(dir(location_sol, "$(ins.name)-solution"))
 		mkpath(dir(location_sol, "$(ins.name)-solution"))
 	end
-	write_solution_txt(best_solution, loca_solution)
+	save_solution_txt(best_solution, loca_solution)
 
 	return best_solution
 end

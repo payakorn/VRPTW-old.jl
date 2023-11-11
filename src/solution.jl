@@ -113,22 +113,6 @@ const RC1 = ins_names[41:48]
 const RC2 = ins_names[49:56]
 
 
-const all_obj_functions = (
-    distance,
-    total_comp,
-    balancing_value_weighted_sum_w0_w10,
-    balancing_value_weighted_sum_w1_w9,
-    balancing_value_weighted_sum_w2_w8,
-    balancing_value_weighted_sum_w3_w7,
-    balancing_value_weighted_sum_w4_w6,
-    balancing_value_weighted_sum_w5_w5,
-    balancing_value_weighted_sum_w6_w4,
-    balancing_value_weighted_sum_w7_w3,
-    balancing_value_weighted_sum_w8_w2,
-    balancing_value_weighted_sum_w9_w1,
-    balancing_value_weighted_sum_w10_w0,
-)
-
 
 """
     <=: compare two solution with multiple objective (distance and balancing completion time)
@@ -325,6 +309,11 @@ function distance(point1::Point, point2::Point)
 end
 
 
+function distance(route::Dict, distance_matrix::Matrix)
+    nothing
+end
+
+
 function distance(route::Array, distance_matrix::Matrix)
     route = fix_route_zero(route)
     route = route .+ 1
@@ -417,7 +406,7 @@ function txt_route_full(solution::Solution)
 end
 
 
-function write_solution_txt(solution::Solution, location::String)
+function save_solution_txt(solution::Solution, location::String)
     open(location, "w") do f
         write(f, txt_route_full(solution))
     end
