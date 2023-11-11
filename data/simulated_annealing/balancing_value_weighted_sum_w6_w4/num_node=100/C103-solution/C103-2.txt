@@ -1,0 +1,21 @@
+Solution: C103 with 100 nodes and 20 routes, obj_func: balancing_value_weighted_sum_w6_w4
+route 1:    4  85  86
+route 2:   13  17  11  50  64  29  61
+route 3:   40  59  58  96  80   1
+route 4:   65  25  27  15  60  34  14  19
+route 5:   33  31  35  39  36  97  75
+route 6:   66  20
+route 7:   67  62  77  79  99  83
+route 8:   92  63  16  82  21
+route 9:   41  72  74  38  89  57  26
+route 10:   8   9  94  51   3
+route 11:  90  87  88  73  28
+route 12:  10  93  18  81   7
+route 13:  22  98
+route 14:  55  53  56  54  68  52  47
+route 15:  42  44  49
+route 16:   6  71  24
+route 17:  23  46  43
+route 18:  78  76  70  84  48  12  32
+route 19:   2 100  37  69
+route 20:  30  45  95   5  91
