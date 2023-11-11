@@ -9,3 +9,12 @@ struct VR
         new(a + 1, b + 1)
     end
 end
+
+
+function setup_test_variables()
+    list_eval = (
+        :(ins_name = "C101"),
+        :(obj_func = distance),
+    )
+    return list_eval
+end
