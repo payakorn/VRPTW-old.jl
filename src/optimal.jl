@@ -1017,8 +1017,9 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run=nothi
         end
         # if !file_existing || JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name.json"))["tex"] == "no solution" || (JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name.json"))["solve_time"] < time_solve && abs(JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name.json"))["relative_gap"]) < 1e-1)
 
-        @info "Optimizing $(ins_name) with $(num_vehicle) vehicles!!! --file exiting: $(file_existing)"
+        @info "Optimizing $(ins_name) with $(num_vehicle) vehicles!!! --file exiting: $(!file_existing)"
         m, x, t, CMAX, service = obj_func(ins_name, num_vehicle, solver, time_solve=time_solve)
+        location = dir("data", "opt_solomon", obj_func)
 
         if has_values(m)
             tex, route = show_opt_solution(x, length(t), num_vehicle)
@@ -1028,13 +1029,13 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run=nothi
             d = Dict("name" => ins_name, "num_vehicle" => num_vehicle, "route" => "nothing", "tex" => "no solution", "max_completion_time" => "Inf", "obj_function" => "Inf", "solve_time" => time_solve, "relative_gap" => 1, "solver_name" => solver, "total_com" => "Inf")
 
             # save file
-            location = dir("data", "opt_solomon", obj_func)
+            # location = dir("data", "opt_solomon", obj_func)
             if !isfile(location)
                 mkpath(location)
             end
 
             # save json file
-            open(joinpath(location, "$ins_name-$num_vehicle.json"), "w") do io
+            open(joinpath(location, "$ins_name.json"), "w") do io
                 JSON3.pretty(io, d, JSON3.AlignmentContext(alignment=:Colon, indent=2))
             end
         end
@@ -1047,7 +1048,7 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run=nothi
                 <!DOCTYPE html>
                 <html>
                 <body>
-                    <h4>solver: $(solver_name)</h4>
+                    <h4>solver: $(solver)</h4>
                     <h4>objective function: $(obj_func)</h4>
                     <h4>time limit: $(time_solve)</h4>
                     <h4>start time: start program $(Dates.format(date_now, "e, d u yyyy H:M:S"))</h4>
@@ -1056,7 +1057,7 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run=nothi
                 </html>
             """,
             attachments = [
-                joinpath(location, "$ins_name-$num_vehicle.json")
+                joinpath(location, "$ins_name.json")
             ]
         )
     end

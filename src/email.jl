@@ -6,7 +6,7 @@
                                     Here's an <a href="https://github.com/aviks/SMTPClient.jl">important link</a>
 
 """
-function sent_email(subject::String, message::String, attachments=nothing)
+function sent_email(subject::String, message::String; attachments=nothing)
 
 	# new version
 	opt = SendOptions(
