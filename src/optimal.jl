@@ -981,13 +981,66 @@ end
 #     end
 # end
 
+"""
+    function time_now()
+
+return formated text for date time 
+"""
+function time_now()
+    return "$(Dates.format(now(), "e, d u yyyy H:M:S"))"
+end
+
+
+function find_opt(solver, ins_name::String, num_vehicle::Integer, obj_func::Function, time_solve::Integer)
+
+    location = dir("data", "opt_solomon", obj_func, "$ins_name.json")
+
+    m, x, t, CMAX, service = obj_func(ins_name, num_vehicle, solver, time_solve=time_solve)
+
+    if has_values(m)
+        tex, route = show_opt_solution(x, length(t), num_vehicle)
+        save_solution(route, ins_name, tex, m, t, CMAX, service, obj_function=obj_func)
+    else
+        # create dict
+        d = Dict("name" => ins_name, "num_vehicle" => num_vehicle, "route" => "nothing", "tex" => "no solution", "max_completion_time" => "Inf", "obj_function" => "Inf", "solve_time" => time_solve, "relative_gap" => 1, "solver_name" => solver, "total_com" => "Inf")
+
+        # save json file
+        open(location, "w") do io
+            JSON3.pretty(io, d, JSON3.AlignmentContext(alignment=:Colon, indent=2))
+        end
+    end
+
+    date_end = time_now()
+
+    sent_email(
+        "$ins_name-$num_vehicle Completed!!! => ($(obj_func))",
+        """
+            <!DOCTYPE html>
+            <html>
+            <body>
+                <h4>solver: $(solver)</h4>
+                <h4>objective function: $(obj_func)</h4>
+                <h4>time limit: $(time_solve)</h4>
+                <h4>start time: start program $date_now</h4>
+                <h4>end   time: start program $date_end</h4>
+            </body>
+            </html>
+        """,
+        attachments = [
+            location
+        ]
+    )
+end
+
 
 function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run=nothing, customize_num=false)
+
     if customize_num
         file_name = dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_customize.csv")
     else
         file_name = dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv")
     end
+
     NameNumVehicle = CSV.File(file_name)
     Ins_name = [String("$(NameNumVehicle[i][1])-$(NameNumVehicle[i][2])") for i in 1:(length(NameNumVehicle))]
     Num_vehicle = [NameNumVehicle[i][3] for i in 1:(length(NameNumVehicle))]
@@ -1003,62 +1056,35 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run=nothi
 
     for (ins_name, num_vehicle) in zip(Ins_name, Num_vehicle)
 
-        date_now = now()
-        println("start program $(Dates.format(date_now, "e, d u yyyy H:M:S"))")
+        location = dir("data", "opt_solomon", "$(obj_func)", "$ins_name.json")
 
         # chack the exiting of file
-        file_existing = !isfile(dir("data", "opt_solomon", obj_func, "$ins_name-$num_vehicle.json"))
-        if file_existing == false
-            if JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name-$num_vehicle.json"))["tex"] == "no solution" || (JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name-$num_vehicle.json"))["solve_time"] < time_solve && abs(JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name-$num_vehicle.json"))["relative_gap"]) > 0)
-                nothing
-            else
-                continue
+        file_existing = isfile(location)
+        if file_existing
+
+            # load save file (optimal)
+            json_file = JSON.parsefile(location)
+
+            # load information from JSON
+            output_text = json_file["tex"]
+            output_gap = json_file["relative_gap"]
+            output_time = json_file["solve_time"]
+
+
+            # check is the time is exceed or there is no solution has been found
+            if (output_text == "no solution" || abs(output_gap) > 1e-3) && (output_time < time_solve)
+                date_now = time_now()
+                @info "$(time_now()) ==> Optimizing!!! $(ins_name) with $(num_vehicle) vehicles --> improving run"
+                find_opt(solver, ins_name, num_vehicle, obj_func, time_solve)
+            elseif abs(output_gap) <= 1e-3
+                @info "$(time_now()) ==> $(ins_name) is not run because the solution is now optimal solution"
+            elseif output_time >= time_solve
+                @info "$(time_now()) ==> $(ins_name) is not run because the solving time exceeds the time limit"
             end
+        else # if the optimal solution has not been run!!!
+            @info "$(time_now()) ==> Optimizing!!! $(ins_name) with $(num_vehicle) vehicles --> first run"
+            find_opt(solver, ins_name, num_vehicle, obj_func, time_solve)
+            find_opt(solver, ins_name, num_vehicle, obj_func, time_solve)
         end
-        # if !file_existing || JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name.json"))["tex"] == "no solution" || (JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name.json"))["solve_time"] < time_solve && abs(JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name.json"))["relative_gap"]) < 1e-1)
-
-        @info "Optimizing $(ins_name) with $(num_vehicle) vehicles!!! --file exiting: $(!file_existing)"
-        m, x, t, CMAX, service = obj_func(ins_name, num_vehicle, solver, time_solve=time_solve)
-        location = dir("data", "opt_solomon", obj_func)
-
-        if has_values(m)
-            tex, route = show_opt_solution(x, length(t), num_vehicle)
-            save_solution(route, ins_name, tex, m, t, CMAX, service, obj_function=obj_func)
-        else
-            # create dict
-            d = Dict("name" => ins_name, "num_vehicle" => num_vehicle, "route" => "nothing", "tex" => "no solution", "max_completion_time" => "Inf", "obj_function" => "Inf", "solve_time" => time_solve, "relative_gap" => 1, "solver_name" => solver, "total_com" => "Inf")
-
-            # save file
-            # location = dir("data", "opt_solomon", obj_func)
-            if !isfile(location)
-                mkpath(location)
-            end
-
-            # save json file
-            open(joinpath(location, "$ins_name.json"), "w") do io
-                JSON3.pretty(io, d, JSON3.AlignmentContext(alignment=:Colon, indent=2))
-            end
-        end
-
-        date_end = now()
-
-        sent_email(
-            "$ins_name-$num_vehicle Completed!!! => ($(obj_func))",
-            """
-                <!DOCTYPE html>
-                <html>
-                <body>
-                    <h4>solver: $(solver)</h4>
-                    <h4>objective function: $(obj_func)</h4>
-                    <h4>time limit: $(time_solve)</h4>
-                    <h4>start time: start program $(Dates.format(date_now, "e, d u yyyy H:M:S"))</h4>
-                    <h4>end   time: start program $(Dates.format(date_end, "e, d u yyyy H:M:S"))</h4>
-                </body>
-                </html>
-            """,
-            attachments = [
-                joinpath(location, "$ins_name.json")
-            ]
-        )
     end
 end
