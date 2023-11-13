@@ -1026,7 +1026,7 @@ function find_opt(solver, ins_name::String, num_vehicle::Integer, obj_func::Func
             </body>
             </html>
         """,
-        attachments = [
+        attachments=[
             location
         ]
     )
@@ -1083,7 +1083,6 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run=nothi
             end
         else # if the optimal solution has not been run!!!
             @info "$(time_now()) ==> Optimizing!!! $(ins_name) with $(num_vehicle) vehicles --> first run"
-            find_opt(solver, ins_name, num_vehicle, obj_func, time_solve)
             find_opt(solver, ins_name, num_vehicle, obj_func, time_solve)
         end
     end
