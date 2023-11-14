@@ -28,6 +28,7 @@ VegaLite = "112f6efa-9a02-5b7d-90c0-432ed331239a"
 Weave = "44d3d7a6-8a23-5bf8-98c5-b353f8df5ec9"
 
 [compat]
+DataFrames = "1"
 JLD2 = "0.4"
 PrettyTables = "2"
 Revise = "3"
