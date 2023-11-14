@@ -370,8 +370,58 @@ function opt_balancing_weighted_sum(ins_name::String, num_vehicle::Integer, solv
 end
 
 
+function opt_balancing_weighted_sum_w0_w10(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
+    return opt_total_dis(ins_name, num_vehicle, solver, time_solve=time_solve)
+end
+
+
 function opt_balancing_weighted_sum_w1_w9(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
     return opt_balancing_weighted_sum_w(ins_name, num_vehicle, solver, time_solve=time_solve, w1=0.1, w2=0.9)
+end
+
+
+function opt_balancing_weighted_sum_w2_w8(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
+    return opt_balancing_weighted_sum_w(ins_name, num_vehicle, solver, time_solve=time_solve, w1=0.2, w2=0.8)
+end
+
+
+function opt_balancing_weighted_sum_w3_w7(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
+    return opt_balancing_weighted_sum_w(ins_name, num_vehicle, solver, time_solve=time_solve, w1=0.3, w2=0.7)
+end
+
+
+function opt_balancing_weighted_sum_w4_w6(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
+    return opt_balancing_weighted_sum_w(ins_name, num_vehicle, solver, time_solve=time_solve, w1=0.4, w2=0.6)
+end
+
+
+function opt_balancing_weighted_sum_w5_w5(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
+    return opt_balancing_weighted_sum_w(ins_name, num_vehicle, solver, time_solve=time_solve, w1=0.5, w2=0.5)
+end
+
+
+function opt_balancing_weighted_sum_w6_w4(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
+    return opt_balancing_weighted_sum_w(ins_name, num_vehicle, solver, time_solve=time_solve, w1=0.6, w2=0.4)
+end
+
+
+function opt_balancing_weighted_sum_w7_w3(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
+    return opt_balancing_weighted_sum_w(ins_name, num_vehicle, solver, time_solve=time_solve, w1=0.7, w2=0.3)
+end
+
+
+function opt_balancing_weighted_sum_w8_w2(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
+    return opt_balancing_weighted_sum_w(ins_name, num_vehicle, solver, time_solve=time_solve, w1=0.8, w2=0.2)
+end
+
+
+function opt_balancing_weighted_sum_w9_w1(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
+    return opt_balancing_weighted_sum_w(ins_name, num_vehicle, solver, time_solve=time_solve, w1=0.9, w2=0.1)
+end
+
+
+function opt_balancing_weighted_sum_w10_w0(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
+    return opt_balancing(ins_name, num_vehicle, solver, time_solve=time_solve)
 end
 
 
@@ -1002,7 +1052,17 @@ function find_opt(solver, ins_name::String, num_vehicle::Integer, obj_func::Func
         save_solution(route, ins_name, tex, m, t, CMAX, service, obj_function=obj_func)
     else
         # create dict
-        d = Dict("name" => ins_name, "num_vehicle" => num_vehicle, "route" => "nothing", "tex" => "no solution", "max_completion_time" => "Inf", "obj_function" => "Inf", "solve_time" => time_solve, "relative_gap" => 1, "solver_name" => solver, "total_com" => "Inf")
+        d = Dict("name"             => ins_name, 
+            "num_vehicle"           => num_vehicle, 
+            "route"                 => "nothing", 
+            "tex"                   => "no solution", 
+            "max_completion_time"   => "Inf", 
+            "obj_function"          => "Inf", 
+            "solve_time"            => time_solve, 
+            "relative_gap"          => 1, 
+            "solver_name"           => solver, 
+            "total_com"             => "Inf"
+        )
 
         # save json file
         open(location, "w") do io
