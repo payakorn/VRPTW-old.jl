@@ -1,14 +1,14 @@
 using VRPTW
-# using Gurobi
+using Gurobi
 using Dates
 
 
 @info "Test"
 
-# VRPTW.find_opt(
-#     Gurobi, 
-#     obj_func=VRPTW.balancing_value_weighted_sum_w10_w0,
-#     time_solve=36000,
-#     fix_run=nothing, 
-#     customize_num=false
-# )
+VRPTW.find_opt(
+    Gurobi, 
+    obj_func=VRPTW.opt_balancing_weighted_sum_w1_w9,
+    time_solve=36000,
+    fix_run=nothing, 
+    customize_num=false
+)

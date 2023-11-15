@@ -1007,9 +1007,9 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run=nothi
         println("start program $(Dates.format(date_now, "e, d u yyyy H:M:S"))")
 
         # chack the exiting of file
-        file_existing = !isfile(dir("data", "opt_solomon", obj_func, "$ins_name-$num_vehicle.json"))
-        if file_existing == false
-            if JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name-$num_vehicle.json"))["tex"] == "no solution" || (JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name-$num_vehicle.json"))["solve_time"] < time_solve && abs(JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name-$num_vehicle.json"))["relative_gap"]) > 0)
+        file_existing = isfile(dir("data", "opt_solomon", obj_func, "$ins_name.json"))
+        if file_existing
+            if JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name.json"))["tex"] == "no solution" || (JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name.json"))["solve_time"] < time_solve && abs(JSON.parsefile(dir("data", "opt_solomon", obj_func, "$ins_name.json"))["relative_gap"]) > 0)
                 nothing
             else
                 continue
