@@ -10,3 +10,4 @@ data/.DS_Store
 .gitignore
 output
 test_code.jl
+data/.DS_Store

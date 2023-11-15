@@ -792,6 +792,20 @@ function load_solution(location::String)
     Solution(route, problem)
 end
 
+
+function load_optimal_JSON(ins_name::String, num_node::Integer, obj_func::Function)
+    JSON.parsefile(dir("data", "opt_solomon", "$(obj_func)", "$(ins_name)-$(num_node).json"))
+end
+
+
+function load_optimal_solution(ins_name::String, num_node::Integer, obj_func::Function)
+    json_file = load_optimal_JSON(ins_name, num_node, obj_func)
+    route = json_file["route"] |> dict_to_solution
+    problem = load_solomon_data(ins_name)
+    return Solution(route, problem, obj_func)
+end
+
+
 # load benchmark solution 
 function load_solution_phase0(ins_name::String; obj_func=distance)
     pt = "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/solutions_benchmark/$ins_name.txt"
@@ -1319,6 +1333,11 @@ function find_difference_min_max_length_each_route(solution::Solution)
 end
 
 
+function get_2_objective(sol::Solution)
+    return round(distance(sol), digits=1), round(balancing_value(sol), digits=1)
+end
+
+
 function plot_pareto_front(ins_name::String; num_node::Integer=25, num_ins::Integer=10)
 
     obj_funcs = [
@@ -1335,32 +1354,73 @@ function plot_pareto_front(ins_name::String; num_node::Integer=25, num_ins::Inte
         balancing_value_weighted_sum_w10_w0,
     ]
 
+    opt_obj_funcs = [
+        opt_balancing_weighted_sum_w0_w10,
+        opt_balancing_weighted_sum_w1_w9,
+        opt_balancing_weighted_sum_w2_w8,
+        opt_balancing_weighted_sum_w3_w7,
+        opt_balancing_weighted_sum_w4_w6,
+        opt_balancing_weighted_sum_w5_w5,
+        opt_balancing_weighted_sum_w6_w4,
+        opt_balancing_weighted_sum_w7_w3,
+        opt_balancing_weighted_sum_w8_w2,
+        opt_balancing_weighted_sum_w9_w1,
+        opt_balancing_weighted_sum_w10_w0,
+    ]
+
+    colors = [
+        :red,
+        :green,
+        :blue,
+        :cyan,
+        :magenta,
+        :yellow,
+        :black,
+    ]
+
+    cols = distinguishable_colors(11, [RGB(1,1,1), RGB(0,0,0)], dropseed=true)
+
     # plot first solution in all_solutions
     sol = find_all_solutions_of_SA(ins_name; obj_func=obj_funcs[1], num_node=num_node)
     sort!(sol, [:obj, :Dis, :Bal])
     sol = sol[1:num_ins, :]
     legend_name = "$(obj_funcs[1])"[30:end]
     @info "plot $ins_name => num_node: $num_node => obj function: $(obj_funcs[1])"
-    p = Plots.scatter(sol.Dis, sol.Bal, label=legend_name, legend=:outertopright, title=uppercase(ins_name))
+    p = Plots.scatter(sol.Dis, sol.Bal, label=legend_name, legend=:outertopright, title=uppercase(ins_name), c=cols[1])
     xlabel!("Total distance")
     ylabel!("Total diff")
     
     # plot others
-    for obj_func in obj_funcs[2:end]
+    # set color to palette=:tab10
+    for (i, obj_func) in enumerate(obj_funcs[2:end])
         @info "plot $ins_name => num_node: $num_node => obj function: $(obj_func)"
         sol = find_all_solutions_of_SA(ins_name, obj_func=obj_func, num_node=num_node)
         sort!(sol, [:obj, :Dis, :Bal])
         sol = sol[1:num_ins, :]
         legend_name = "$(obj_func)"[30:end] # only last 30 characters
-        p = Plots.scatter!(sol.Dis, sol.Bal, label=legend_name, palette=:tab10)
+        p = Plots.scatter!(sol.Dis, sol.Bal, label=legend_name, c=cols[i+1])
     end
+
+    # w0_w10
+    dis, bal = load_optimal_solution(ins_name, num_node, opt_obj_funcs[1]) |> get_2_objective
+    legend_name = "$(opt_obj_funcs[1])"[end-6:end] * "_$(bal)_$(dis)"
+    p = Plots.scatter!([dis], [bal], label="opt_$(legend_name)", c=cols[1], markershape=:star)
+    # w1_w9
+    dis, bal = load_optimal_solution(ins_name, num_node, opt_obj_funcs[2]) |> get_2_objective
+    legend_name = "$(opt_obj_funcs[2])"[end-5:end] * "_$(bal)_$(dis)"
+    p = Plots.scatter!([dis], [bal], label="opt_$(legend_name)", c=cols[2], markershape=:star)
+    # w10_w0
+    dis, bal = load_optimal_solution(ins_name, num_node, opt_obj_funcs[11]) |> get_2_objective
+    legend_name = "$(opt_obj_funcs[11])"[end-6:end] * "_$(bal)_$(dis)"
+    p = Plots.scatter!([dis], [bal], label="opt_$(legend_name)", c=cols[11], markershape=:star)
+
     savefig(p, dir("data", "simulated_annealing", "plot_pareto", "plot_pareto_$(ins_name)-$(num_node).pdf"))
 end
 
 
-function plot_pareto(num_node::Integer)
+function plot_pareto(num_node::Integer; num_ins::Integer=10)
     for ins_name in ins_names
-        plot_pareto_front(ins_name, num_node=num_node)
+        plot_pareto_front(ins_name, num_node=num_node, num_ins=num_ins)
     end
 end
 
