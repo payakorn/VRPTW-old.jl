@@ -1175,7 +1175,7 @@ function find_opt(solver, ins_name::String, num_vehicle::Integer, obj_func::Func
             "tex"                   => "no solution", 
             "max_completion_time"   => "Inf", 
             "obj_function"          => "Inf", 
-            "solve_time"            => time_solve, 
+            "solve_time"            => 0, 
             "relative_gap"          => 1, 
             "solver_name"           => solver, 
             "total_com"             => "Inf"
@@ -1190,14 +1190,14 @@ function find_opt(solver, ins_name::String, num_vehicle::Integer, obj_func::Func
     date_end = time_now()
 
     sent_email(
-        "$ins_name-$num_vehicle Completed!!! => ($(obj_func))",
+        "$ins_name Completed!!! => ($(obj_func))",
         """
             <!DOCTYPE html>
             <html>
             <body>
                 <h4>solver: $(solver)</h4>
                 <h4>objective function: $(obj_func)</h4>
-                <h4>time limit: $(time_solve)</h4>
+                <h4>time limit: $(solve_time(m))</h4>
                 <h4>start time: start program $date_now</h4>
                 <h4>end   time: start program $date_end</h4>
             </body>
