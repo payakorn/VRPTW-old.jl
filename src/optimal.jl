@@ -995,6 +995,8 @@ function find_opt(solver, ins_name::String, num_vehicle::Integer, obj_func::Func
 
     location = dir("data", "opt_solomon", obj_func, "$ins_name.json")
 
+    date_now = time_now()
+
     m, x, t, CMAX, service = obj_func(ins_name, num_vehicle, solver, time_solve=time_solve)
 
     if has_values(m)
