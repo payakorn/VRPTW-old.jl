@@ -1197,7 +1197,7 @@ function find_opt(solver, ins_name::String, num_vehicle::Integer, obj_func::Func
             <body>
                 <h4>solver: $(solver)</h4>
                 <h4>objective function: $(obj_func)</h4>
-                <h4>time limit: $(solve_time(m))</h4>
+                <h4>time solve: $(solve_time(m))</h4>
                 <h4>start time: start program $date_now</h4>
                 <h4>end   time: start program $date_end</h4>
             </body>

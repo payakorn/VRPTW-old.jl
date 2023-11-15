@@ -79,6 +79,9 @@ function save_solution(route::Dict, ins_name::String, tex::String, m, t, CMAX, s
 
     # total completion time
     total_com = solution |> total_comp
+
+    # total finishing time
+    total_finish = solution |> total_max_comp
         
     # balancing
     bc = solution |> balancing_value
@@ -92,6 +95,7 @@ function save_solution(route::Dict, ins_name::String, tex::String, m, t, CMAX, s
         "total_com"             => total_com,
         "max_completion_time"   => max_com, 
         "balancing"             => bc,
+        "total_finishing_time"  => total_finish,
         "obj_func"              => "$(obj_function)",
         "obj_value"             => JuMP.objective_value(m),
         "solve_time"            => solve_time(m), 
