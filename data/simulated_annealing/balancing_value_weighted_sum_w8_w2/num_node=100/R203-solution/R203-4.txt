@@ -1,0 +1,14 @@
+Solution: R203 with 100 nodes and 13 routes, obj_func: balancing_value_weighted_sum_w8_w2
+route 1:   42  15  43  14  44  38  86 100   5
+route 2:   53  40   4  54  90  60  61
+route 3:   27  69  70  18
+route 4:   51  65  66  35  82  12   1
+route 5:   50  33  78  29  24  25
+route 6:   62  11  64  32  30  20   9  81  79   3  77
+route 7:   39  67  23  56  96  97  21  98  95  83  85  28
+route 8:   45  36  49  10  71  46  91  16  94  63
+route 9:    6  87  57  41  22  75  74  73  55  72   2  31
+route 10:  92  59  99  93  58
+route 11:  52  88   7  48   8  84  17  89  47  19
+route 12:  13  37  34  26
+route 13:  76  68  80

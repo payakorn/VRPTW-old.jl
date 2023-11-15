@@ -1,0 +1,9 @@
+Solution: RC103 with 25 nodes and 8 routes, obj_func: balancing_value
+route 1:  22  7
+route 2:  15 10  4
+route 3:  12  9 17 13
+route 4:   6 20
+route 5:  23 25 21
+route 6:  14 11  5  2  1  3
+route 7:  19 16 18
+route 8:   8 24

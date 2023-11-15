@@ -1,0 +1,15 @@
+Solution: R103 with 50 nodes and 14 routes, obj_func: total_comp
+route 1:  28
+route 2:  26 12
+route 3:  18 45 46  8 10
+route 4:  21 39 23 22
+route 5:  29 24 40
+route 6:   2 43 15 41  4 25
+route 7:   1 50
+route 8:  36 47
+route 9:  37 42 14 38 13
+route 10:  7 48 19 11 49 17
+route 11:  5 16 44  6
+route 12: 20 32 30  9 35
+route 13:  3 33 34
+route 14: 31 27

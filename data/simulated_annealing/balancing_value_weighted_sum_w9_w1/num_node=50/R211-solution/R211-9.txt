@@ -1,0 +1,13 @@
+Solution: R211 with 50 nodes and 12 routes, obj_func: balancing_value_weighted_sum_w9_w1
+route 1:   1  9 39
+route 2:  26 24 29 12  6
+route 3:  34 33 23  2  5  8
+route 4:  18 36 49 44 31 47  7
+route 5:  20 35 30 45
+route 6:  13 19 46
+route 7:   4 17
+route 8:  25 15 41 42
+route 9:  28  3 40 11 22
+route 10: 48 10 27 50
+route 11: 37 21 32
+route 12: 43 16 38 14

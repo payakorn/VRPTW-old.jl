@@ -1,0 +1,8 @@
+ERROR: LoadError: UndefVarError: opt_balancing_weighted_sum_w1_w9 not defined
+Stacktrace:
+ [1] getproperty(x::Module, f::Symbol)
+   @ Base ./Base.jl:31
+ [2] top-level scope
+   @ ~/.julia/dev/VRPTW/src/script.jl:3
+in expression starting at /home/payakorn_sak/.julia/dev/VRPTW/src/script.jl:3
+srun: error: compute1: task 0: Exited with exit code 1

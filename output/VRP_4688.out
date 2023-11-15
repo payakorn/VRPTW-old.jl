@@ -1,0 +1,10 @@
+ERROR: LoadError: MethodError: no method matching find_opt(::Module; obj_func=VRPTW.opt_balancing_weighted_sum_w1_w9, solve_time=40000)
+Closest candidates are:
+  find_opt(::Any; obj_func, time_solve, fix_run, customize_num) at ~/.julia/dev/VRPTW/src/optimal.jl:985 got unsupported keyword argument "solve_time"
+Stacktrace:
+ [1] kwerr(::NamedTuple{(:obj_func, :solve_time), Tuple{typeof(VRPTW.opt_balancing_weighted_sum_w1_w9), Int64}}, ::Function, ::Module)
+   @ Base ./error.jl:165
+ [2] top-level scope
+   @ ~/.julia/dev/VRPTW/src/script.jl:7
+in expression starting at /home/payakorn_sak/.julia/dev/VRPTW/src/script.jl:7
+start program Thu, 5 Oct 2023 22:21:19srun: error: compute1: task 0: Exited with exit code 1

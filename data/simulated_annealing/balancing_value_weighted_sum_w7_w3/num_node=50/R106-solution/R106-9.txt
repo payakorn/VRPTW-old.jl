@@ -1,0 +1,14 @@
+Solution: R106 with 50 nodes and 13 routes, obj_func: balancing_value_weighted_sum_w7_w3
+route 1:  47 36 10 21
+route 2:  40 41 43 13
+route 3:  14  9 20 12
+route 4:   4  2
+route 5:  45  8 18 46  5
+route 6:  42 15 23  3 26
+route 7:  19 11 49 37
+route 8:  16 44  6 31  7
+route 9:  30 32 48
+route 10: 28 24 25
+route 11: 33 34 35 50
+route 12: 27 29 22 17
+route 13: 39 38  1

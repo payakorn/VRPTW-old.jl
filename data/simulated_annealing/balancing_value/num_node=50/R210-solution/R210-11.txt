@@ -1,0 +1,6 @@
+Solution: R210 with 50 nodes and 5 routes, obj_func: balancing_value
+route 1:  16 15 25
+route 2:  23 38  6  7 40 10 24 43 34  3 32 26
+route 3:  29 33 11 45 27  8 28 41 31 14 13 35  5
+route 4:   9 47 18 12 49  2  4 48 46 20
+route 5:  39 42 36 44 22 30 19 17 21 50  1 37

@@ -1,0 +1,4 @@
+Solution: R207 with 50 nodes and 3 routes, obj_func: distance
+route 1:  18 45 46 36 19 11 49 47 48  8 17  5 13
+route 2:  27  1 50 33  9 20 30 32 10 31  7  6
+route 3:  26 39 23  2 42 37 16 44 38 14 43 15 41 22 40 21  4 25 24 29 34 35  3 12 28

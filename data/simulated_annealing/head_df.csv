@@ -1,2 +1,2 @@
-ins,Num_Run,i,date,alpha,iter,time,num_vehi,obj
-C101,1.0,1,1994-01-01,Inf,0,Inf,0,Inf
+ins,Num_Run,i,date,alpha,iter,time,num_vehi,obj,DiffRoute,Dis
+C101,1.0,1,1994-01-01,Inf,0,Inf,0,Inf,Inf,Inf

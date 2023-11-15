@@ -1,0 +1,16 @@
+Solution: R207 with 100 nodes and 15 routes, obj_func: balancing_value_weighted_sum_w8_w2
+route 1:   80   3  20
+route 2:   45   8  17  55  72
+route 3:   95  92  42  15  23  67  39   4  43  46  28
+route 4:   27  69  70  18  83
+route 5:   58   7
+route 6:   26  25  54  89
+route 7:    6  40  84  99  37  22  78  63  86  21   1  82
+route 8:   68  75  91  96  12   2  98
+route 9:   13  56  90  48
+route 10:  31  88  19  47  36  64  11  62  30   9  35  29  24  81  32  71
+route 11:  93  50
+route 12:  53  41  74  73  61  14  57  94  60
+route 13:  87  38  44 100  85   5  16
+route 14:  33  65  66  49  51  34  10  59  52
+route 15:  76  79  77  97

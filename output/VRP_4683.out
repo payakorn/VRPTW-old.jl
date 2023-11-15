@@ -1,0 +1,42 @@
+ERROR: LoadError: ArgumentError: Package VRPTW does not have DelimitedFiles in its dependencies:
+- You may have a partially installed environment. Try `Pkg.instantiate()`
+  to ensure all packages in the environment are installed.
+- Or, if you have VRPTW checked out for development and have
+  added DelimitedFiles as a dependency but haven't updated your primary
+  environment's manifest file, try `Pkg.resolve()`.
+- Otherwise you may need to report an issue with VRPTW
+Stacktrace:
+ [1] macro expansion
+   @ ./loading.jl:1167 [inlined]
+ [2] macro expansion
+   @ ./lock.jl:223 [inlined]
+ [3] require(into::Module, mod::Symbol)
+   @ Base ./loading.jl:1144
+ [4] include
+   @ ./Base.jl:419 [inlined]
+ [5] include_package_for_output(pkg::Base.PkgId, input::String, depot_path::Vector{String}, dl_load_path::Vector{String}, load_path::Vector{String}, concrete_deps::Vector{Pair{Base.PkgId, UInt64}}, source::String)
+   @ Base ./loading.jl:1554
+ [6] top-level scope
+   @ stdin:1
+in expression starting at /home/payakorn_sak/.julia/dev/VRPTW/src/VRPTW.jl:1
+in expression starting at stdin:1
+ERROR: LoadError: Failed to precompile VRPTW [98e944a4-2f93-413e-9005-d4dae69c2efa] to /home/payakorn_sak/.julia/compiled/v1.8/VRPTW/jl_ROkqcM.
+Stacktrace:
+ [1] error(s::String)
+   @ Base ./error.jl:35
+ [2] compilecache(pkg::Base.PkgId, path::String, internal_stderr::IO, internal_stdout::IO, keep_loaded_modules::Bool)
+   @ Base ./loading.jl:1707
+ [3] compilecache
+   @ ./loading.jl:1651 [inlined]
+ [4] _require(pkg::Base.PkgId)
+   @ Base ./loading.jl:1337
+ [5] _require_prelocked(uuidkey::Base.PkgId)
+   @ Base ./loading.jl:1200
+ [6] macro expansion
+   @ ./loading.jl:1180 [inlined]
+ [7] macro expansion
+   @ ./lock.jl:223 [inlined]
+ [8] require(into::Module, mod::Symbol)
+   @ Base ./loading.jl:1144
+in expression starting at /home/payakorn_sak/.julia/dev/VRPTW/src/script.jl:1
+srun: error: compute1: task 0: Exited with exit code 1

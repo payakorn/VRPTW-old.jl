@@ -2,13 +2,26 @@
     mutable struct Solution(route::Array{Integer}, problem::Problem, obj_func::Function)
 
 Solution of Solomon in the struct format 
-### Inputs
-- route::Array{Integer}
+# Inputs
+- route::Array{Integer}, seperated by zero, e.g. [0, 1, 2, 0, 3, 4, 0]
 - problem::Problem
-- obj_func::Function
+- obj_func::Function (defalse=distance)
 
-### Output
-- Solution
+# Examples
+```julia
+julia> problem = load_solomon_data("C101", num_node=100, max_vehi=25)
+Problem C101 with 100 nodes
+
+julia> sol = Solution([0, 1, 2, 0, 3, 4, 0], problem)
+Solution: C101 with 100 nodes and 2 routes, obj_func: distance
+route 1:    1   2
+route 2:    3   4
+
+julia> sol = Solution([0, 1, 2, 0, 3, 4, 0], problem, balancing_value)
+Solution: C101 with 100 nodes and 2 routes, obj_func: balancing_value
+route 1:    1   2
+route 2:    3   4
+```
 """
 mutable struct Solution
     route::Array{Integer}
@@ -22,7 +35,7 @@ mutable struct Solution
 end
 
 # change display of struct
-Base.show(io::IO, solution::Solution) = print(io, "Solution: $(solution.problem.name) with $(route_length(solution)) routes\n$(txt_route(solution))")
+Base.show(io::IO, solution::Solution) = print(io, txt_route_full(solution))
 
 # Solution(route, problem, obj_function) = Solution(route, problem, obj_function)
 
@@ -31,6 +44,7 @@ struct Point
     x::Float64
     y::Float64
 end
+
 
 const ins_names = [
     "C101",
@@ -98,6 +112,84 @@ const R2 = ins_names[30:40]
 const RC1 = ins_names[41:48]
 const RC2 = ins_names[49:56]
 
+
+
+"""
+    <=: compare two solution with multiple objective (distance and balancing completion time)
+
+return true if those two objectives of sol1 are less than or equal to sol2
+"""
+function Base.:<=(sol1::Solution, sol2::Solution)
+    dis1 = distance(sol1)
+    dis2 = distance(sol2)
+
+    bal1 = balancing_value(sol1)
+    bal2 = balancing_value(sol2)
+
+    if dis1 <= dis2 && bal1 <= bal2
+        return true
+    else
+        return false
+    end
+end
+
+"""
+    Base.:<(sol1::Solution, sol2::Solution)
+
+compare two objective based on Pareto perspective. sol1 < sol2 
+if one of two objectives of sol1 less than sol2 and another obj of sol1 less than or equal to sol2
+
+# Examples
+```jldoctest
+julia> problem = load_solomon_data("C101", num_node=100, max_vehi=25)
+Problem C101 with 100 nodes
+
+julia> sol1 = Solution([0, 1, 0], problem)
+Solution: C101 with 100 nodes and 1 routes, obj_func: distance
+route 1:    1
+
+julia> sol2 = Solution([0, 2, 0], problem)
+Solution: C101 with 100 nodes and 1 routes, obj_func: distance
+route 1:    2
+
+julia> sol1 |> distance
+37.2
+
+julia> sol2 |> distance
+41.2
+
+julia> sol1 |> balancing_value
+0.0
+
+julia> sol2 |> balancing_value
+0.0
+
+julia> sol1 < sol2
+true
+
+julia> sol2 < sol1
+false
+```
+"""
+function Base.isless(sol1::Solution, sol2::Solution)
+    """
+        alternative: function Base.:<(sol1::Solution, sol2::Solution)
+
+        the version above is used because the sort function can apply to solution
+    """
+    dis1 = distance(sol1)
+    dis2 = distance(sol2)
+
+    bal1 = balancing_value(sol1)
+    bal2 = balancing_value(sol2)
+
+    if dis1 <= dis2 && bal1 < bal2 || dis1 < dis2 && bal1 <= bal2
+        return true
+    else
+        return false
+    end
+end
+
 """
     fix_route_zero(route::Array)
 
@@ -133,13 +225,92 @@ function route_length(route::Array)
 end
 
 
+"""
+    route_length(solution::Solution)
+
+return the number of vehicle of solution
+
+# Examples
+```julia-repl
+julia> load_solution_SA("C101", distance, 100, 1) |> route_length
+11
+```
+"""
 function route_length(solution::Solution)
     route_length(solution.route)
 end
 
 
+"""
+    length(solution::Solution)
+
+return the number of vehicle of solution
+
+# Examples
+```julia-repl
+julia> load_solution_SA("C101", distance, 100, 1) |> length
+11
+```
+"""
+function Base.length(solution::Solution)
+    return route_length(solution)
+end
+
+"""
+    seperate_route_to_array(solution::Solution)
+
+Return list of each route
+
+# Arguments
+- `solution::Solution`: solution.
+# Examples
+```julia-repl
+julia> sol = load_solution_SA("C101", distance, 100, 1)
+Solution: C101 with 100 nodes and 11 routes, obj_func: distance
+route 1:   43  42  41  40  44  46  45  48  51  50  52  49  47
+route 2:   13  17  18  19  15  16  14  12
+route 3:    5   3
+route 4:   81  78  76  71  70  73  77  79  80
+route 5:   98  96  95  94  92  93  97 100  99
+route 6:    7   8  10  11   9   6   4   2   1  75
+route 7:   20  24  25  27  29  30  28  26  23  22  21
+route 8:   32  33  31  35  37  38  39  36  34
+route 9:   57  55  54  53  56  58  60  59
+route 10:  90  87  86  83  82  84  85  88  89  91
+route 11:  67  65  63  62  74  72  61  64  68  66  69
+julia> sol |> seperate_route_to_array
+11-element Vector{Any}:
+ Integer[43, 42, 41, 40, 44, 46, 45, 48, 51, 50, 52, 49, 47]
+ Integer[13, 17, 18, 19, 15, 16, 14, 12]
+ Integer[5, 3]
+ Integer[81, 78, 76, 71, 70, 73, 77, 79, 80]
+ Integer[98, 96, 95, 94, 92, 93, 97, 100, 99]
+ Integer[7, 8, 10, 11, 9, 6, 4, 2, 1, 75]
+ Integer[20, 24, 25, 27, 29, 30, 28, 26, 23, 22, 21]
+ Integer[32, 33, 31, 35, 37, 38, 39, 36, 34]
+ Integer[57, 55, 54, 53, 56, 58, 60, 59]
+ Integer[90, 87, 86, 83, 82, 84, 85, 88, 89, 91]
+ Integer[67, 65, 63, 62, 74, 72, 61, 64, 68, 66, 69]
+```
+"""
+function seperate_route_to_array(solution::Solution)
+    route = solution.route
+    zero_position = findall(x -> x == 0, route)
+    result = []
+    for i in 1:route_length(solution)
+        push!(result, route[(zero_position[i]+1):(zero_position[i+1]-1)])
+    end
+    return result
+end
+
+
 function distance(point1::Point, point2::Point)
     sqrt((point1.x^2 - point1.x)^2 + (point2.x^2 - point2.x)^2)
+end
+
+
+function distance(route::Dict, distance_matrix::Matrix)
+    nothing
 end
 
 
@@ -210,19 +381,35 @@ end
 
 function txt_route(solution::Solution)
     # println("solution of $(solution.problem.name)")
+    sp = length(string(solution.problem.num_node)) + 1
     r = 1
     txt = ""
-    txt *= "route $r: "
+    # txt *= "route $r: "
+    txt *= rpad("route $r:", 9, " ")
     r += 1
     for i in solution.route[2:end-1]
         if i != 0
-            txt *= "$i "
+            # txt *= "$i "
+            txt *= lpad("$i", sp, " ")
         else
-            txt *= "\nroute $r: "
+            # txt *= "\nroute $r: "
+            txt *= rpad("\nroute $r:", 9, " ")
             r += 1
         end
     end
     return txt
+end
+
+
+function txt_route_full(solution::Solution)
+    return "Solution: $(solution.problem.name) with $(solution.problem.num_node) nodes and $(route_length(solution)) routes, obj_func: $(solution.obj_func)\n$(txt_route(solution))"
+end
+
+
+function save_solution_txt(solution::Solution, location::String)
+    open(location, "w") do f
+        write(f, txt_route_full(solution))
+    end
 end
 
 
@@ -261,7 +448,7 @@ end
 
 function cross_over(solution::Solution, pos1::Integer, pos2::Integer)
 
-    if abs(pos1-pos2) <= 1
+    if abs(pos1 - pos2) <= 1
         return solution
     end
 
@@ -269,8 +456,8 @@ function cross_over(solution::Solution, pos1::Integer, pos2::Integer)
     D = solution.route[pos2:end]
 
     middle_part = solution.route[pos1+1:pos2-1]
-    first_position = findfirst(x->x==0, middle_part)
-    last_position = findlast(x->x==0, middle_part)
+    first_position = findfirst(x -> x == 0, middle_part)
+    last_position = findlast(x -> x == 0, middle_part)
 
     if isnothing(first_position) && isnothing(last_position)
         append!(A, D)
@@ -309,7 +496,7 @@ end
 
 function move!(solution::Solution, cus::Integer)
     new_sol = deepcopy(solution)
-    deleteat!(new_sol.route, findfirst(x->x==cus, new_sol.route))
+    deleteat!(new_sol.route, findfirst(x -> x == cus, new_sol.route))
     new_sol = inserting(new_sol, cus, new_sol.obj_func)
     if feasibility(new_sol)
         return new_sol
@@ -403,7 +590,7 @@ function inserting(solution::Solution, cus::Integer, obj::Function)
         best_obj = obj(Solution(best_route, solution.problem, obj))
     end
 
-    # @info "start inseting procedure with $(length(save_route)) positions"
+    # REMARK "start inseting procedure with $(length(save_route)) positions"
     for i in 2:(length(solution.route)-1)
         inserted_route = deepcopy(save_route)
         insert!(inserted_route, i, cus)
@@ -528,6 +715,75 @@ function balancing_value(sol::Solution)
 end
 
 
+function balancing_value_weighted_sum(sol::Solution)
+    return balancing_value(sol) + distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w0_w10(sol::Solution)
+    return distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w1_w9(sol::Solution)
+    w1, w2 = 0.1, 0.9
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w2_w8(sol::Solution)
+    w1, w2 = 0.2, 0.8
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w3_w7(sol::Solution)
+    w1, w2 = 0.3, 0.7
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w4_w6(sol::Solution)
+    w1, w2 = 0.4, 0.6
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w5_w5(sol::Solution)
+    w1, w2 = 0.5, 0.5
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w6_w4(sol::Solution)
+    w1, w2 = 0.6, 0.4
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w7_w3(sol::Solution)
+    w1, w2 = 0.7, 0.3
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w8_w2(sol::Solution)
+    w1, w2 = 0.8, 0.2
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w9_w1(sol::Solution)
+    w1, w2 = 0.9, 0.1
+    return w1 * balancing_value(sol) + w2 * distance(sol)
+end
+
+
+function balancing_value_weighted_sum_w10_w0(sol::Solution)
+    return balancing_value(sol)
+end
+
+
 function load_solution(location::String)
     js = JSON.parsefile(location)
     route = dict_to_solution(js["route"])
@@ -536,9 +792,23 @@ function load_solution(location::String)
     Solution(route, problem)
 end
 
+
+function load_optimal_JSON(ins_name::String, num_node::Integer, obj_func::Function)
+    JSON.parsefile(dir("data", "opt_solomon", "$(obj_func)", "$(ins_name)-$(num_node).json"))
+end
+
+
+function load_optimal_solution(ins_name::String, num_node::Integer, obj_func::Function)
+    json_file = load_optimal_JSON(ins_name, num_node, obj_func)
+    route = json_file["route"] |> dict_to_solution
+    problem = load_solomon_data(ins_name)
+    return Solution(route, problem, obj_func)
+end
+
+
 # load benchmark solution 
 function load_solution_phase0(ins_name::String; obj_func=distance)
-    pt = "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/solutions_benchmark/$ins_name.txt"
+    pt = "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/solutions_benchmark/$ins_name.txt"
     f = open(pt)
     lines = readlines(f)
     route = Integer[0]
@@ -554,8 +824,12 @@ function load_solution_phase0(ins_name::String; obj_func=distance)
 end
 
 
-function load_solution_phase1(ins_name::String)
-    pt = "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/$ins_name.txt"
+function load_solution_phase1(ins_name::String; totalcomp=false)
+    if totalcomp
+        pt = "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/$ins_name.txt"
+    else
+        pt = "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1/Alg-clustering-heuristic/$ins_name.txt"
+    end
     f = open(pt)
     lines = readlines(f)
     route = Integer[0]
@@ -571,8 +845,13 @@ function load_solution_phase1(ins_name::String)
 end
 
 
-function load_solution_phase2(ins_name::String)
-    pt = "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/$ins_name.txt"
+function load_solution_phase2(ins_name::String; totalcomp=false)
+    if totalcomp
+        pt = "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/$ins_name.txt"
+    else
+        pt = "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/$ins_name.txt"
+    end
+
     f = open(pt)
     lines = readlines(f)
     route = Integer[0]
@@ -588,8 +867,13 @@ function load_solution_phase2(ins_name::String)
 end
 
 
-function load_solution_phase3(ins_name::String)
-    all_ins = glob("*", "/Users/payakorn/code-julia/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/random_swap_move/$ins_name/")
+function load_solution_phase3(ins_name::String; totalcomp=false)
+
+    if totalcomp
+        all_ins = glob("*", "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1_completion_time/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/random_swap_move/$ins_name/")
+    else
+        all_ins = glob("*", "/Users/paya/Documents/juliaP/Julia/Single-vehicle-Julia/phase1/Alg-clustering-heuristic/move_all_no_update-sort_processing_matrix/random_swap_move/$ins_name/")
+    end
 
     problem = load_solomon_data(ins_name, num_node=100)
     min_obj = Inf
@@ -610,8 +894,15 @@ function load_solution_phase3(ins_name::String)
             sol = deepcopy(new_sol)
         end
     end
-    return sol
+    if isnothing(sol)
+        return load_solution_phase2(ins_name)
+    else
+        return sol
+    end
 end
+
+
+# function create_phase_conclusion
 
 
 function load_solution(ins_name::String, obj_name::String)
@@ -619,8 +910,36 @@ function load_solution(ins_name::String, obj_name::String)
     route = dict_to_solution(js["route"])
     (ins_name, num_node) = split(js["name"], "-")
     problem = load_solomon_data(String(ins_name), num_node=parse(Int64, num_node))
-    Solution(route, problem)
+    return Solution(route, problem)
 end
+
+
+function load_solution(ins_name::String, obj_name::Function)
+    js = JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))
+    route = dict_to_solution(js["route"])
+    (ins_name, num_node) = split(js["name"], "-")
+    problem = load_solomon_data(String(ins_name), num_node=parse(Int64, num_node))
+    return Solution(route, problem, obj_name)
+end
+
+
+function load_solution_SA(ins_name::String, obj_func::Function, num_node::Integer, num_ins::Integer)
+    location = dir("data", "simulated_annealing", "$(obj_func)", "num_node=$num_node", "$(ins_name)-solution", "$(ins_name)-$(num_ins).txt")
+
+    text = readdlm(location, '\t', '\n', skipstart=1)
+    text = [split(i, ":")[2] for i in text]
+    route = Int[0]
+    for a_route in text
+        all_nodes = [parse(Int, i) for i in split(a_route)]
+        append!(route, all_nodes)
+        push!(route, 0)
+    end
+    solution = Solution(route, load_solomon_data(ins_name, num_node=num_node), obj_func)
+    return solution
+end
+
+
+load_solution_SA(ins_name::Symbol) = load_solution_SA(String(ins_name), distance, 100, 1)
 
 
 function list_ins_name()
@@ -840,34 +1159,149 @@ function save_simulation_file(df::DataFrame, file_name::String)
 end
 
 
-function create_phase_conclusion()
+function save_solution_struct(solution::Solution)
+    data = Dict("route" => solution.route, "obj_func" => solution.obj_func)
+    open("test.json", "w") do f
+        JSON3.write(f, solution)
+    end
+end
+
+
+function create_phase_conclusion(; totalcomp=false)
+
+    if totalcomp
+        obj_func = total_comp
+    else
+        obj_func = distance
+    end
+
     df = DataFrame(
         ins=ins_names,
-        comp0=total_max_comp.(load_solution_phase0.(ins_names)),
-        comp1=total_max_comp.(load_solution_phase1.(ins_names)),
-        comp2=total_max_comp.(load_solution_phase2.(ins_names)),
-        comp3=total_max_comp.(load_solution_phase3.(ins_names)),
-        dis0=distance.(load_solution_phase0.(ins_names)),
-        dis1=distance.(load_solution_phase1.(ins_names)),
-        dis2=distance.(load_solution_phase2.(ins_names)),
-        dis3=distance.(load_solution_phase3.(ins_names)),
+        comp0=total_comp.(load_solution_phase0.(ins_names, obj_func=obj_func)),
+        comp1=total_comp.(load_solution_phase1.(ins_names, totalcomp=totalcomp)),
+        comp2=total_comp.(load_solution_phase2.(ins_names, totalcomp=totalcomp)),
+        comp3=total_comp.(load_solution_phase3.(ins_names, totalcomp=totalcomp)),
+        dis0=distance.(load_solution_phase0.(ins_names, obj_func=obj_func)),
+        dis1=distance.(load_solution_phase1.(ins_names, totalcomp=totalcomp)),
+        dis2=distance.(load_solution_phase2.(ins_names, totalcomp=totalcomp)),
+        dis3=distance.(load_solution_phase3.(ins_names, totalcomp=totalcomp)),
     )
-    CSV.write("data/simulations/phase1phase2phase3.csv", df)
+    CSV.write("data/simulations/phase1phase2phase3_$obj_func.csv", df)
 end
 
 
 function find_best_solution_of_SA(ins_name; obj_func=distance, num_node=100)
     ins_name = uppercase(ins_name)
     location = dir("data", "simulated_annealing", obj_func, "num_node=$num_node", "$ins_name.csv")
+
+    # defind function to calculate
+    # func_to = find_average_node_each_route
+    func_to = find_min_max_num_node_each_route
+
+    # main
     if isfile(location)
         df = CSV.File(location) |> DataFrame
+
+        # add new column
+        diff_route = [func_to(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :DiffRoute] = diff_route
+
+        # vehicles
+        Vehi = [length(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :Vehi] = Vehi
+
+        # add distance column
+        dis = [distance(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :Dis] = dis
+
+        # add total completion time column
+        Comp = [total_comp(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :Comp] = Comp
+
+        # add total completion time column
+        Balance = [balancing_value(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :Balance] = Balance
+
+        # add max completion time column
+        MaxComp = [maximum(max_comp(load_solution_SA(ins_name, obj_func, num_node, ind))) for ind in 1:size(df, 1)]
+        df[!, :MaxComp] = MaxComp
+
+        # remane
         # rename!(df, :i => :name)
+
         obj_min, ind = findmin(df.obj)
         df[!, :ins] = [ins_name for i in 1:length(df.obj)]
         df[!, :Num_Run] = size(df, 1) * ones(size(df, 1))
-        df = select(df, [:ins, :Num_Run, :i, :date, :alpha, :iter, :time, :num_vehi, :obj])
+        df = select(df, [:ins, :Num_Run, :i, :date, :alpha, :iter, :time, :DiffRoute, :Vehi, :Dis, :Comp, :MaxComp, :Balance])
         dm = df[ind, :]
+
         return dm
+    else
+        # head for dataframe
+        # ins,Num_Run,i,date,alpha,iter,time,num_vehi,obj,DiffRoute,Dis
+        # C101,1.0,1,1994-01-01,Inf,0,Inf,0,Inf,Inf,Inf
+        dm = DataFrame(
+            ins="C101",
+            Num_Run=1.0,
+            i=1,
+            date="1994-11-01",
+            alpha=Inf,
+            iter=0,
+            time=Inf,
+            DiffRoute=Inf,
+            Vehi=Inf,
+            Dis=Inf,
+            Comp=Inf,
+            MaxComp=Inf,
+            Balance=Inf,
+        )
+        # dm = CSV.File(dir("data", "simulated_annealing", "head_df.csv")) |> DataFrame
+        dm[1, 1] = ins_name
+        return dm
+    end
+end
+
+
+"""
+    The function aim to find all solutions from SA of `ins_name`. This is created for finding Pareto front
+    
+    
+    This function is modified from `find_best_solution_of_SA`
+"""
+function find_all_solutions_of_SA(ins_name::String; obj_func=distance, num_node=100)
+    ins_name = uppercase(ins_name)
+    location = dir("data", "simulated_annealing", obj_func, "num_node=$num_node", "$ins_name.csv")
+
+    # defind function to calculate
+    # func_to = find_average_node_each_route
+    func_to = find_min_max_num_node_each_route
+
+    # main
+    if isfile(location)
+        df = CSV.File(location) |> DataFrame
+
+        # add new column
+        diff_route = [func_to(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :DiffRoute] = diff_route
+
+        # add distance column
+        dis = [distance(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :Dis] = dis
+
+        # add balancing column
+        bal = [balancing_value(load_solution_SA(ins_name, obj_func, num_node, ind)) for ind in 1:size(df, 1)]
+        df[!, :Bal] = bal
+
+        # remane
+        # rename!(df, :i => :name)
+
+        # obj_min, ind = findmin(df.obj)
+        # df[!, :ins] = [ins_name for i in 1:length(df.obj)]
+        # df[!, :Num_Run] = size(df, 1) * ones(size(df, 1))
+        # df = select(df, [:ins, :Num_Run, :i, :date, :alpha, :iter, :time, :num_vehi, :obj, :DiffRoute, :Dis])
+        # dm = df[ind, :]
+
+        return df
     else
         dm = CSV.File(dir("data", "simulated_annealing", "head_df.csv")) |> DataFrame
         dm[1, 1] = ins_name
@@ -876,35 +1310,295 @@ function find_best_solution_of_SA(ins_name; obj_func=distance, num_node=100)
 end
 
 
+function find_min_max_num_node_each_route(solution::Solution)
+    sep = seperate_route_to_array(solution)
+    length_each_route = [length(i) for i in sep]
+    min_each = minimum(length_each_route)
+    max_each = maximum(length_each_route)
+    return min_each, max_each
+end
+
+
+function find_average_node_each_route(solution::Solution)
+    sep = seperate_route_to_array(solution)
+    length_each_route = [length(i) for i in sep]
+    average = sum(length_each_route) / length(length_each_route)
+    return round(average, digits=2)
+end
+
+
+function find_difference_min_max_length_each_route(solution::Solution)
+    min_length, max_length = find_min_max_num_node_each_route(solution)
+    return max_length - min_length
+end
+
+
+function get_2_objective(sol::Solution)
+    return round(distance(sol), digits=1), round(balancing_value(sol), digits=1)
+end
+
+
+function plot_pareto_front(ins_name::String; num_node::Integer=25, num_ins::Integer=10)
+
+    obj_funcs = [
+        balancing_value_weighted_sum_w0_w10,
+        balancing_value_weighted_sum_w1_w9,
+        balancing_value_weighted_sum_w2_w8,
+        balancing_value_weighted_sum_w3_w7,
+        balancing_value_weighted_sum_w4_w6,
+        balancing_value_weighted_sum_w5_w5,
+        balancing_value_weighted_sum_w6_w4,
+        balancing_value_weighted_sum_w7_w3,
+        balancing_value_weighted_sum_w8_w2,
+        balancing_value_weighted_sum_w9_w1,
+        balancing_value_weighted_sum_w10_w0,
+    ]
+
+    opt_obj_funcs = [
+        opt_balancing_weighted_sum_w0_w10,
+        opt_balancing_weighted_sum_w1_w9,
+        opt_balancing_weighted_sum_w2_w8,
+        opt_balancing_weighted_sum_w3_w7,
+        opt_balancing_weighted_sum_w4_w6,
+        opt_balancing_weighted_sum_w5_w5,
+        opt_balancing_weighted_sum_w6_w4,
+        opt_balancing_weighted_sum_w7_w3,
+        opt_balancing_weighted_sum_w8_w2,
+        opt_balancing_weighted_sum_w9_w1,
+        opt_balancing_weighted_sum_w10_w0,
+    ]
+
+    colors = [
+        :red,
+        :green,
+        :blue,
+        :cyan,
+        :magenta,
+        :yellow,
+        :black,
+    ]
+
+    cols = distinguishable_colors(11, [RGB(1,1,1), RGB(0,0,0)], dropseed=true)
+
+    # plot first solution in all_solutions
+    sol = find_all_solutions_of_SA(ins_name; obj_func=obj_funcs[1], num_node=num_node)
+    sort!(sol, [:obj, :Dis, :Bal])
+    sol = sol[1:num_ins, :]
+    legend_name = "$(obj_funcs[1])"[30:end]
+    @info "plot $ins_name => num_node: $num_node => obj function: $(obj_funcs[1])"
+    p = Plots.scatter(sol.Dis, sol.Bal, label=legend_name, legend=:outertopright, title=uppercase(ins_name), c=cols[1])
+    xlabel!("Total distance")
+    ylabel!("Total diff")
+    
+    # plot others
+    # set color to palette=:tab10
+    for (i, obj_func) in enumerate(obj_funcs[2:end])
+        @info "plot $ins_name => num_node: $num_node => obj function: $(obj_func)"
+        sol = find_all_solutions_of_SA(ins_name, obj_func=obj_func, num_node=num_node)
+        sort!(sol, [:obj, :Dis, :Bal])
+        sol = sol[1:num_ins, :]
+        legend_name = "$(obj_func)"[30:end] # only last 30 characters
+        p = Plots.scatter!(sol.Dis, sol.Bal, label=legend_name, c=cols[i+1])
+    end
+
+    # w0_w10
+    dis, bal = load_optimal_solution(ins_name, num_node, opt_obj_funcs[1]) |> get_2_objective
+    legend_name = "$(opt_obj_funcs[1])"[end-6:end] * "_$(bal)_$(dis)"
+    p = Plots.scatter!([dis], [bal], label="opt_$(legend_name)", c=cols[1], markershape=:star)
+    # w1_w9
+    dis, bal = load_optimal_solution(ins_name, num_node, opt_obj_funcs[2]) |> get_2_objective
+    legend_name = "$(opt_obj_funcs[2])"[end-5:end] * "_$(bal)_$(dis)"
+    p = Plots.scatter!([dis], [bal], label="opt_$(legend_name)", c=cols[2], markershape=:star)
+    # w10_w0
+    dis, bal = load_optimal_solution(ins_name, num_node, opt_obj_funcs[11]) |> get_2_objective
+    legend_name = "$(opt_obj_funcs[11])"[end-6:end] * "_$(bal)_$(dis)"
+    p = Plots.scatter!([dis], [bal], label="opt_$(legend_name)", c=cols[11], markershape=:star)
+
+    savefig(p, dir("data", "simulated_annealing", "plot_pareto", "plot_pareto_$(ins_name)-$(num_node).pdf"))
+end
+
+
+function plot_pareto(num_node::Integer; num_ins::Integer=10)
+    for ins_name in ins_names
+        plot_pareto_front(ins_name, num_node=num_node, num_ins=num_ins)
+    end
+end
+
+
 function create_simulated_annealing_summary(; obj_func=distance, num_node=100)
-    dg = DataFrame(find_best_solution_of_SA(ins_names[1], obj_func=obj_func, num_node=num_node))
+
+    dg = find_best_solution_of_SA(ins_names[1], obj_func=obj_func, num_node=num_node) |> DataFrame
+
+    # defind function to calculate result column
+    # func_to = find_average_node_each_route
+    func_to = find_min_max_num_node_each_route
+
+    # main
     for ins_name in ins_names[2:end]
         @info "add instance: $ins_name to dataframe"
-        df = DataFrame(find_best_solution_of_SA(ins_name, obj_func=obj_func, num_node=num_node))
+        df = find_best_solution_of_SA(ins_name, obj_func=obj_func, num_node=num_node) |> DataFrame
         append!(dg, df)
     end
-    if obj_func == distance && num_node == 100
-        best_obj = [obj_func(load_solution_phase0(ins_name)) for ins_name in ins_names]
-        best_vehi = [route_length(load_solution_phase0(ins_name)) for ins_name in ins_names]
-    else
-        best_obj = [try obj_func(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
-        best_vehi = [try route_length(load_solution(ins_name, num_node, obj_func)) catch e; Inf end for ins_name in ins_names]
-    end
 
-    # change column name
+    best_dis = [distance(load_solution_phase0(ins_name)) for ins_name in ins_names]
+    best_vehi = [route_length(load_solution_phase0(ins_name)) for ins_name in ins_names]
+    diff_num_each_route = [
+        try
+            func_to(load_solution_phase0(ins_name))
+        catch e
+            Inf
+        end for ins_name in ins_names
+    ]
+    best_comp = [total_comp(load_solution_phase0(ins_name)) for ins_name in ins_names]
+    best_max_comp = [maximum(max_comp(load_solution_phase0(ins_name))) for ins_name in ins_names]
+    best_balance = [balancing_value(load_solution_phase0(ins_name)) for ins_name in ins_names]
+
+    # if obj_func == distance && num_node == 100
+    #     diff_num_each_route = [
+    #         try
+    #             func_to(load_solution_phase0(ins_name))
+    #         catch e
+    #             Inf
+    #         end for ins_name in ins_names
+    #     ]
+    #     dis = [
+    #         try
+    #             distance(load_solution_phase0(ins_name))
+    #         catch e
+    #             Inf
+    #         end for ins_name in ins_names
+    #     ]
+    # else
+    #     Dis = [
+    #         try
+    #             distance(load_solution(ins_name, num_node, obj_func))
+    #         catch e
+    #             Inf
+    #         end for ins_name in ins_names
+    #     ]
+    #     DisVehi = [
+    #         try
+    #             route_length(load_solution(ins_name, num_node, obj_func))
+    #         catch e
+    #             Inf
+    #         end for ins_name in ins_names
+    #     ]
+    #     diff_num_each_route = [
+    #         try
+    #             func_to(load_solution(ins_name, num_node, obj_func))
+    #         catch e
+    #             Inf
+    #         end for ins_name in ins_names
+    #     ]
+    #     TotalComp = [
+    #         try
+    #             total_comp(load_solution(ins_name, num_node, obj_func))
+    #         catch e
+    #             Inf
+    #         end for ins_name in ins_names
+    #     ]
+    # end
+
+    # add best known column
+    dg[!, :BestDiff] = diff_num_each_route
     dg[!, :BestVehi] = best_vehi
-    dg[!, :BestKnown] = best_obj
+    dg[!, :BestDis] = best_dis
+    dg[!, :BestComp] = best_comp
+    dg[!, :BestMaxComp] = best_max_comp
+    dg[!, :BestBalance] = best_balance
 
     # round column gap
-    dg = select(dg, :, [:obj, :BestKnown] => (a, b) -> (round.((a.-b)./b.*100, digits=2)))
-    rename!(dg, :obj_BestKnown_function => :gap)
+    dg = select(dg, :, [:Dis, :BestDis] => (a, b) -> (round.((a .- b) ./ b .* 100, digits=2)))
+    rename!(dg, :Dis_BestDis_function => :GapDis)
+
+    dg = select(dg, :, [:Comp, :BestComp] => (a, b) -> (round.((a .- b) ./ b .* 100, digits=2)))
+    rename!(dg, :Comp_BestComp_function => :GapComp)
+
+    dg = select(dg, :, [:MaxComp, :BestMaxComp] => (a, b) -> (round.((a .- b) ./ b .* 100, digits=2)))
+    rename!(dg, :MaxComp_BestMaxComp_function => :GapMaxComp)
+
+    dg = select(dg, :, [:Balance, :BestBalance] => (a, b) -> (round.((a .- b) ./ b .* 100, digits=2)))
+    rename!(dg, :Balance_BestBalance_function => :GapBalance)
 
     # round degits for columns objective value and best known value
-    dg.obj = round.(dg.obj, digits=2)
-    dg.BestKnown = round.(dg.BestKnown, digits=2)
+    # dg.obj = round.(dg.obj, digits=2)
+    # dg.BestDis = round.(dg.BestDis, digits=2)
+
 
     # export to csv
-    CSV.write(dir("data", "simulated_annealing", obj_func, "SA_summary_$num_node.csv"), dg)
+    CSV.write(dir("data", "simulated_annealing", obj_func, "SA_summary_$(obj_func)_$(num_node).csv"), dg)
 
     return dg
+end
+
+
+"""
+    function fix_num_solution(ins_name::String, num_node::Integer, obj_func::Function)
+
+fix the number of solution not in the sequence e.g. C101-1.txt, C101-2.txt, ...
+
+"""
+function fix_num_solution(ins_name::String, num_node::Integer, obj_func::Function)
+
+    # files in folder txt
+    all_sorted_dir = sort(glob("*", dir("data", "simulated_annealing", obj_func, "num_node=$(num_node)", "$ins_name-solution")), lt=VRPTW.natural)
+    all_sorted_solution = all_sorted_dir .|> splitdir
+    head_dir = all_sorted_solution[1][1]
+    all_sorted_solution = [i[2] for i in all_sorted_solution]
+
+    sorted_name = [joinpath(head_dir, "$ins_name-$i.txt") for i in 1:length(all_sorted_dir)]
+
+    @info "Working in $head_dir"
+    for (old_ins, new_ins) in zip(all_sorted_dir, sorted_name)
+        if old_ins == new_ins
+            @info "Not change (get the same name)"
+        else
+            @info "change name from $(splitdir(old_ins)[2]) to $(splitdir(new_ins)[2])"
+            mv(old_ins, new_ins)
+        end
+    end
+
+    # files outside txt
+    dir_file = dir("data", "simulated_annealing", obj_func, "num_node=$(num_node)", "$ins_name.csv")
+    df = CSV.read(dir_file, DataFrame)
+    df.i = 1:length(df.i)
+    CSV.write(dir_file, df)
+end
+
+
+function fix_num_solution()
+    for num_node in [50]
+        for obj_func in all_obj_functions
+            for ins_name in ins_names
+                fix_num_solution(ins_name, num_node, obj_func)
+            end
+        end
+    end
+end
+
+"""
+    natural(x, y)
+
+sort String on natural way e.g. A2 < A10
+
+# Examples:
+```julia-repl
+julia> sort(["a1", "a2", "a10"], lt=VRPTW.natural)
+3-element Vector{String}:
+ "a1"
+ "a2"
+ "a10"
+```
+"""
+function natural(x, y)
+    k(x) = [occursin(r"\d+", s) ? parse(Int, s) : s 
+            for s in split(replace(x, r"\d+" => s->" $s "))]
+    A = k(x); B= k(y)    
+    for (a, b) in zip(A, B)
+        if !isequal(a, b)
+            return typeof(a) <: typeof(b) ? isless(a, b) :
+                   isa(a,Int) ? true : false
+        end
+    end
+    return length(A) < length(B)
 end

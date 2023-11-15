@@ -1,0 +1,6 @@
+ERROR: LoadError: UndefVarError: Gurobi not defined
+Stacktrace:
+ [1] top-level scope
+   @ ~/.julia/dev/VRPTW/src/script.jl:3
+in expression starting at /home/payakorn_sak/.julia/dev/VRPTW/src/script.jl:3
+srun: error: compute1: task 0: Exited with exit code 1

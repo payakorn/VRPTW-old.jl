@@ -1,0 +1,19 @@
+Solution: RC101 with 100 nodes and 18 routes, obj_func: distance
+route 1:   14  47  15  16  17  13
+route 2:   88  73  79  55  68
+route 3:   72  39  36  40  38  41  54  96
+route 4:    2   7   6   8  46   4 100
+route 5:   92  33  30  28  26  32  93
+route 6:   61  81  90
+route 7:   83  23  21  19  18  48  25
+route 8:   59  75  97  58  77
+route 9:   99  86  87  74
+route 10:  27  29  31  34  50  80
+route 11:  42  44  43  37  35
+route 12:  45   5   3   1  70
+route 13:  63  85  84  56  66
+route 14:  64  51  76  89  91
+route 15:  95  62  67  71  94
+route 16:  82  12  11   9  10
+route 17:  65  52  57  22  49  20  24
+route 18:  69  98  53  78  60

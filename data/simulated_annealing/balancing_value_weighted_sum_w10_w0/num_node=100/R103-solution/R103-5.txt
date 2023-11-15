@@ -1,0 +1,29 @@
+Solution: R103 with 100 nodes and 28 routes, obj_func: balancing_value_weighted_sum_w10_w0
+route 1:   84  72  94
+route 2:   10  86
+route 3:   96  42  98  71  19
+route 4:   22  97  29
+route 5:   92  62  93
+route 6:   33  50  40  35  24
+route 7:   45  79   1  68  70
+route 8:   41   2  31  52
+route 9:   65  78  17  61
+route 10: 100
+route 11:  53  63  18
+route 12:  11  16  59  48
+route 13:  12  44  87  56   4  77
+route 14:  15  47  14
+route 15:  21  39  34  91  85
+route 16:  80
+route 17:  36  58
+route 18:  88   6  43  60
+route 19:  38  82  89   5
+route 20:  66  20   7
+route 21:   8  74  25
+route 22:  55  51
+route 23:  64  46  83  26
+route 24:  27  90  49  54
+route 25:  23  67  73  37  57
+route 26:  69  99  32  28
+route 27:  30  75  81
+route 28:  76   9   3  13  95

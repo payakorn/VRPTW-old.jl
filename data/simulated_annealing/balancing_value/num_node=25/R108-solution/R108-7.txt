@@ -1,0 +1,7 @@
+Solution: R108 with 25 nodes and 6 routes, obj_func: balancing_value
+route 1:  13 14
+route 2:  20 22  4  6
+route 3:   7  8 16 17  5 18
+route 4:  11  9 12 10
+route 5:  24  1 19 25
+route 6:  21 15 23  3  2

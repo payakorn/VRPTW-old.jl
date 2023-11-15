@@ -1,0 +1,25 @@
+Solution: C203 with 50 nodes and 24 routes, obj_func: total_comp
+route 1:  21
+route 2:  43
+route 3:  24
+route 4:  26
+route 5:  20
+route 6:  46
+route 7:  48
+route 8:  28
+route 9:   5
+route 10: 22
+route 11:  2
+route 12: 50
+route 13: 34
+route 14: 29
+route 15: 37
+route 16: 47
+route 17:  3
+route 18:  7
+route 19: 12
+route 20: 31
+route 21:  1
+route 22: 14 16 30 49  4 40 45 17 25 42 41
+route 23: 18 19 27  6 33 35 38 39 36 23 44 15 13  9 11 10  8
+route 24: 32

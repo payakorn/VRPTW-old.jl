@@ -1,0 +1,9 @@
+Solution: R101 with 25 nodes and 8 routes, obj_func: distance
+route 1:  14 15 13
+route 2:  23 22  4 25
+route 3:  18
+route 4:  11 19 10
+route 5:   7  8 17
+route 6:  12  9 20  1
+route 7:   5 16  6
+route 8:   2 21  3 24

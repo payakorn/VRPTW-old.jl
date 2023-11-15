@@ -735,6 +735,30 @@ div.title {text-align: center;}
 
 <hr />
 <h2>Simulated Annealing &#40;SA&#41; results in Solomon&#39;s instances</h2>
+<h3>load solomon data</h3>
+
+
+<pre class='hljl'>
+<span class='hljl-nf'>methods</span><span class='hljl-p'>(</span><span class='hljl-n'>load_solomon_data</span><span class='hljl-p'>)</span>
+</pre>
+
+
+
+# 1 method for generic function <b>load_solomon_data</b> from VRPTW:<ul><li> load_solomon_data(class_ins::<b>String</b>; <i>num_node, max_vehi</i>) in VRPTW at <a href="https://github.com/payakorn/VRPTW.jl/tree/3bd555fb426bf70ea280b156a0279f11ca3e2444//src/load_data.jl#L80" target="_blank">/Users/paya/.julia/dev/VRPTW/src/load_data.jl:80</a></li> </ul>
+
+<p>To use</p>
+
+
+<pre class='hljl'>
+<span class='hljl-n'>ins</span><span class='hljl-t'> </span><span class='hljl-oB'>=</span><span class='hljl-t'> </span><span class='hljl-nf'>load_solomon_data</span><span class='hljl-p'>(</span><span class='hljl-s'>&quot;c101&quot;</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>num_node</span><span class='hljl-oB'>=</span><span class='hljl-ni'>100</span><span class='hljl-p'>,</span><span class='hljl-t'> </span><span class='hljl-n'>max_vehi</span><span class='hljl-oB'>=</span><span class='hljl-ni'>25</span><span class='hljl-p'>)</span>
+</pre>
+
+
+<pre class="output">
+Problem C101 with 100 nodes
+</pre>
+
+
 <h3>Models</h3>
 <p class="math">\[
 \min x_{ij}^k
@@ -745,7 +769,7 @@ div.title {text-align: center;}
         <div class="footer">
           <p>
             Published from <a href="report.jmd">report.jmd</a>
-            using <a href="http://github.com/JunoLab/Weave.jl">Weave.jl</a> v0.10.12 on 2023-05-24.
+            using <a href="http://github.com/JunoLab/Weave.jl">Weave.jl</a> v0.10.12 on 2023-10-31.
           </p>
         </div>
       </div>
