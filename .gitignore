@@ -9,3 +9,4 @@ docs/.gitignore
 .gitignore
 output
 test_code.jl
+data
