@@ -150,7 +150,7 @@ function opt_total_finishing_time(ins_name::String, num_vehicle::Integer, solver
 
     # num_vehicle = 3
     K = 1:num_vehicle
-    M = n * 1000
+    M = 1e8
 
 
     # test round distance (some papers truncate digits)
@@ -164,7 +164,7 @@ function opt_total_finishing_time(ins_name::String, num_vehicle::Integer, solver
     @variable(m, 0 <= CMAX[i=K])
 
     # add waiting time 
-    @variable(m, w[i=0:n], Bin)
+    # @variable(m, w[i=0:n], Bin)
 
 
     for k in K
@@ -187,13 +187,13 @@ function opt_total_finishing_time(ins_name::String, num_vehicle::Integer, solver
     end
 
     # time windows
-    for k in K
-        # fix(t[0,k], 0, force=true)
-        for j in 1:n
-            @constraint(m, distance_matrix[1, j+1] <= t[j] + M * (1 - x[0, j, k]) + M * w[j])
-            @constraint(m, distance_matrix[1, j+1] >= t[j] - M * (1 - x[0, j, k]) - M * w[j])
-        end
-    end
+    # for k in K
+    #     # fix(t[0,k], 0, force=true)
+    #     for j in 1:n
+    #         @constraint(m, distance_matrix[1, j+1] <= t[j] + M * (1 - x[0, j, k]) + M * w[j])
+    #         @constraint(m, distance_matrix[1, j+1] >= t[j] - M * (1 - x[0, j, k]) - M * w[j])
+    #     end
+    # end
 
     for i in 1:n
         for j in 0:n
@@ -203,18 +203,18 @@ function opt_total_finishing_time(ins_name::String, num_vehicle::Integer, solver
                     @constraint(m, t[i] + service[i+1] + distance_matrix[i+1, j+1] - M * (1 - x[i, j, k]) <= t[j])
 
                     # 
-                    @constraint(m, t[i] + service[i+1] + distance_matrix[i+1, j+1] - M * (1 - x[i, j, k]) - M * w[j] <= t[j])
-                    @constraint(m, t[i] + service[i+1] + distance_matrix[i+1, j+1] + M * (1 - x[i, j, k]) + M * w[j] >= t[j])
+                    # @constraint(m, t[i] + service[i+1] + distance_matrix[i+1, j+1] - M * (1 - x[i, j, k]) - M * w[j] <= t[j])
+                    # @constraint(m, t[i] + service[i+1] + distance_matrix[i+1, j+1] + M * (1 - x[i, j, k]) + M * w[j] >= t[j])
                 end
             end
         end
     end
 
     # waiting time constraints
-    for i in 1:n
-        @constraint(m, t[i] - M * (1 - w[i]) <= low_d[i+1])
-        @constraint(m, low_d[i+1] <= t[i] + M * (1 - w[i]))
-    end
+    # for i in 1:n
+    #     @constraint(m, t[i] - M * (1 - w[i]) <= low_d[i+1])
+    #     @constraint(m, low_d[i+1] <= t[i] + M * (1 - w[i]))
+    # end
 
 
     # subtour elimination constraints
@@ -232,7 +232,7 @@ function opt_total_finishing_time(ins_name::String, num_vehicle::Integer, solver
     # C max constraints: the max completion time is equal to the completion time of the last visit
     for i in 1:n
         for k in K
-            @constraint(m, t[i] + service[i+1] - M * (1 - x[i, 0, k]) <= CMAX[k])
+            @constraint(m, t[i] + service[i+1] + distance_matrix[i+1, 1] - M * (1 - x[i, 0, k]) <= CMAX[k])
         end
     end
 

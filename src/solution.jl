@@ -680,7 +680,7 @@ function max_completion_time_and_feasible(solution::Solution)
             # calculate total completion time
             total_com += c
         end
-        push!(max_com, c - solution.problem.distance[route[k][end-1]+1, 1])
+        push!(max_com, c)
         # push!(max_com, t)
         # push!(max_com, c - solution.problem.distance[route[k][end-1]+1, 1])
     end
