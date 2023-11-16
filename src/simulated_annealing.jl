@@ -9,7 +9,7 @@ function simulated_annealing(ins_name; num_node = 100, max_vehi = 25, obj_func =
 	best_solution = deepcopy(solution)
 
 	# files location
-	location = dir("data", "simulated_annealing", "$obj_func", "num_node=$num_node") # for csv
+	location = dir("../ResultsVRPTW", "simulated_annealing", "$obj_func", "num_node=$num_node") # for csv
 	file_lo = dir(location, ins.name)
 	num_i = length(glob("*.csv", file_lo)) + 1
 	location_files = dir(location, ins.name, "$(ins.name)-$(num_i).csv")
@@ -102,7 +102,7 @@ function simulated_annealing(ins_name; num_node = 100, max_vehi = 25, obj_func =
 	close(io)
 
 	# save solution
-	location_sol = dir("data", "simulated_annealing", "$obj_func", "num_node=$num_node") # for solution
+	location_sol = dir("../ResultsVRPTW", "simulated_annealing", "$obj_func", "num_node=$num_node") # for solution
 	loca_solution = dir(location_sol, "$(ins.name)-solution", "$(ins.name)-$(num_i).txt")
 	if !isfile(dir(location_sol, "$(ins.name)-solution"))
 		mkpath(dir(location_sol, "$(ins.name)-solution"))

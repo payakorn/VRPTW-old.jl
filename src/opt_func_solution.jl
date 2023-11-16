@@ -66,7 +66,7 @@ function save_solution(route::Dict, ins_name::String, tex::String, m, t, CMAX, s
     solution = Solution(new_route, load_solomon_data(split(ins_name, "-")[1] |> String))
 
     # new version
-    location = dir("data", "opt_solomon", obj_function)
+    location = dir("../ResultsVRPTW", "opt_solomon", obj_function)
     if isfile(location) == false
         mkpath(location)
     end

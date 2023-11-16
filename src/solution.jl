@@ -794,7 +794,7 @@ end
 
 
 function load_optimal_JSON(ins_name::String, num_node::Integer, obj_func::Function)
-    JSON.parsefile(dir("data", "opt_solomon", "$(obj_func)", "$(ins_name)-$(num_node).json"))
+    JSON.parsefile(dir("../ResultsVRPTW", "opt_solomon", "$(obj_func)", "$(ins_name)-$(num_node).json"))
 end
 
 
@@ -906,7 +906,7 @@ end
 
 
 function load_solution(ins_name::String, obj_name::String)
-    js = JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))
+    js = JSON.parsefile(dir("../ResultsVRPTW", "opt_solomon", obj_name, "$ins_name.json"))
     route = dict_to_solution(js["route"])
     (ins_name, num_node) = split(js["name"], "-")
     problem = load_solomon_data(String(ins_name), num_node=parse(Int64, num_node))
@@ -915,7 +915,7 @@ end
 
 
 function load_solution(ins_name::String, obj_name::Function)
-    js = JSON.parsefile(dir("data", "opt_solomon", obj_name, "$ins_name.json"))
+    js = JSON.parsefile(dir("../ResultsVRPTW", "opt_solomon", obj_name, "$ins_name.json"))
     route = dict_to_solution(js["route"])
     (ins_name, num_node) = split(js["name"], "-")
     problem = load_solomon_data(String(ins_name), num_node=parse(Int64, num_node))
@@ -924,7 +924,7 @@ end
 
 
 function load_solution_SA(ins_name::String, obj_func::Function, num_node::Integer, num_ins::Integer)
-    location = dir("data", "simulated_annealing", "$(obj_func)", "num_node=$num_node", "$(ins_name)-solution", "$(ins_name)-$(num_ins).txt")
+    location = dir("../ResultsVRPTW", "simulated_annealing", "$(obj_func)", "num_node=$num_node", "$(ins_name)-solution", "$(ins_name)-$(num_ins).txt")
 
     text = readdlm(location, '\t', '\n', skipstart=1)
     text = [split(i, ":")[2] for i in text]
@@ -943,7 +943,7 @@ load_solution_SA(ins_name::Symbol) = load_solution_SA(String(ins_name), distance
 
 
 function list_ins_name()
-    NameNumVehicle = CSV.File(dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv"))
+    NameNumVehicle = CSV.File(dir("../ResultsVRPTW", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv"))
     Ins_name = [String("$(NameNumVehicle[i][1])-$(NameNumVehicle[i][2])") for i in 1:(length(NameNumVehicle))]
     Num_vehicle = [NameNumVehicle[i][3] for i in 1:(length(NameNumVehicle))]
     return Ins_name, Num_vehicle
@@ -991,10 +991,10 @@ function read_optimal_solution()
 
         @info "reading $ins_name"
 
-        location1 = dir("data", "opt_solomon", "balancing_completion_time", "$ins_name.json")
-        location2 = dir("data", "opt_solomon", "total_completion_time", "$ins_name.json")
-        location3 = dir("data", "opt_solomon", "total_distance", "$ins_name.json")
-        location4 = dir("data", "opt_solomon", "total_distance_compat", "$ins_name.json")
+        location1 = dir("../ResultsVRPTW", "opt_solomon", "balancing_completion_time", "$ins_name.json")
+        location2 = dir("../ResultsVRPTW", "opt_solomon", "total_completion_time", "$ins_name.json")
+        location3 = dir("../ResultsVRPTW", "opt_solomon", "total_distance", "$ins_name.json")
+        location4 = dir("../ResultsVRPTW", "opt_solomon", "total_distance_compat", "$ins_name.json")
         # if isfile(location1) && isfile(location2)
         js1 = try
             read_opt_json(location1)
@@ -1154,7 +1154,7 @@ end
 
 
 function save_simulation_file(df::DataFrame, file_name::String)
-    loca = dir("data", "simulations", file_name)
+    loca = dir("../ResultsVRPTW", "simulations", file_name)
     CSV.write(loca, df)
 end
 
@@ -1192,7 +1192,7 @@ end
 
 function find_best_solution_of_SA(ins_name; obj_func=distance, num_node=100)
     ins_name = uppercase(ins_name)
-    location = dir("data", "simulated_annealing", obj_func, "num_node=$num_node", "$ins_name.csv")
+    location = dir("../ResultsVRPTW", "simulated_annealing", obj_func, "num_node=$num_node", "$ins_name.csv")
 
     # defind function to calculate
     # func_to = find_average_node_each_route
@@ -1255,7 +1255,7 @@ function find_best_solution_of_SA(ins_name; obj_func=distance, num_node=100)
             MaxComp=Inf,
             Balance=Inf,
         )
-        # dm = CSV.File(dir("data", "simulated_annealing", "head_df.csv")) |> DataFrame
+        # dm = CSV.File(dir("../ResultsVRPTW", "simulated_annealing", "head_df.csv")) |> DataFrame
         dm[1, 1] = ins_name
         return dm
     end
@@ -1270,7 +1270,7 @@ end
 """
 function find_all_solutions_of_SA(ins_name::String; obj_func=distance, num_node=100)
     ins_name = uppercase(ins_name)
-    location = dir("data", "simulated_annealing", obj_func, "num_node=$num_node", "$ins_name.csv")
+    location = dir("../ResultsVRPTW", "simulated_annealing", obj_func, "num_node=$num_node", "$ins_name.csv")
 
     # defind function to calculate
     # func_to = find_average_node_each_route
@@ -1303,7 +1303,7 @@ function find_all_solutions_of_SA(ins_name::String; obj_func=distance, num_node=
 
         return df
     else
-        dm = CSV.File(dir("data", "simulated_annealing", "head_df.csv")) |> DataFrame
+        dm = CSV.File(dir("../ResultsVRPTW", "simulated_annealing", "head_df.csv")) |> DataFrame
         dm[1, 1] = ins_name
         return dm
     end
@@ -1414,7 +1414,7 @@ function plot_pareto_front(ins_name::String; num_node::Integer=25, num_ins::Inte
     legend_name = "$(opt_obj_funcs[11])"[end-6:end] * "_$(bal)_$(dis)"
     p = Plots.scatter!([dis], [bal], label="opt_$(legend_name)", c=cols[11], markershape=:star)
 
-    savefig(p, dir("data", "simulated_annealing", "plot_pareto", "plot_pareto_$(ins_name)-$(num_node).pdf"))
+    savefig(p, dir("../ResultsVRPTW", "simulated_annealing", "plot_pareto", "plot_pareto_$(ins_name)-$(num_node).pdf"))
 end
 
 
@@ -1526,7 +1526,7 @@ function create_simulated_annealing_summary(; obj_func=distance, num_node=100)
 
 
     # export to csv
-    CSV.write(dir("data", "simulated_annealing", obj_func, "SA_summary_$(obj_func)_$(num_node).csv"), dg)
+    CSV.write(dir("../ResultsVRPTW", "simulated_annealing", obj_func, "SA_summary_$(obj_func)_$(num_node).csv"), dg)
 
     return dg
 end
@@ -1541,7 +1541,7 @@ fix the number of solution not in the sequence e.g. C101-1.txt, C101-2.txt, ...
 function fix_num_solution(ins_name::String, num_node::Integer, obj_func::Function)
 
     # files in folder txt
-    all_sorted_dir = sort(glob("*", dir("data", "simulated_annealing", obj_func, "num_node=$(num_node)", "$ins_name-solution")), lt=VRPTW.natural)
+    all_sorted_dir = sort(glob("*", dir("../ResultsVRPTW", "simulated_annealing", obj_func, "num_node=$(num_node)", "$ins_name-solution")), lt=VRPTW.natural)
     all_sorted_solution = all_sorted_dir .|> splitdir
     head_dir = all_sorted_solution[1][1]
     all_sorted_solution = [i[2] for i in all_sorted_solution]
@@ -1559,7 +1559,7 @@ function fix_num_solution(ins_name::String, num_node::Integer, obj_func::Functio
     end
 
     # files outside txt
-    dir_file = dir("data", "simulated_annealing", obj_func, "num_node=$(num_node)", "$ins_name.csv")
+    dir_file = dir("../ResultsVRPTW", "simulated_annealing", obj_func, "num_node=$(num_node)", "$ins_name.csv")
     df = CSV.read(dir_file, DataFrame)
     df.i = 1:length(df.i)
     CSV.write(dir_file, df)

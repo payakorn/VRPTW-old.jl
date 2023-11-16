@@ -4,7 +4,7 @@ function opt_balancing(ins_name::String, num_vehicle::Integer, solver; time_solv
 
     # ins = load_solomon_data(ins_name, num_node = num_vehicle)
 
-    data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
+    data = load(dir("../ResultsVRPTW", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
     d = data["upper"]
     low_d = data["lower"]
     demand = data["demand"]
@@ -133,7 +133,7 @@ function opt_total_finishing_time(ins_name::String, num_vehicle::Integer, solver
 
     # ins = load_solomon_data(ins_name, num_node = num_vehicle)
 
-    data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
+    data = load(dir("../ResultsVRPTW", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
     d = data["upper"]
     low_d = data["lower"]
     demand = data["demand"]
@@ -246,7 +246,7 @@ end
 # maybe dupplicate!!!
 # function opt_total_com(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
 
-#     data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
+#     data = load(dir("../ResultsVRPTW", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
 #     d = data["upper"]
 #     low_d = data["lower"]
 #     demand = data["demand"]
@@ -360,7 +360,7 @@ function opt_balancing_weighted_sum(ins_name::String, num_vehicle::Integer, solv
     c1 = 0.9
     c2 = 0.1
 
-    data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
+    data = load(dir("../ResultsVRPTW", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
     d = data["upper"]
     low_d = data["lower"]
     demand = data["demand"]
@@ -542,7 +542,7 @@ end
 
 function opt_balancing_weighted_sum_w(ins_name::String, num_vehicle::Integer, solver; time_solve=3600, w1=0, w2=0)
 
-    data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
+    data = load(dir("../ResultsVRPTW", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
     d = data["upper"]
     low_d = data["lower"]
     demand = data["demand"]
@@ -669,7 +669,7 @@ end
 
 function opt_total_com(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
 
-    data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
+    data = load(dir("../ResultsVRPTW", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
     d = data["upper"]
     low_d = data["lower"]
     demand = data["demand"]
@@ -779,7 +779,7 @@ end
 
 function opt_total_dis(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
 
-    data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
+    data = load(dir("../ResultsVRPTW", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
     d = data["upper"]
     low_d = data["lower"]
     demand = data["demand"]
@@ -889,7 +889,7 @@ end
 
 function opt_total_dis_compat(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
 
-    data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
+    data = load(dir("../ResultsVRPTW", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
     d = data["upper"]
     low_d = data["lower"]
     demand = data["demand"]
@@ -1040,7 +1040,7 @@ end
 
 function opt_max_com(ins_name::String, num_vehicle::Integer, solver; time_solve=3600)
 
-    data = load(dir("data", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
+    data = load(dir("../ResultsVRPTW", "solomon_jld2", "$(lowercase(ins_name)).jld2"))
     d = data["upper"]
     low_d = data["lower"]
     demand = data["demand"]
@@ -1133,7 +1133,7 @@ end
 
 
 # function instances(num_vehicle::Integer)
-#     file_name = dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv")
+#     file_name = dir("../ResultsVRPTW", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv")
 #     NameNumVehicle = CSV.File(file_name)
 #     Ins_name = [String("$(NameNumVehicle[i][1])-$(NameNumVehicle[i][2])") for i in 1:(length(NameNumVehicle))]
 #     Num_vehicle = [NameNumVehicle[i][3] for i in 1:(length(NameNumVehicle))]
@@ -1158,7 +1158,7 @@ end
 
 function find_opt(solver, ins_name::String, num_vehicle::Integer, obj_func::Function, time_solve::Integer)
 
-    location = dir("data", "opt_solomon", obj_func, "$ins_name.json")
+    location = dir("../ResultsVRPTW", "opt_solomon", obj_func, "$ins_name.json")
 
     date_now = time_now()
 
@@ -1213,9 +1213,9 @@ end
 function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run=nothing, customize_num=false)
 
     if customize_num
-        file_name = dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_customize.csv")
+        file_name = dir("../ResultsVRPTW", "solomon_opt_from_web", "Solomon_Name_NumCus_customize.csv")
     else
-        file_name = dir("data", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv")
+        file_name = dir("../ResultsVRPTW", "solomon_opt_from_web", "Solomon_Name_NumCus_NumVehicle.csv")
     end
 
     NameNumVehicle = CSV.File(file_name)
@@ -1233,7 +1233,7 @@ function find_opt(solver; obj_func=opt_balancing, time_solve=3600, fix_run=nothi
 
     for (ins_name, num_vehicle) in zip(Ins_name, Num_vehicle)
 
-        location = dir("data", "opt_solomon", "$(obj_func)", "$ins_name.json")
+        location = dir("../ResultsVRPTW", "opt_solomon", "$(obj_func)", "$ins_name.json")
 
         # chack the exiting of file
         file_existing = isfile(location)

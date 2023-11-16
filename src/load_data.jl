@@ -39,13 +39,15 @@ Base.show(io::IO, ins::Problem) = print(io, "Problem $(ins.name) with $(ins.num_
     the directory of package VRPTW
 
 """
-function dir()
-    splitdir(splitdir(Base.find_package("VRPTW"))[1])[1]
+function dir(d...)
+    root_path = splitdir(splitdir(Base.find_package("VRPTW"))[1])[1]
+    joinpath(root_path, d...)
 end
 
 
-function dir_root()
-    splitdir(splitdir(splitdir(Base.find_package("VRPTW"))[1])[1])[1]
+function dirdev(d...)
+    root_dir = splitdir(dir())[1]
+    joinpath(root_dir, d...)
 end
 
 
@@ -58,14 +60,14 @@ end
 ### Returns:
     dir string: the directory of package VRPTW
 """
-function dir(d...)
-    d = string.(d)
-    joinpath(dir(), d...)
-end
+# function dir(d...)
+#     d = string.(d)
+#     joinpath(dir(), d...)
+# end
 
 
 function dir_data(class_ins::String, num_node::Integer)
-    dir("data", "solomon_jld2", "$(lowercase(class_ins))-$num_node.jld2")
+    dir("../ResultsVRPTW", "solomon_jld2", "$(lowercase(class_ins))-$num_node.jld2")
 end
 
 
