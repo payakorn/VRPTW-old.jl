@@ -44,6 +44,11 @@ function dir()
 end
 
 
+function dir_root()
+    splitdir(splitdir(splitdir(Base.find_package("VRPTW"))[1])[1])[1]
+end
+
+
 """
     dir(d...); 
     
