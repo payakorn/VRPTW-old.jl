@@ -79,7 +79,7 @@ load solomon instance into a struct of Problem
 """
 function load_solomon_data(class_ins::String; num_node::Integer=100, max_vehi::Integer=25)
     # @info "loading Solomon $(uppercase(class_ins)) => with number of nodes = $num_node"
-    data = load(dir_data(class_ins, num_node))
+    data = try load(dir_data(class_ins, num_node)) catch e; load_jld2_from_github(class_ins, num_node) end
 
 
     # set the service time of node 1 (depot node) to zero
@@ -98,4 +98,9 @@ function load_solomon_data(class_ins::String; num_node::Integer=100, max_vehi::I
         data["capacity"],
         max_vehi
     )
+end
+
+
+function load_jld2_from_github(ins_name::String, num_node::Integer)
+    load(Downloads.download("https://github.com/payakorn/ResultsVRPTW/raw/main/solomon_jld2/$ins_name-$num_node.jld2"))
 end
