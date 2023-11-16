@@ -1,7 +1,0 @@
-Solution: C206 with 50 nodes and 6 routes, obj_func: balancing_value_weighted_sum_w8_w2
-route 1:  21
-route 2:  48
-route 3:   6 32 33 37 38 35 31 34 36 39 28 26 23 18 17 25 11 10
-route 4:  49 40 44 19 16 15 12 14 45 13 47
-route 5:   5  2  1  7  3  4 43  9  8
-route 6:  20 22 24 27 30 29 50 46 41 42
