@@ -1,6 +1,0 @@
-Solution: C206 with 50 nodes and 5 routes, obj_func: balancing_value
-route 1:  48
-route 2:  41  8
-route 3:  22  6  2  1 49  4 23 15 12 13  9 25 17 21
-route 4:   5 30 24 27 38 33 37 39  3 40 19 16 44 10 11
-route 5:  20 31 29 32  7 36 35 34 18 28 26 50 45 46 14 42 47 43

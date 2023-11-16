@@ -6,8 +6,6 @@
 docs/.DS_Store
 docs/.gitignore
 .DS_Store
-data/.DS_Store
 .gitignore
 output
 test_code.jl
-data/.DS_Store

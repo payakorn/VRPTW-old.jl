@@ -1,8 +1,0 @@
-Solution: C107 with 50 nodes and 7 routes, obj_func: balancing_value
-route 1:  15 29 38 26 36  2
-route 2:  11 47
-route 3:  42 20 41  8 10  9 48 34  1
-route 4:   5 13 25 35 37 28 39  4 21
-route 5:   3 43 31 27 16 45 12 50
-route 6:  33 24  7 40 44 46 49
-route 7:  17 32 18 19 30 14  6 23 22

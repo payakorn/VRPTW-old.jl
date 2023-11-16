@@ -1,4 +1,0 @@
-Solution: C106 with 25 nodes and 3 routes, obj_func: balancing_value_weighted_sum_w10_w0
-route 1:   5  3  7  8 15 16 23 21
-route 2:  13 17 18 10 11  9 12  2  1
-route 3:  20 24 25 19 14  6  4 22

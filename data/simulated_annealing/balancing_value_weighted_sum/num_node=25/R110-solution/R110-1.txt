@@ -1,7 +1,0 @@
-Solution: R110 with 25 nodes and 6 routes, obj_func: balancing_value_weighted_sum
-route 1:   9 20 10
-route 2:   2 14 18  6 13
-route 3:  12  3 24
-route 4:  11 19  7  1
-route 5:  15 16  5 17  8
-route 6:  21 23 22  4 25
