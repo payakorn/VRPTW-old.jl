@@ -1,7 +1,0 @@
-Solution: RC108 with 50 nodes and 6 routes, obj_func: distance
-route 1:  20 50
-route 2:  41 38 39 42 44 43 40 36 35 37
-route 3:  24 22 49 19 18 48 21 23 25
-route 4:   2  6  7  8 46  4 45  5  3  1
-route 5:  33 32 30 28 26 27 29 31 34
-route 6:  12 47 17 16 15 13  9 10 11 14

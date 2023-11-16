@@ -1,9 +1,0 @@
-Solution: C106 with 50 nodes and 8 routes, obj_func: total_comp
-route 1:  43
-route 2:   5
-route 3:  42 41 40 15 16 14 12
-route 4:  20 24 31 44 30 28 26 23
-route 5:  33 25 27 29  9  6  4  2  1
-route 6:  13 17 35 37 38 39 36 50 47 49
-route 7:   3  7  8 10 11
-route 8:  32 18 19 46 45 48 34 22 21

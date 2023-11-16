@@ -1,5 +1,0 @@
-Solution: C204 with 50 nodes and 4 routes, obj_func: total_max_comp
-route 1:   5  2
-route 2:  48 43 42 41 49 46 45 50  6 32 33 37 38 35 31
-route 3:  20 22 24 27
-route 4:  10 12 14 16 19 18 26 28 39 36 34 29 21  4  3  7  1 23 30 44 40 47 15 17 13 25  9 11  8

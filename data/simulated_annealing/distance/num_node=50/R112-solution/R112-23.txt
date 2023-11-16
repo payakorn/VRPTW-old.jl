@@ -1,8 +1,0 @@
-Solution: R112 with 50 nodes and 7 routes, obj_func: distance
-route 1:  21 40  2 43 15 41 22
-route 2:  12 29 24 25 39 23  4 26
-route 3:  27  1 30 20 32 10
-route 4:   6 16 44 38 14 42 37 13
-route 5:  28  3 34 35  9 33 50
-route 6:  31  7 47 36 49 19 11
-route 7:  18 48 46  8 45 17  5

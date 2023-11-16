@@ -1,3 +1,0 @@
-Solution: R211 with 50 nodes and 2 routes, obj_func: total_max_comp
-route 1:  45 42 15 38 14 44 16  5 18  8  7 19 11 49 47 46 36 48 17 37 13 43
-route 2:  27 33 29 39 23 28 12 40 21 22 41  2  6 31 30 50 20  9 35 34  3 24 25  4 26  1 10 32

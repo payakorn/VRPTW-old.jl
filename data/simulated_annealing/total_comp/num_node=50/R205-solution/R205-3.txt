@@ -1,5 +1,0 @@
-Solution: R205 with 50 nodes and 4 routes, obj_func: total_comp
-route 1:  33 27
-route 2:  39 28 29 12 30 19  7 18  8  6 49 46 26 37 43  4 13 24 25
-route 3:   5 14 42  2 15 23 21
-route 4:  45 47 36 31 11 16 44 38 40 22 41  9  3 34 50 20 10 32 35  1 48 17

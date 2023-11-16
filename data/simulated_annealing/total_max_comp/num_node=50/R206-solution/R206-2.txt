@@ -1,3 +1,0 @@
-Solution: R206 with 50 nodes and 2 routes, obj_func: total_max_comp
-route 1:  21 39 26 12  3 29 33 30 11 19 27 28 40 37 38
-route 2:  50  1 31  7 48 47 36 45  5 16 44 14 42 15 23 22 41  2  6 18  8 46 49 10  9 20 34 35 32 17 43 13  4 25 24

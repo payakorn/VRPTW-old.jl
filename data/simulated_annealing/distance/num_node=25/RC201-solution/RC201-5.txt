@@ -1,4 +1,0 @@
-Solution: RC201 with 25 nodes and 3 routes, obj_func: distance
-route 1:   2  5  7  8  6  3  1  4
-route 2:  14 12 11 15 16  9 10 17 13
-route 3:  23 21 18 19 22 20 24 25

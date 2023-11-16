@@ -1,4 +1,0 @@
-Solution: RC205 with 50 nodes and 3 routes, obj_func: total_max_comp
-route 1:   2 45 28 31 14 12 11  9 41 37 34 32 24 13 17
-route 2:  36 39 33 27 23 19 29 30 26 50 18 48 22 21 20 49 10 46  3  1  4 43 35 25
-route 3:  42  7  5 15 16 47 44 38 40  6  8
