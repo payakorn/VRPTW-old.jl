@@ -1158,7 +1158,7 @@ end
 
 function find_opt(solver, ins_name::String, num_vehicle::Integer, obj_func::Function, time_solve::Integer)
 
-    location = dir("data", "opt_solomon", obj_func, "$ins_name.json")
+    location = dir("data", "opt_solomon", "$obj_func", "$ins_name.json")
 
     date_now = time_now()
 
