@@ -1,3 +1,0 @@
-Solution: C208 with 25 nodes and 2 routes, obj_func: balancing_value_weighted_sum_w10_w0
-route 1:   1 23 12 25 13 10  8
-route 2:  24 22  6 20  2  5  3  4  7 16 14 15 18 19 17  9 11 21

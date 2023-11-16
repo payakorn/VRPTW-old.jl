@@ -1,5 +1,0 @@
-Solution: C204 with 50 nodes and 4 routes, obj_func: balancing_value_weighted_sum_w1_w9
-route 1:  21  8
-route 2:  20 27 30 29  6 34 36 33 32 31 35 37 38 39 28 26 23 25 18 19 17 10
-route 3:  48 43 44 40 49 46 41 42 45 50 47 24 22
-route 4:   4  3  7  1 12 14 16 15 13  9 11  2  5

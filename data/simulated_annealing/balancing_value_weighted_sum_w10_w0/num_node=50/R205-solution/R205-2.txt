@@ -1,7 +1,0 @@
-Solution: R205 with 50 nodes and 6 routes, obj_func: balancing_value_weighted_sum_w10_w0
-route 1:  17 48
-route 2:  13 50  1 10
-route 3:  18 38 44 19  7 49  9  6  3 34 26 25
-route 4:  23  2 11 24 43
-route 5:  33 36  5 45 21 28 27 29 35 20 37
-route 6:  14 42 47 31 12 39 16 40 15 30  8 22 41 32 46  4
