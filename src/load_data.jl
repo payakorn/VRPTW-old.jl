@@ -67,7 +67,7 @@ end
 
 
 function dir_data(class_ins::String, num_node::Integer)
-    dir("../ResultsVRPTW", "solomon_jld2", "$(lowercase(class_ins))-$num_node.jld2")
+    dir("data", "solomon_jld2", "$(lowercase(class_ins))-$num_node.jld2")
 end
 
 

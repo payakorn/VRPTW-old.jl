@@ -105,7 +105,7 @@ dir
 
 ```@repl 1
 dir()
-dir("../ResultsVRPTW", "simulations")
+dir("data", "simulations")
 ```
 
 ```@docs
@@ -131,7 +131,7 @@ using CSV
 using VRPTW
 using DataFrames
 using Latexify
-df = CSV.File(dir("../ResultsVRPTW", "simulated_annealing", "distance", "SA_summary.csv")) |> DataFrame
+df = CSV.File(dir("data", "simulated_annealing", "distance", "SA_summary.csv")) |> DataFrame
 mdtable(df,latex=false)
 ```
 

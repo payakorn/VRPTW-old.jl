@@ -1,5 +1,5 @@
 function combine_best_known(; num_node = 100)
-	location = dir("../ResultsVRPTW", "Solomon_best_by_authers", "num_node=$num_node")
+	location = dir("data", "Solomon_best_by_authers", "num_node=$num_node")
 	all_authers = glob("*.csv", location)
 	dv = [CSV.File(i) |> DataFrame for i in all_authers]
 	dm = vcat(dv...)
@@ -10,7 +10,7 @@ function combine_best_known(; num_node = 100)
 end
 
 function find_best_known(ins_name::String; num_node = 100)
-	location = dir("../ResultsVRPTW", "Solomon_best_by_authers", "num_node=$num_node")
+	location = dir("data", "Solomon_best_by_authers", "num_node=$num_node")
 	all_authers = glob("*.csv", location)
 end
 
